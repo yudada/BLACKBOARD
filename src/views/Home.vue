@@ -74,8 +74,8 @@
               <img src="../assets/images/faces/female/25.jpeg" alt="user-img" class="img-circle"/>
             </div>
             <div class="mb-2">
-              <a href="#"><span class="font-weight-semibold">李校长</span></a>
-              <br /><span class="text-gray">厦门演示中学</span>
+              <a href="#"><span class="font-weight-semibold">{{userInfo.realName}}</span></a>
+              <br /><span class="text-gray">{{school.schoolName}}</span>
             </div>
           </div>
         </div>
@@ -435,7 +435,9 @@ export default {
         { title: '联系我们', icon: 'el-icon-phone-outline', url: '' }
       ],
       classList: [],
-      classInfo: {}
+      classInfo: {},
+      school: {},
+      userInfo: {}
     };
   },
   created() {
@@ -502,6 +504,8 @@ export default {
         const classInfo = data.class;
         this.classInfo = classInfo;
         this.$store.commit('setClassInfo',classInfo);
+        this.school = data.school;
+        this.userInfo = data.userInfo;
       })
     }
   },

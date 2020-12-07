@@ -1,7 +1,7 @@
 <template>
   <div class="login_container">
     <div class="login_content">
-      <p>虚拟现实云教育</p>
+      <p>AI 教务管理系统</p>
       <el-card class="login_card">
         <p>欢迎登录</p>
         <el-form ref="loginFormRef" :model="loginForm" :rules="loginFormRules" class="login_form">
