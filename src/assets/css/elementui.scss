@@ -1,0 +1,98 @@
+.el-main{
+    z-index: 1;
+  }
+.el-dropdown{
+    color: #fff !important;
+    font-size: 20px !important;
+  }
+.el-badge__content{
+    border: none !important;
+    background: linear-gradient(to bottom right,#00f2fe 0%, #1e63c3 100%) !important;
+  }
+  /* 面包屑 */
+.el-breadcrumb__inner a, .el-breadcrumb__inner.is-link {
+    font-weight: 700;
+    text-decoration: none;
+    transition: color .2s cubic-bezier(.645,.045,.355,1);
+    color: #fff !important;
+  }
+.el-breadcrumb__inner a, .el-breadcrumb__inner.is-link, .el-breadcrumb__item:last-child {
+    font-weight: 400 !important;
+    font-size: 16px;
+    color: rgba(255,255,255,0.4);
+  }
+.el-breadcrumb__item:last-child .el-breadcrumb__inner, .el-breadcrumb__item:last-child .el-breadcrumb__inner a, .el-breadcrumb__item:last-child .el-breadcrumb__inner a:hover, .el-breadcrumb__item:last-child .el-breadcrumb__inner:hover {
+  color: #ffffff66 !important;
+}
+  /* 卡片 */
+.el-card {
+    border: none !important;
+    border-radius: 7px !important;
+  }
+.el-card:hover {
+    box-shadow: 0 15px 25px rgba(146, 146, 146, 0.5) !important;
+  }
+.el-avatar {
+    box-shadow: 0 7px 30px rgba(210, 220, 228, 0.5)!important;
+  }
+.el-row {
+    margin-bottom: 30px;
+  }
+.el-card__header{
+  color: #636262;
+}
+// 分页位置
+.el-pagination{
+  display: flex;
+  justify-content: center;
+  margin: 1rem 0;
+}
+
+// 对话框
+.el-dialog__header {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 1rem !important;
+  background: linear-gradient(to left, #9853af, #623aa2);
+  .el-dialog__headerbtn {
+    position: inherit !important;
+    i {
+      color: #fff;
+      font-size: larger;
+      font-weight: 600;
+    }
+    i:hover {
+      color: rgba(255,255,255,0.7);
+    }
+    
+  }
+}
+.el-dialog__title {
+  color: #fff !important;
+  font-size: larger;
+  font-weight: 500;
+}
+// 消息
+.el-message {
+  top: 48%!important
+}
+// 通知
+.el-notification{
+  position: fixed;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.el-notification.right{
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+}
+
+.el-notification.left{
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+}
+
