@@ -75,7 +75,7 @@
             </div>
             <div class="mb-2">
               <a href="#"><span class="font-weight-semibold">{{userInfo.realName}}</span></a>
-              <br /><span class="text-gray">{{school.schoolName}}</span>
+              <br /><span class="text-gray">{{school.schoolName}}</span>jn i.lo
             </div>
           </div>
         </div>
@@ -435,13 +435,9 @@ export default {
         { title: '联系我们', icon: 'el-icon-phone-outline', url: '' }
       ],
       classList: [],
-<<<<<<< HEAD
-      classInfo: {}
-=======
       classInfo: {},
       school: {},
       userInfo: {}
->>>>>>> 67d9ceec6d312c66354d36e482661140709b33e3
     };
   },
   created() {
@@ -508,11 +504,8 @@ export default {
         const classInfo = data.class;
         this.classInfo = classInfo;
         this.$store.commit('setClassInfo',classInfo);
-<<<<<<< HEAD
-=======
         this.school = data.school;
         this.userInfo = data.userInfo;
->>>>>>> 67d9ceec6d312c66354d36e482661140709b33e3
       })
     }
   },

@@ -44,11 +44,7 @@ export default {
   },
   methods: {
     async getbookList() {
-<<<<<<< HEAD
-      const { data: res } = await this.$http.get('http://192.168.8.123/api/textbook/lists')
-=======
       const { data: res } = await this.$http.get('/api/textbook/lists')
->>>>>>> 67d9ceec6d312c66354d36e482661140709b33e3
       if (res.statusCode !== 200) return this.$messsage.error('获取课本列表失败！')
       console.log(res.data);
       this.subjectList = res.data;
