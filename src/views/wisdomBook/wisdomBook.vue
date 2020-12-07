@@ -13,7 +13,11 @@
         <el-col :span="5" v-for="(item, index) in subjectList" :key="index" class="addpadding iapd_w">
           <el-card shadow="always" :body-style="{ padding: 0 }" @click.native="openBookDialogVisible(item)">
             <div class="card_img">
+<<<<<<< HEAD
               <img :src="require('../../assets/book/'+item.bookName+'.jpg')" />
+=======
+              <img :src="item.bookName" />
+>>>>>>> 67d9ceec6d312c66354d36e482661140709b33e3
             </div>
             <div class="card_info">
               <a href="#"><strong>{{ item.bookName }}</strong> {{ item.subName}}</a>
@@ -44,7 +48,11 @@ export default {
   },
   methods: {
     async getbookList() {
+<<<<<<< HEAD
       const { data: res } = await this.$http.get('http://192.168.8.123/api/textbook/lists')
+=======
+      const { data: res } = await this.$http.get('/api/textbook/lists')
+>>>>>>> 67d9ceec6d312c66354d36e482661140709b33e3
       if (res.statusCode !== 200) return this.$messsage.error('获取课本列表失败！')
       console.log(res.data);
       this.subjectList = res.data;

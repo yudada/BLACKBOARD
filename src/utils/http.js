@@ -38,7 +38,14 @@ const errorHandle = (status, other) => {
 
 const instance = axios.create({ timeout: 1000 * 12 });
 
+<<<<<<< HEAD
 instance.defaults.baseURL = 'api';
+=======
+
+// instance.defaults.baseURL = 'http://192.168.8.123/';
+
+instance.defaults.baseURL = 'http://api.vrbook.vip';
+>>>>>>> 67d9ceec6d312c66354d36e482661140709b33e3
 
 instance.defaults.headers.post['Content-type'] = 'application/json';
 
