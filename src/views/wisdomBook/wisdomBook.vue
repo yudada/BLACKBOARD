@@ -67,9 +67,9 @@
           :visible.sync="selectDialogVisible"
           width="80%"
           :append-to-body="true"
-          custom-class="dialog"
+          :destroy-on-close="true"
         >
-          <select-dialog></select-dialog>
+          <select-dialog @closeDialog="fromSun"></select-dialog>
         </el-dialog>
       </el-row>
     </div>
@@ -106,6 +106,10 @@ export default {
     },
     addBook() {
       this.selectDialogVisible = true
+    },
+    fromSun(data) {
+      this.selectDialogVisible = data;
+      this.getbookList()
     },
   },
 }
@@ -155,18 +159,5 @@ export default {
 }
 .addpadding {
   padding-bottom: 20px;
-}
-
-@media (max-width: 768px) {
-  .iapd_w {
-    width: 50% !important;
-    margin-bottom: 1rem;
-  }
-}
-
-@media (max-width: 375px) {
-  .iapd_w {
-    width: 100% !important;
-  }
 }
 </style>

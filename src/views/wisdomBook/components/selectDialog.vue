@@ -1,46 +1,35 @@
 <template>
   <div class="select_dialog">
-    <el-row>
-      <el-col>
-        <el-select
-          v-model="classId"
-          placeholder="请选择班级"
-          @change="getBookList"
-        >
-          <el-option
-            v-for="item in classList"
-            :key="item.class_id"
-            :label="item.className"
-            :value="item.class_id"
-          >
-          </el-option>
-        </el-select>
-      </el-col>
-    </el-row>
-    <el-row :gutter="20">
-      <el-col
-        :span="5"
-        v-for="(item, index) in bookList"
-        :key="index"
-        class="addpadding iapd_w"
+    <el-select v-model="classId" placeholder="请选择班级" @change="getBookList">
+      <el-option
+        v-for="item in classList"
+        :key="item.class_id"
+        :label="item.className"
+        :value="item.class_id"
       >
-        <el-card
-          shadow="always"
-          :body-style="{ padding: 0 }"
-          @click.native="selectBook"
-        >
-          <div class="card_img">
-            <!-- <img v-if="item.bookImg !== null" :src="item.bookImg" /> -->
-            <img src="../../../assets/book/七年级生物.jpg" />
-          </div>
-          <div class="card_info">
-            <a href="#"
-              ><strong>{{ item.bookName }}</strong> {{ item.subName }}</a
-            >
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
+      </el-option>
+    </el-select>
+    <div>
+      <el-checkbox-group v-model="wisdomBookId" class="check_list">
+        <el-checkbox v-for="item in bookList" :key="item.id" :label="item.id">
+          <el-card shadow="never" :body-style="{ padding: 0 }">
+            <div class="card_img">
+              <!-- <img v-if="item.bookImg !== null" :src="item.bookImg" /> -->
+              <img src="../../../assets/book/七年级生物.jpg" />
+            </div>
+            <div class="card_info">
+              <a href="#"
+                ><strong>{{ item.bookName }}</strong> {{ item.subName }}</a
+              >
+            </div>
+          </el-card>
+        </el-checkbox>
+      </el-checkbox-group>
+    </div>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="closeDialog">取 消</el-button>
+      <el-button type="primary" @click="addWisdomBook">确 定</el-button>
+    </span>
   </div>
 </template>
 
@@ -53,6 +42,7 @@ export default {
       bookList: [],
       classList: [],
       classId: '',
+      wisdomBookId: [],
     }
   },
   computed: {
@@ -70,10 +60,25 @@ export default {
     },
     async getClassList() {
       const { data: res } = await this.$http.get(`api/classroom/select`)
-      console.log(res)
       this.classList = res.data
+      this.classId = this.classList[0].class_id
+      console.log(this.classList)
+
+      this.getBookList()
     },
-    selectBook() {},
+    closeDialog() {
+      this.$emit('closeDialog', false)
+    },
+    async addWisdomBook() {
+      console.log(this.classId, this.wisdomBookId)
+      const { data: res } = await this.$http.post(`api/textbook/store`, {
+        class_id: this.classId,
+        textbook_ids: this.wisdomBookId,
+      })
+      if (res.statusCode !== 200) return this.$message.error(res.msg)
+      this.$message.success(res.msg)
+      this.closeDialog()
+    },
   },
 }
 </script>
@@ -83,7 +88,6 @@ export default {
   cursor: pointer;
 }
 .select_dialog {
-  padding: 20px;
   .card_img {
     img {
       width: 100%;
@@ -118,6 +122,52 @@ export default {
           margin: 0.5rem;
         }
       }
+    }
+  }
+  .dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+.select_dialog {
+  .el-checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    .el-checkbox {
+      width: 20%;
+    }
+  }
+}
+</style>
+
+<style lang="scss">
+.check_list {
+  .el-checkbox {
+    margin: 20px;
+    .el-checkbox__input {
+      position: absolute;
+      right: 15px;
+      bottom: 18px;
+      .el-checkbox__inner {
+        border: 2px solid #dcdfe6;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+      }
+      .el-checkbox__inner::after {
+        height: 12px;
+        left: 6px;
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+@media (max-width: 1280px) {
+  .check_list {
+    .el-checkbox__input {
+      position: absolute ;
+      right: 3px !important;
     }
   }
 }
