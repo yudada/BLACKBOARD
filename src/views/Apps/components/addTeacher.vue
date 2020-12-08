@@ -136,8 +136,7 @@ export default {
           { required: true, message: '请选择科目', trigger: 'blur' }
         ],
         teaName: [
-          { required: true, message: '请输入名字', trigger: 'blur' },
-          { min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur' }
+          { required: true, message: '请输入名字', trigger: 'blur' }
         ],
         userMobile: [
           { required: true, message: '请输入手机号码', trigger: 'blur' },

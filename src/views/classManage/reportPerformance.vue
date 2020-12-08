@@ -26,7 +26,7 @@
                 </el-radio-group>
               </el-form-item>
               <el-form-item label="班级" prop="class_id">
-                <el-select clearable v-model="reportPerformanceForm.class_id" placeholder="请选择" @change="getStudentInfo(reportPerformanceForm.class_id)">
+                <el-select v-model="reportPerformanceForm.class_id" placeholder="请选择" @change="getStudentInfo(reportPerformanceForm.class_id)">
                   <el-option v-for="item in classList" :key="item.class_id" :label="item.className" :value="item.class_id"></el-option>
                 </el-select>
               </el-form-item>

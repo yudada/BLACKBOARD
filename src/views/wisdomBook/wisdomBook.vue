@@ -10,52 +10,105 @@
 
     <div class="wisdomBook_concent">
       <el-row :gutter="20">
-        <el-col :span="5" v-for="(item, index) in subjectList" :key="index" class="addpadding iapd_w">
-          <el-card shadow="always" :body-style="{ padding: 0 }" @click.native="openBookDialogVisible(item)">
+        <el-col
+          :span="5"
+          v-for="(item, index) in subjectList"
+          :key="index"
+          class="addpadding iapd_w"
+        >
+          <el-card
+            shadow="always"
+            :body-style="{ padding: 0 }"
+            @click.native="openBookDialogVisible(item)"
+          >
             <div class="card_img">
-              <img :src="item.bookName" />
+              <!-- <img v-if="item.bookImg !== null" :src="item.bookImg" /> -->
+              <img src="../../assets/book/七年级生物.jpg" />
             </div>
             <div class="card_info">
-              <a href="#"><strong>{{ item.bookName }}</strong> {{ item.subName}}</a>
+              <a href="#"
+                ><strong>{{ item.bookName }}</strong> {{ item.subName }}</a
+              >
             </div>
           </el-card>
         </el-col>
-        <el-dialog :title="dialigTitle" :visible.sync="bookDialogVisible" fullscreen :modal="false" :append-to-body="true" custom-class="dialog">
-          <iframe src="https://edudom.11dom.com/courses/18#/section1/part1" frameborder="0"></iframe>
+        <el-col :span="5">
+          <el-card
+            shadow="always"
+            :body-style="{ padding: 0 }"
+            @click.native="addBook"
+          >
+            <div class="card_img">
+              <img src="../../assets/book/addBook.png" />
+            </div>
+            <div class="card_info">
+              <!-- <a href="#"><strong>添加课本</strong></a> -->
+            </div>
+          </el-card>
+        </el-col>
+
+        <!-- 弹框 -->
+        <el-dialog
+          :title="dialigTitle"
+          :visible.sync="bookDialogVisible"
+          fullscreen
+          :modal="false"
+          :append-to-body="true"
+          custom-class="dialog"
+        >
+          <iframe
+            src="https://edudom.11dom.com/courses/18#/section1/part1"
+            frameborder="0"
+          ></iframe>
+        </el-dialog>
+        <!-- 选择课本弹框 -->
+        <el-dialog
+          title="选择课本"
+          :visible.sync="selectDialogVisible"
+          width="80%"
+          :append-to-body="true"
+          custom-class="dialog"
+        >
+          <select-dialog></select-dialog>
         </el-dialog>
       </el-row>
-      
     </div>
   </div>
-  
 </template>
 
 <script>
+import selectDialog from './components/selectDialog.vue'
 export default {
+  components: { selectDialog },
   data() {
     return {
       subjectList: [],
+      selectDialogVisible: false,
+      dialigTitle: '',
       bookDialogVisible: false,
-      dialigTitle: ''
-    };
+    }
   },
   created() {
-    this.getbookList();
+    this.getbookList()
   },
   methods: {
     async getbookList() {
       const { data: res } = await this.$http.get('/api/textbook/lists')
-      if (res.statusCode !== 200) return this.$messsage.error('获取课本列表失败！')
-      console.log(res.data);
-      this.subjectList = res.data;
+      if (res.statusCode !== 200)
+        return this.$messsage.error('获取课本列表失败！')
+      console.log(res.data)
+      this.subjectList = res.data
     },
     openBookDialogVisible(item) {
-      console.log(item.bookName);
-      this.bookDialogVisible = true;
-      this.dialigTitle = item.bookName + item.subName;
-    }
+      console.log(item.bookName)
+      this.bookDialogVisible = true
+      this.dialigTitle = item.bookName + item.subName
+    },
+    addBook() {
+      this.selectDialogVisible = true
+    },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -103,7 +156,6 @@ export default {
 .addpadding {
   padding-bottom: 20px;
 }
-
 
 @media (max-width: 768px) {
   .iapd_w {

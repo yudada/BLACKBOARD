@@ -20,8 +20,7 @@
                 <p>{{ item.content}}&nbsp;&nbsp;--{{ item.time }}</p>
               </div>
             </div>
-          </el-card>
-          <!-- 分页 -->
+            <!-- 分页 -->
           <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
@@ -31,6 +30,7 @@
             layout="total, sizes, prev, pager, next, jumper"
             :total="total">
           </el-pagination>
+          </el-card>
         </el-col>
       </el-row>
     </div>
@@ -56,15 +56,13 @@ export default {
       }
     },
     created() {
-      this.getReadNoteList();
+      // this.getReadNoteList();
     },
     methods: {
       async getReadNoteList() {
-        // const { data: res } = await this.$http.get('api/reading/notes')
-        // if (res.statusCode !== 200) return this.$message.error('获取笔记列表失败！')
-        // this.$message.success('获取阅读笔记成功！')
-        // console.log(res);
-        // this.readNote = res
+        const { data: res } = await this.$http.get('api/reading/notes')
+        if (res.statusCode !== 200) return this.$message.error('获取笔记列表失败！')
+        this.readNote = res
       },
     handleSizeChange(newSize) {
       this.queryInfo.pagesize = newSize
@@ -96,10 +94,5 @@ export default {
     font-weight: 500;
     line-height: 1.1;
   }
-}
-.el-pagination{
-  display: flex;
-  justify-content: flex-end;
-  margin: 1rem 0;
 }
 </style>

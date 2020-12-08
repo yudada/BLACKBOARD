@@ -22,7 +22,6 @@ const toLogin = () => {
 
 const instance = axios.create({ timeout: 1000 * 12 });
 
-// instance.defaults.baseURL = 'api';
 
 instance.defaults.baseURL = 'http://192.168.8.123/';
 
@@ -38,7 +37,8 @@ instance.interceptors.request.use(config => {
     error => {
         Message({
             message: error.message,
-            type: 'error'
+            type: 'error',
+            duration: 2000
         })
         return Promise.error(error);
     })
@@ -50,13 +50,20 @@ instance.interceptors.response.use(
         return config
     },
     response => {
+        NProgress.done()
         if (response.status === 200) {
             Message({
-                message: response.data.msg,
-                type: 'success'
+                message: "response.data.msg",
+                type: 'success',
+                duration: 2000
             })
             return Promise.resolve(response.data);
         } else {
+            Message({
+                message: response,
+                type: 'error',
+                duration: 2000
+            })
             return Promise.reject(response);
         }
     },

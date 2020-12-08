@@ -278,6 +278,7 @@ export default {
         if (res.statusCode !== 200) return this.$message.error('添加题目失败！')
         this.$message.success('添加题目成功!')
 
+        this.questionForm.queKnowledge = [];
         this.$refs.questionFormRef.resetFields();
       })
     },

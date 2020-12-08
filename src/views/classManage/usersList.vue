@@ -32,7 +32,7 @@
             </div>
           </el-card>
 
-          <el-card>
+          <el-card v-if="teacherList[0]">
             <div slot="header">
               <span>学科老师</span>
             </div>
@@ -63,6 +63,16 @@
               </div>
             </div>
           </el-card>
+          <el-card v-else>
+            <div slot="header">
+              <span>学科老师</span>
+            </div>
+            <div class="teacher_info">
+              <div class="info_text">
+                <span>暂无老师</span>
+              </div>
+            </div>
+          </el-card>
         </el-col>
 
         <el-col :span="18">
@@ -86,7 +96,10 @@
               v-loading="loading">
               <el-table-column type="selection"> </el-table-column>
               <el-table-column width="70">
-                <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+                <template slot-scope="scope">
+                  <el-avatar v-if="!scope.row.photo" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+                  <el-avatar v-else :src="scope.row.photo"></el-avatar>
+                </template>
               </el-table-column>
               <el-table-column label="姓名">
                 <template slot-scope="scope">{{ scope.row.stuName }}</template>
@@ -197,7 +210,6 @@ export default {
     // 分页
     handleSizeChange(newSize) {
       this.pageSize = newSize;
-      console.log(this.pageSize);
       this.getStudentList();
     },
     handleCurrentChange(newPage) {

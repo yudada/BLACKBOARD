@@ -302,7 +302,7 @@ export default {
       this.scoreData.config_score_id = item.id
       console.log(this.scoreData)
       score(this.scoreData).then((res) => {
-        console.log(res.data)
+        this.$message.success(item.scoreName + ' ' + item.scoreNum)
       })
     },
     // 减分
@@ -311,7 +311,7 @@ export default {
       this.scoreData.config_score_id = item.id
       console.log(this.scoreData)
       score(this.scoreData).then((res) => {
-        console.log(res.data)
+        this.$message.error(item.scoreName + ' ' + item.scoreNum)
       })
     },
     // 全班
@@ -324,6 +324,11 @@ export default {
       this.scoreData.config_score_id = item.id
       score(this.scoreData).then((res) => {
         console.log(res.data)
+        if(item.scoreNum === '+1') {
+          this.$message.success(item.scoreName + ' ' + item.scoreNum)
+        } else {
+          this.$message.error(item.scoreName + ' ' + item.scoreNum)
+        }
       })
     },
     // 举手弹框

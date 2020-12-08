@@ -40,7 +40,7 @@
               </el-table-column>
               <el-table-column label="操作">
                 <template slot-scope="scope">
-                  <el-button type="text" @click="scope.row.info= '已发送'" :loading="loading">{{ scope.row.info }}</el-button>
+                  <el-button type="text" @click="send" :loading="loading">{{ scope.row.info }}</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -77,11 +77,10 @@ export default {
       res.data.student.map(item=>{
         this.studentData.push(Object.assign({}, item, {info: '发送给家长'}))
       })
-      console.log(this.studentData);
     },
     // 发送
     send() {
-
+      this.$message.info('功能开发中!')
     }
   },
   computed: {
