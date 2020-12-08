@@ -23,9 +23,9 @@ const toLogin = () => {
 const instance = axios.create({ timeout: 1000 * 12 });
 
 
-instance.defaults.baseURL = 'http://192.168.8.123/';
+// instance.defaults.baseURL = 'http://192.168.8.123/';
 
-// instance.defaults.baseURL = 'http://api.vrbook.vip';
+instance.defaults.baseURL = 'http://api.vrbook.vip';
 
 instance.defaults.headers.post['Content-type'] = 'application/json';
 
