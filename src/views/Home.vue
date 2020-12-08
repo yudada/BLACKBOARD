@@ -75,6 +75,10 @@
             </div>
             <div class="mb-2">
               <a href="#"><span class="font-weight-semibold">{{userInfo.realName}}</span></a>
+<<<<<<< HEAD
+=======
+              <br /><span class="text-gray">{{school.schoolName}}</span>jn i.lo
+>>>>>>> fd53cd621b8fb6b9eda679c735c7c191e3c931da
             </div>
           </div>
         </div>

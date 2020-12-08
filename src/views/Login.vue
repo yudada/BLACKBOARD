@@ -1,7 +1,11 @@
 <template>
   <div class="login_container">
     <div class="login_content">
+<<<<<<< HEAD
+      <p>虚拟现实云教育</p>
+=======
       <p>AI 教务管理系统</p>
+>>>>>>> 67d9ceec6d312c66354d36e482661140709b33e3
       <el-card class="login_card">
         <p>欢迎登录</p>
         <el-form ref="loginFormRef" :model="loginForm" :rules="loginFormRules" class="login_form">
@@ -80,7 +84,11 @@ export default {
 <style lang="scss" scoped>
 .login_container{
   height: 100%;
+<<<<<<< HEAD
+  background: linear-gradient(to bottom right,#9853af,#623AA2);
+=======
   background-image: url(../assets/images/bg-01.jpeg);
+>>>>>>> 67d9ceec6d312c66354d36e482661140709b33e3
 }
 .login_content{
   width: 100%;
