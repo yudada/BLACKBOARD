@@ -99,7 +99,7 @@
                   <el-input clearable type="password" v-model="ruleDetailForm.nowpassword"></el-input>
                 </el-form-item>
                 <el-form-item label="生日" class="form_half birthdaySelect">
-                  <el-date-picker v-model="ruleDetailForm.birthday" type="date" placeholder="选择日期"></el-date-picker>
+                  <el-date-picker value-format="yyyy-MM-dd"  v-model="ruleDetailForm.birthday" type="date" placeholder="选择日期"></el-date-picker>
                 </el-form-item>
                 <el-form-item label="新密码" class="form_half">
                   <el-input clearable type="password" v-model="ruleDetailForm.newpassword"></el-input>
@@ -244,7 +244,7 @@ export default {
       this.$refs.ruleIntroductionFormRef.resetFields();
     },
     // 信息保存
-    submitDetailForm() {
+    async submitDetailForm() {
       this.$refs.upload.submit();
       this.ruleDetailForm.userMobile = parseInt(this.ruleDetailForm.userMobile)
       this.$refs.ruleDetailFormRef.validate(async valid => {
@@ -256,14 +256,13 @@ export default {
           }
         }
         console.log(questionInfo);
-        newStudent(questionInfo).then(res => {
+        await newStudent(questionInfo).then(res => {
           const {data} = res;
           console.log(data);
           if(data.statusCode !== 200) return this.$message.error(data.msg);
           this.$message.success(data.msg);
-          this.resetDetailForm();
         })
-        
+        this.resetDetailForm();
       });
     },
     // 重置信息表单
