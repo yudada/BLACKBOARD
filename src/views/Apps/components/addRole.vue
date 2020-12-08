@@ -97,7 +97,7 @@ export default {
         if(!valid) return
         console.log(this.roleForm);
         addRole(this.roleForm).then(res => {
-          const { data } = res;
+          const { data } = res.data;
           if(data.statusCode !== 200) return this.$message.error(data.msg)
           this.$message.success(data.msg)
           this.$refs.treeRef.setCheckedKeys([]);

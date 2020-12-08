@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card>
-      <el-tabs v-model="activeName" type="card" @tab-click="handleClick" :stretch="true">
+      <el-tabs v-model="activeName" type="card" :stretch="true">
         <el-tab-pane label="模型资源" name="first">
           <div>
             <div class="resource_box">
@@ -103,9 +103,6 @@ export default {
     modelDialogVisible(item) {
       this.dialogVisible = true
       this.dialogContent = item
-    },
-    handleClick(tab) {
-      // this.activeName = tab.name
     }
   },
 }

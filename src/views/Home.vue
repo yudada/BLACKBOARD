@@ -5,7 +5,7 @@
     <el-header>
       <div class="header_logo">
         <div @click="goHome">
-          <span>虚拟现实云教育</span>
+          <span>{{school.schoolName}}</span>
         </div>
         <i class="el-icon-s-fold" @click="toggleCollapse"></i>
       </div>
@@ -71,11 +71,10 @@
         <div class="user-profile">
           <div class="dropdown user-pro-body">
             <div>
-              <img src="../assets/images/faces/female/25.jpeg" alt="user-img" class="img-circle"/>
+              <img :src="require('../assets/images/faces/female/25.jpeg')" alt="user-img" class="img-circle"/>
             </div>
             <div class="mb-2">
               <a href="#"><span class="font-weight-semibold">{{userInfo.realName}}</span></a>
-              <br /><span class="text-gray">{{school.schoolName}}</span>
             </div>
           </div>
         </div>
@@ -113,7 +112,7 @@
 <script>
 import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
 import NavMenu from '../components/SideNavMenu/NavMenu.vue'
-import { classList,changeClass, classInfo} from '@/api/index.js'
+import { classList, changeClass, classInfo} from '@/api/index.js'
 export default {
   components: {
     NavMenu: NavMenu
@@ -482,6 +481,7 @@ export default {
     },
     // 切换班级
     handleChangeClass(item) {
+      console.log(item);
       changeClass(item.class_id).then(res => {
         this.getClassInfo();
         location.reload();
@@ -547,8 +547,12 @@ i:hover {
     color: #ffffff;
     font-weight: 600;
     padding: 0 1.5rem;
+    width: 250px;
+    display: flex;
+    justify-content: space-around;
     span {
       cursor: pointer;
+      text-align: center;
     }
     i {
       margin-left: 2rem;

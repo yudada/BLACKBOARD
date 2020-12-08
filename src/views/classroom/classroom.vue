@@ -84,7 +84,7 @@ export default {
         { id: 1, name: '课件资源', path: 'bookResource' },
       ],
       // 班级信息
-      class_arr: {},
+      // class_arr: {},
     }
   },
   created() {
@@ -97,17 +97,9 @@ export default {
       this.$store.commit('setCollapse', true)
       this.$store.commit('setFooter', false)
     },
-    // 获取用户信息
-    async getUserInfo() {
-      const { data: res } = await this.$http.get(`api/user/info`)
-      if (res.statusCode !== 200)
-        return this.$message.error('获取用户信息失败！')
-      this.class_arr = res.data.class_arr[0]
-    },
     // 获取老师信息
     async getClassInfo() {
       const { data: res } = await this.$http.post(`api/teacher/info`)
-      if (res.statusCode !== 200) return this.$message.error(res.msg)
       this.teacher = res.data
       this.$store.commit('setTeacherInfo', this.teacher)
     },

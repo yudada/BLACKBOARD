@@ -74,7 +74,7 @@
                 <el-form-item label="登录账号" prop="userName" class="form_half">
                   <el-input clearable v-model="ruleDetailForm.userName" placeholder="例：test256 请不要输入中文和空格"></el-input>
                 </el-form-item>
-                <el-form-item label="登录密码" prop="userPassword" class="form_half">
+                <el-form-item label="登录密码(默认123456)" prop="userPassword" class="form_half">
                   <el-input clearable type="password" v-model="ruleDetailForm.userPassword" placeholder="长度在 6 到 15 个字符"></el-input>
                 </el-form-item>
                 <el-form-item label="姓名" prop="stuName" class="form_half">
@@ -178,11 +178,11 @@ export default {
       // 详细信息
       ruleDetailForm: {
         userName: '',
-        userPassword: '',
+        userPassword: '123456',
         stuName: '',
         stuNum: '',
         address: '',
-        country: '',
+        country: '中国',
         userMobile: '',
         birthday: '',        
         nowpassword: '',
@@ -246,10 +246,9 @@ export default {
     // 信息保存
     submitDetailForm() {
       this.$refs.upload.submit();
-      // this.ruleDetailForm.userMobile = parseInt(this.ruleDetailForm.userMobile)
+      this.ruleDetailForm.userMobile = parseInt(this.ruleDetailForm.userMobile)
       this.$refs.ruleDetailFormRef.validate(async valid => {
         if (!valid) return console.log(this.ruleDetailForm,1);
-        console.log(this.ruleDetailForm,2);
         const questionInfo = this.ruleDetailForm;
         for ( var key in questionInfo ){
           if ( questionInfo[key] === '' ){
@@ -258,10 +257,10 @@ export default {
         }
         console.log(questionInfo);
         newStudent(questionInfo).then(res => {
-          const { data } = res;
+          const {data} = res;
           console.log(data);
           if(data.statusCode !== 200) return this.$message.error(data.msg);
-          return this.$message.success(data.msg);
+          this.$message.success(data.msg);
           this.resetDetailForm();
         })
         

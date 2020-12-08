@@ -19,29 +19,14 @@ const toLogin = () => {
     });
 }
 
-const errorHandle = (status, other) => {
-    switch (status) {
-        case 501:
-            errorMessage('登录过期，请重新登录');
-            window.sessionStorage.clear();
-            setTimeout(() => {
-                toLogin();
-            }, 1000);
-            break;
-        case 404:
-            errorMessage('请求的资源不存在');
-            break;
-        default:
-            console.log(other);
-    }
-}
 
 const instance = axios.create({ timeout: 1000 * 12 });
 
+// instance.defaults.baseURL = 'api';
 
-// instance.defaults.baseURL = 'http://192.168.8.123/';
+instance.defaults.baseURL = 'http://192.168.8.123/';
 
-instance.defaults.baseURL = 'http://api.vrbook.vip';
+// instance.defaults.baseURL = 'http://api.vrbook.vip';
 
 instance.defaults.headers.post['Content-type'] = 'application/json';
 
@@ -72,27 +57,18 @@ instance.interceptors.response.use(
             })
             return Promise.resolve(response.data);
         } else {
-            NProgress.done();
-            if (response.status !== 200) {
-                switch (status) {
-                    case 404:
-                        errorMessage('请求的资源不存在');
-                        break;
-                    default:
-                        errorMessage('请求失败！');
-                }
-                return Promise.reject(response);
-            }
+            return Promise.reject(response);
         }
     },
     error => {
-        const { response } = error;
-        if (response) {
-            errorHandle(response.status, response);
-            return Promise.reject(response);
-        } else {
-            return Promise.reject(response);
-        }
+        console.log('err' + error)
+        Message({
+            message: error.message,
+            type: 'error',
+            durantion: 5 * 1000
+        })
+        NProgress.done();
+        return Promise.reject(error)
     }
 );
 
