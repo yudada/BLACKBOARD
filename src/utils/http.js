@@ -6,26 +6,18 @@ import { Message } from 'element-ui';
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
-const errorMessage = msg => {
-    Message({
-        message: msg,
-        duration: 2000,
-        type: 'error'
-    });
-}
-const toLogin = () => {
-    router.replace({
-        path: '/login'
-    });
-}
+const isDev = process.env.NODE_ENV === 'development';
 
+const instance = axios.create({
+    baseURL: isDev ? 'http://192.168.8.123' : 'http://api.vrbook.vip',
+    timeout: 1000 * 12
+});
 
-const instance = axios.create({ timeout: 1000 * 12 });
-
+// const instance = axios.create({ timeout: 1000 * 12 });
 
 // instance.defaults.baseURL = 'http://192.168.8.123/';
 
-instance.defaults.baseURL = 'http://api.vrbook.vip';
+// instance.defaults.baseURL = 'http://api.vrbook.vip';
 
 instance.defaults.headers.post['Content-type'] = 'application/json';
 

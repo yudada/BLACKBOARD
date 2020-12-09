@@ -124,8 +124,8 @@ export default {
         this.getclassInviteCode();
 
         if(data === 'reload') {
-          // this.$router.push('/home')
-          console.log(233);
+          location.reload();
+          this.$router.push('/home')
         } 
         
       })
