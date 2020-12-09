@@ -42,7 +42,7 @@
               <img src="../../assets/book/addBook.png" />
             </div>
             <div class="card_info">
-              <!-- <a href="#"><strong>添加课本</strong></a> -->
+              <a href="#"><strong> 添加课本</strong></a>
             </div>
           </el-card>
         </el-col>

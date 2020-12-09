@@ -35,9 +35,15 @@
                   <el-radio :label="2">隐藏</el-radio>
                 </el-radio-group>
               </el-form-item>
-              <el-form-item>
+              <el-form-item v-if="!tip">
                 <div>
                   <el-button @click="onSubmit" class="cn_btn">立即发布</el-button>
+                  <el-button @click="cancel">取消</el-button>
+                </div>
+              </el-form-item>
+              <el-form-item v-else>
+                <div>
+                  <el-button @click="bindingClassRoom" class="cn_btn">创建并绑定班级</el-button>
                   <el-button @click="cancel">取消</el-button>
                 </div>
               </el-form-item>
@@ -75,6 +81,11 @@ export default {
     this.getclassInviteCode();
     this.getClassType();
   },
+  computed: {
+    tip: function() {
+      return this.$route.query.tip;
+    }
+  },
   methods: {
     // 获取班级邀请码
     async getclassInviteCode() {
@@ -86,10 +97,8 @@ export default {
     async getClassType() {
       const { data: res } = await this.$http.get(`api/common/constant`)
       if(res.statusCode !== 200) return this.$message.error(res.msg)
-      console.log(res.data);
       const {periodArr} =res.data;
       this.classTypeList = Object.values(periodArr)
-      console.log(this.classTypeList);
     },
     // 创建班级
     onSubmit() {
@@ -109,6 +118,11 @@ export default {
     },
     goBackList() {
       this.$router.go(-1)
+    },
+    // 首次创建并绑定
+    async bindingClassRoom() {
+      await this.onSubmit();
+      this.$router.push('/home')
     }
   },
 }

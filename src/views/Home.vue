@@ -5,7 +5,7 @@
     <el-header>
       <div class="header_logo">
         <div @click="goHome">
-          <span>{{school.schoolName}}</span>
+          <span v-if="school.schoolName">{{school.schoolName}}</span>
         </div>
         <i class="el-icon-s-fold" @click="toggleCollapse"></i>
       </div>
@@ -14,10 +14,10 @@
         <!-- 全屏 -->
         <div class="header_icon" ><i @click="toggleFullScreen" class="el-icon-full-screen"></i></div>
         <!-- 选择班级 -->
-        <div class="header_icon">
+        <div class="header_icon" v-if="classInfo">
           <el-dropdown>
             <span class="el-dropdown-link">
-              <span>{{classInfo.className}}</span>
+              <span >{{classInfo.className}}</span>
               <i class="el-icon-caret-bottom"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
@@ -398,13 +398,17 @@ export default {
       userInfo: {}
     };
   },
+  computed: {
+    ...mapState(['isCollapse','isFooter']),
+  },
   created() {
     this.getClassInfo();
     this.getClassList();
     this.isMobile();
   },
-  computed: {
-    ...mapState(['isCollapse','isFooter']),
+  updated() {
+    // console.log(this.classList,1);
+    // console.log(this.classInfo,2);
   },
   methods: {
     ...mapMutations(['setFooter', 'setCollapse']),
@@ -436,7 +440,9 @@ export default {
       await classList().then(res => {
       const {data} = res.data;
       this.classList = data;
+      console.log(this.classList);
       })
+      this.firstLogin();
     },
     // 切换班级
     handleChangeClass(item) {
@@ -468,9 +474,16 @@ export default {
       })
     },
     goPage(tool) {
-      console.log(tool);
       this.$router.push('/' + tool.url);
       this.isMobile();
+    },
+    firstLogin() {
+      if(!this.classList[0].class_id || !this.classList.length) {
+        this.$message.info('暂无班级已跳转到创建班级页')
+        this.$router.push({ path:'/classroomAdd', query: { tip: 'firstAdd' }})
+      } else {
+        return
+      }
     }
   },
 };
@@ -604,6 +617,7 @@ i:hover {
   }
 }
 </style>
+
 <style lang="scss">
 .aside_menu {
   .el-submenu.is-active .el-submenu__title {

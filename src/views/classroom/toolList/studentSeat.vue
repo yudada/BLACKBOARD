@@ -237,11 +237,17 @@ export default {
     },
     // 获取学生列表
     async getStudentList() {
+      console.log(this.classInfo);
       let info = {
         classId: '',
         classType: 1,
       }
-      info.classId = this.classInfo.class_id
+      if(this.classInfo) {
+        info.classId = this.classInfo.class_id
+      } else {
+        return
+      }
+      
       await studentName(info).then(res => {
         const { data } = res.data;
         this.studentList = this.setList(data)
