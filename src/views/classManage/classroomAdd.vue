@@ -1,7 +1,8 @@
 <template>
   <div class="addClassroom_main">
     <div class="main_header">
-      <h4>创建班级</h4>
+      <h4 v-if="classId">修改班级</h4>
+      <h4 v-else>创建班级</h4>
         <el-button type="text" @click="goBackList" class="goBack">返回列表</el-button>
     </div>
 
@@ -35,15 +36,21 @@
                   <el-radio :label="2">隐藏</el-radio>
                 </el-radio-group>
               </el-form-item>
-              <el-form-item v-if="!tip">
+              <el-form-item v-if="!tip && !classId">
                 <div>
                   <el-button @click="onSubmit" class="cn_btn">立即发布</el-button>
                   <el-button @click="cancel">取消</el-button>
                 </div>
               </el-form-item>
-              <el-form-item v-else>
+              <el-form-item v-if="tip">
                 <div>
-                  <el-button @click="bindingClassRoom" class="cn_btn">创建并绑定班级</el-button>
+                  <el-button @click="onSubmit('reload')" class="cn_btn">创建并绑定班级</el-button>
+                  <el-button @click="cancel">取消</el-button>
+                </div>
+              </el-form-item>
+              <el-form-item v-if="classId">
+                <div>
+                  <el-button @click="saveEditClassRoom('save')" class="cn_btn">保存修改</el-button>
                   <el-button @click="cancel">取消</el-button>
                 </div>
               </el-form-item>
@@ -84,6 +91,9 @@ export default {
   computed: {
     tip: function() {
       return this.$route.query.tip;
+    },
+    classId: function() {
+      return this.$route.query.class_id;
     }
   },
   methods: {
@@ -92,6 +102,7 @@ export default {
       const { data: res } = await this.$http.post('api/classroom/create')
       if (res.statusCode !== 200) return this.$message.error('获取邀请码失败！')
       this.classForm.classInviteCode = res.data.classInviteCode;
+      this.getClassRoomInfo();
     },
     // 获取班级类型
     async getClassType() {
@@ -101,28 +112,50 @@ export default {
       this.classTypeList = Object.values(periodArr)
     },
     // 创建班级
-    onSubmit() {
+    onSubmit(data) {
       this.$refs.classFormRef.validate(async valid => {
         if (!valid) return
         console.log(this.classForm);
         const { data: res } = await this.$http.post('api/classroom/store', this.classForm)
         if(res.statusCode !== 200) return this.$message.error('创建失败!');
-        this.$message.success('班级创建成功!')
+        this.$message.success('班级创建成功!');
 
         this.cancel();
         this.getclassInviteCode();
+
+        if(data === 'reload') {
+          // this.$router.push('/home')
+          console.log(233);
+        } 
+        
+      })
+    },
+    // 获取修改的班级信息
+    async getClassRoomInfo() {
+      if(this.classId) {
+        const id = parseFloat(this.classId)
+        const {data: res} = await this.$http.get(`api/classroom/${id}`)
+        this.classForm = res.data.classroom
+        console.log(this.classForm);
+      }
+    },
+    // 修改班级
+    saveEditClassRoom() {
+      this.$refs.classFormRef.validate(async valid => {
+        if (!valid) return
+        const id = parseFloat(this.classId)
+        console.log(this.classForm);
+        const {data:res} = await this.$http.patch(`api/classroom/${id}`)
+        if(res.statusCode !== 200) return this.$message.error(res.msg)
+        this.$message.success(res.msg)
       })
     },
     cancel() {
+      this.classForm.classDeclaration ='';
       this.$refs.classFormRef.resetFields();
     },
     goBackList() {
       this.$router.go(-1)
-    },
-    // 首次创建并绑定
-    async bindingClassRoom() {
-      await this.onSubmit();
-      this.$router.push('/home')
     }
   },
 }

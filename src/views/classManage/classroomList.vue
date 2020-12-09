@@ -9,18 +9,16 @@
         <el-table :data="classRoomList" style="width: 100%" v-loading="loading">
           <el-table-column prop="className" label="班级名称">
           </el-table-column>
-          <el-table-column prop="exercise" label="班级学习宣言" :formatter="formatterCellval">
+          <el-table-column prop="classDeclaration" label="班级学习宣言" :formatter="formatterCellval">
           </el-table-column>
-          <el-table-column prop="reading" label="班级类型" :formatter="formatterCellval">
-          </el-table-column>
-          <el-table-column prop="comprehensive" label="班级邀请码" :formatter="formatterCellval">
-          </el-table-column>
-          <el-table-column prop="weekRemarks" label="状态" :formatter="formatterCellval">
+          <!-- <el-table-column prop="classType" label="班级类型" :formatter="formatterCellval">
+          </el-table-column> -->
+          <el-table-column prop="classInviteCode" label="班级邀请码" :formatter="formatterCellval">
           </el-table-column>
           <el-table-column label="编辑信息" prop="monthRemarks" width="120">
             <template slot-scope="scope">
-              <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="editClassRoomPage"></el-button>
-              <el-button type="danger" size="mini" @click="removeById(scope.row.sid)">删除</el-button>
+              <el-button type="text" @click="editClassRoomPage(scope.row.class_id)">编辑</el-button>
+              <!-- <el-button type="danger" size="mini" @click="removeById(scope.row.sid)">删除</el-button> -->
             </template>
           </el-table-column>
         </el-table>
@@ -30,16 +28,18 @@
 </template>
 
 <script>
-import { classList, changeClass, classInfo} from '@/api/index.js'
+import { classList, changeClass, classInfo, commonConfiguration } from '@/api/index.js'
 export default {
   data() {
     return {
       classRoomList:[],
-      loading:false
+      loading:false,
+      classType: {}
     }
   },
   created() {
-    this.getClassRoomList()
+    this.getClassRoomList();
+    this.getClassTypeList();
   },
   methods: {
     editClassRoomPage() {},
@@ -51,13 +51,30 @@ export default {
           return cellValue;
       }
     },
-    editClassRoomPage() {},
+    // 班级类型数据处理
+    formatterClassType(row, column, cellValue, index) {
+
+    },
+    // 编辑页
+    editClassRoomPage(class_id) {
+      this.$router.push({ path: '/classroomAdd', query: {class_id: class_id}})
+    },
     removeById() {},
+    // 获取班级列表
     getClassRoomList() {
       classList().then(res => {
-        console.log(res);
+        const {data} = res
+        this.classRoomList = data.data;
       })
     },
+    // 获取班级类型
+    getClassTypeList() {
+      commonConfiguration().then(res => {
+        const {periodArr} = res.data.data;
+        this.classType = periodArr;
+      })
+    },
+    // 新建班级页
     addClassRoomPage() {
       this.$router.push('/classroomAdd')
     }

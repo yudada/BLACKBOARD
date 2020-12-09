@@ -406,10 +406,6 @@ export default {
     this.getClassList();
     this.isMobile();
   },
-  updated() {
-    // console.log(this.classList,1);
-    // console.log(this.classInfo,2);
-  },
   methods: {
     ...mapMutations(['setFooter', 'setCollapse']),
     toggleCollapse() {
@@ -437,10 +433,9 @@ export default {
     },
     // 获取班级列表
     async getClassList() {
-      await classList().then(res => {
+      await classList(1).then(res => {
       const {data} = res.data;
       this.classList = data;
-      console.log(this.classList);
       })
       this.firstLogin();
     },
@@ -480,7 +475,9 @@ export default {
     firstLogin() {
       if(!this.classList[0].class_id || !this.classList.length) {
         this.$message.info('暂无班级已跳转到创建班级页')
-        this.$router.push({ path:'/classroomAdd', query: { tip: 'firstAdd' }})
+        this.$router.push({ path:'/classroomAdd', query: { tip: 'firstAdd' }}).catch((err) => {
+        console.log('err')
+      })
       } else {
         return
       }

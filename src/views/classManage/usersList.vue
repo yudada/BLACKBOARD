@@ -163,6 +163,10 @@ export default {
     },
     // 获取班级信息
     async getClassInfo() {
+      if(!this.class_arr.class_id || this.class_arr.class_id === null) {
+        this.loading = false;
+        return
+      }
       const { data: res } = await this.$http.get(
         `api/classroom/${this.class_arr.class_id}`
       );
@@ -187,12 +191,12 @@ export default {
       );
       if (res.statusCode !== 200)
         return this.$message.error("获取学生列表失败");
-      console.log(res.data);
-      this.studentData = res.data.data;
-      this.total = res.data.total;
-      this.currentPage = res.data.current_page;
-      this.pageSize = parseInt(res.data.per_page);
-      this.loading = false;
+        console.log(res.data);
+        this.studentData = res.data.data;
+        this.total = res.data.total;
+        this.currentPage = res.data.current_page;
+        this.pageSize = parseInt(res.data.per_page);
+        this.loading = false;
     },
     // 表格选择栏
     toggleSelection(rows) {
