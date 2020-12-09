@@ -66,6 +66,10 @@ const routes = [
         path: '/perDetial',
         component: () => import('../views/classManage/perDetial.vue')
       },
+      {
+        path:'/classroomList',
+        component: () => import('../views/classManage/classroomList.vue')
+      },
       // 我的班级
       {
         path: '/myclass',

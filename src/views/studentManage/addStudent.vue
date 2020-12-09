@@ -81,7 +81,7 @@
                   <el-input clearable v-model="ruleDetailForm.stuName" placeholder="长度在 2 到 10 个字符"></el-input>
                 </el-form-item>
                 <el-form-item label="学号" prop="stuNum" class="form_half">
-                  <el-input clearable v-model="ruleDetailForm.stuNum" placeholder="长度在 2 到 10 个字符"></el-input>
+                  <el-input clearable v-model="ruleDetailForm.stuNum" placeholder="请输入30位以内的数字、字母组合"></el-input>
                 </el-form-item>
                 <el-form-item label="地址">
                   <el-input clearable type="textarea" v-model="ruleDetailForm.address"></el-input>
@@ -149,6 +149,7 @@ export default {
 
       cb(new Error('请输入合法的手机号'))
     }
+    
     return {
       // 快速创建信息
       ruleIntroductionForm: {
@@ -206,7 +207,8 @@ export default {
           ],
           stuNum: [
             { required: true, message: '请输入学号', trigger: 'blur' },
-            { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+            { validator: checkUserName, trigger: 'blur' },
+            { min: 6, max: 30, message: '长度在 6 到 30 个字符', trigger: 'blur' }
           ]
         },
         showBtnImg: true,

@@ -37,7 +37,11 @@
             </span>
             <el-dropdown-menu slot="dropdown"  style="width: 300px">
               <div class="tool_dropdown">
-                <el-dropdown-item  v-for="(tool, index) in toolList" :key="index">
+                <el-dropdown-item
+                  v-for="(tool, index) in toolList"
+                  :key="index"
+                  @click.native="goPage(tool)"
+                  >
                 <i :class="tool.icon"></i>
                 <span>{{tool.title}}</span>
                 </el-dropdown-item>
@@ -154,53 +158,23 @@ export default {
           },
           //二级
           childs: [
-            {
-              entity: {
-                id: 0,
-                name: "publish",
-                icon: "icon-fabu",
-                alias: "发布作业",
-              },
+            { entity: { id: 0, name: "publish", icon: "icon-fabu", alias: "发布作业" },
             },
             {
-              entity: {
-                id: 1,
-                name: "prepareTask",
-                icon: "icon-xunke",
-                alias: "立体模型"
-              },
+              entity: { id: 1, name: "prepareTask", icon: "icon-xunke", alias: "立体模型" },
             },
             {
-              entity: {
-                id: 2,
-                name: "readTask",
-                icon: "icon-yuedu",
-                alias: "课本阅读",
-              },
+              entity: { id: 2,  name: "readTask", icon: "icon-yuedu", alias: "课本阅读", },
             },
             {
-              entity: {
-                id: 3,
-                name: "courseware",
-                icon: "icon-kaoqin",
-                alias: "精选题库"
-              },
+              entity: { id: 3, name: "courseware", icon: "icon-kaoqin", alias: "精选题库" },
             },
             {
-              entity: {
-                id: 4,
-                name: "exercitation",
-                icon: "icon-shixi-A",
-                alias: "实验操作"
-              },
+              entity: { id: 4,
+                name: "exercitation", icon: "icon-shixi-A", alias: "实验操作" },
             },
             {
-              entity: {
-                id: 5,
-                name: "mistakes",
-                icon: "icon-cuoti",
-                alias: "错题锦囊"
-              },
+              entity: { id: 5, name: "mistakes", icon: "icon-cuoti", alias: "错题锦囊" },
             }
           ]
         },
@@ -235,9 +209,9 @@ export default {
             {
               entity: {
                 id: 0,
-                name: "classroomAdd",
-                icon: "icon-chuangjianv",
-                alias: "创建班级",
+                name: "classroomList",
+                icon: "icon-cengji",
+                alias: "班级列表",
               },
             },
             {
@@ -411,12 +385,12 @@ export default {
         },
       ],
       toolList: [
-        { title: '我的资料', icon: 'el-icon-message', url: '' },
-        { title: '密码更改', icon: 'el-icon-suitcase', url: '' },
-        { title: '我的班级', icon: 'el-icon-shopping-bag-2', url: '' },
-        { title: '课件管理', icon: 'el-icon-chat-dot-round', url: '' },
-        { title: '消息', icon: 'el-icon-message', url: '' },
-        { title: '联系我们', icon: 'el-icon-phone-outline', url: '' }
+        { title: '密码更改', icon: 'iconfont icon-xitong', url: 'home' },
+        { title: '学校资料', icon: 'iconfont icon-xuexiao', url: 'information' },
+        { title: '我的班级', icon: 'iconfont icon-banji', url: 'myclass' },
+        { title: '课件管理', icon: 'iconfont icon-banji1', url: 'course-wareList' },
+        { title: '在线研学', icon: 'iconfont icon-yanjiuzhulu', url: 'onlineStudies' },
+        { title: '学科工具', icon: 'iconfont icon-gongju', url: 'drawing' },
       ],
       classList: [],
       classInfo: {},
@@ -492,6 +466,11 @@ export default {
         this.school = data.school;
         this.userInfo = data.userInfo;
       })
+    },
+    goPage(tool) {
+      console.log(tool);
+      this.$router.push('/' + tool.url);
+      this.isMobile();
     }
   },
 };

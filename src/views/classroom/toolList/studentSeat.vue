@@ -516,7 +516,7 @@ export default {
     align-items: center;
     font-size: xx-large;
     span {
-      color: #636262;
+      color: #b1afaf;
       cursor: pointer;
     }
   }

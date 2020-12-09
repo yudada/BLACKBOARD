@@ -2,11 +2,7 @@
   <div class="addClassroom_main">
     <div class="main_header">
       <h4>创建班级</h4>
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item><a href="#">班级管理</a></el-breadcrumb-item>
-        <el-breadcrumb-item>创建班级</el-breadcrumb-item>
-      </el-breadcrumb>
+        <el-button type="text" @click="goBackList" class="goBack">返回列表</el-button>
     </div>
 
     <div class="addClassroom_concent">
@@ -110,10 +106,20 @@ export default {
     },
     cancel() {
       this.$refs.classFormRef.resetFields();
+    },
+    goBackList() {
+      this.$router.go(-1)
     }
   },
 }
 </script>
 
 <style lang="scss" scoped>
+  .goBack{
+    color: #fff;
+    font-size: 18px;
+  }
+  .goBack:hover {
+    color: #fff;
+  }
 </style>
