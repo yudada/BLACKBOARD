@@ -4,12 +4,23 @@
       <el-tabs v-model="activeName" type="card" :stretch="true">
         <el-tab-pane label="模型资源" name="first">
           <div>
+            <el-row class="model_search">
+              <el-col :span="6">
+                <el-input placeholder="模型搜索" v-model="modName">
+                <el-button
+                  slot="append"
+                  icon="el-icon-search"
+                  @click="getModelsByName"
+                />
+              </el-input>
+              </el-col>
+            </el-row>
             <div class="resource_box">
               <div
                 v-for="item in modelsList"
                 :key="item.id"
                 :label="item.id"
-                style="width: 18%"
+                style="width: 20%"
               >
                 <div class="img_model" @click="modelDialogVisible(item)">
                   <img :src="item.modImage" alt="模型图" />
@@ -22,8 +33,8 @@
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
               :current-page="currentPage"
-              :page-sizes="[8, 20, 40, 80]"
-              :page-size="8"
+              :page-sizes="[40, 80, 100, 1000]"
+              :page-size="40"
               layout="total, sizes, prev, pager, next, jumper"
               :total="total"
             >
@@ -60,7 +71,7 @@ export default {
   name: 'bookResource',
   components: {
     experiment,
-    exercise
+    exercise,
   },
   data() {
     return {
@@ -68,11 +79,12 @@ export default {
       modelsList: [],
       // 分页
       currentPage: 1,
-      pageSize: 8,
+      pageSize: 40,
       total: 0,
       dialogContent: {},
       activeName: 'first',
-      hidenBtn: true
+      hidenBtn: true,
+      modName: ''
     }
   },
   created() {
@@ -84,6 +96,7 @@ export default {
       const { data: res } = await this.$http.post(`api/models/lists`, {
         limit: this.pageSize,
         page: this.currentPage,
+        modName: this.modName
       })
       if (res.statusCode !== 200) return this.$message.error(res.msg)
       this.modelsList = res.data.data
@@ -94,15 +107,22 @@ export default {
     },
     handleSizeChange(val) {
       this.pageSize = val
-      this.getModelsList()
+      this.getModels()
     },
     handleCurrentChange(val) {
       this.currentPage = val
-      this.getModelsList()
+      this.getModels()
     },
     modelDialogVisible(item) {
       this.dialogVisible = true
       this.dialogContent = item
+    },
+    getModelsByName() {
+      if(this.modName) {
+        this.getModels();
+      } else {
+        return
+      }
     }
   },
 }
@@ -111,6 +131,7 @@ export default {
 <style lang="scss" scoped>
 .resource_box {
   display: flex;
+  flex-wrap: wrap;
   .img_model {
     display: flex;
     flex-direction: column;
@@ -120,7 +141,7 @@ export default {
     padding: 0.5rem;
     border: 1px solid rgba(167, 180, 201, 0.2);
     img {
-      width: 80%;
+      width: 100%;
     }
   }
 }
@@ -134,6 +155,11 @@ export default {
   width: 100%;
   height: 100%;
   border: none;
+}
+.model_search{
+  display: flex;
+  justify-content: flex-end;
+  margin: 0;
 }
 </style>
 

@@ -46,21 +46,6 @@
             </el-dropdown-menu>
           </el-dropdown>
         </div>
-        <!-- 头像 -->
-        <div class="header_icon">
-          <el-dropdown trigger="click">
-            <span class="el-dropdown-link">
-              <i class="el-icon-s-custom"></i>
-            </span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item icon="el-icon-user" >Joyce Stewart</el-dropdown-item>
-              <el-dropdown-item icon="el-icon-setting">设置</el-dropdown-item>
-              <el-dropdown-item icon="el-icon-chat-square">消息</el-dropdown-item>
-              <el-dropdown-item icon="iconfont icon-qiehuanyonghu" divided>切换用户</el-dropdown-item>
-              <el-dropdown-item icon="el-icon-switch-button"  @click.native="logout">安全退出</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </div>
       </div>
     </el-header>
 

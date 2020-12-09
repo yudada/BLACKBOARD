@@ -50,7 +50,7 @@
       @current-change="handleCurrentChange"
       :current-page="currentPage"
       :page-sizes="[10, 20, 40, 100]"
-      :page-size="10"
+      :page-size="40"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"
     >
@@ -68,7 +68,7 @@ export default {
     return {
       // 分页
       currentPage: 1,
-      pageSize: 10,
+      pageSize: 40,
       total: 0,
       //
       sendMsg: {
