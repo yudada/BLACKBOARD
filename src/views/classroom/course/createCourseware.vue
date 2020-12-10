@@ -22,7 +22,7 @@
         <!-- 富文本编辑器组件 -->
         <quill-editor v-model="addCoursewareForm.content"></quill-editor>
         <!-- <vue-ueditor-wrap v-model="addCoursewareForm.content" :config="myConfig"></vue-ueditor-wrap> -->
-        <el-form-item label="状态">
+        <el-form-item label="状态" prop="is_share">
           <el-radio-group v-model="addCoursewareForm.is_share">
             <el-radio v-for="item in radioList" :key="item.value" :label="item.value">{{item.title}}</el-radio>
           </el-radio-group>
@@ -108,7 +108,12 @@ export default {
       if(!valid) return
         console.log(this.addCoursewareForm);
         addCourseWareStore(this.addCoursewareForm).then(res => {
-        console.log(res.data);
+        const {data} = res
+        if(data.statusCode !==200) return this.$message.error(data.msg)
+        this.$message.success(data.msg)
+        this.$refs.addCoursewareFormRef.resetFields();
+        this.addCoursewareForm.content = '';
+        this.getClassInfo();
         })
       })
     }, 

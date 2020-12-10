@@ -152,7 +152,7 @@ export default {
 <style lang="scss" scoped>
 .login_container {
   height: 100%;
-  background-image: url(../assets/images/bg-01.jpeg);
+  background-image: url(../../assets/images/bg-01.jpeg);
 }
 .login_content {
   width: 100%;

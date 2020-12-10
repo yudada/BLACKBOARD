@@ -75,8 +75,8 @@
               </el-form-item>
               <el-form-item label="状态">
                 <el-radio-group v-model="publishForm.status">
-                  <el-radio :label="1">正式发布</el-radio>
                   <el-radio :label="2">草稿准备</el-radio>
+                  <el-radio :label="1">正式发布</el-radio>
                 </el-radio-group>
               </el-form-item>
               <el-form-item >
@@ -138,10 +138,7 @@ export default {
         textbook_id: '',
         exeType: '',
         contentId: [],
-        status: 1 ,
-        currentPage: 1,
-        pageSize: 20,
-        total: 0
+        status: 2 ,
       },
       classList: [],
       bookList: [],

@@ -43,7 +43,7 @@
             <el-card>
               <div slot="header">{{ item.teachName }}</div>
               <div @click="openDialogVisible(item)">
-                <img src="../../assets/images/media/media2.jpeg" alt="" />
+                <img :src="item.teachImage" alt="" />
               </div>
             </el-card>
             <el-dialog
@@ -54,7 +54,7 @@
               custom-class="dialog"
             >
               <iframe
-                src="https://www.11dom.com/embed-mg7MYbdpqwoDvV5YZRV8xnA0zZ4aBRWN"
+                :src="museumInfo.teachUrl"
                 frameborder="0"
               ></iframe>
             </el-dialog>
@@ -101,7 +101,7 @@ export default {
       ],
       dialogVisible: false,
       museumList: [],
-      museumInfo: [],
+      museumInfo: {},
     }
   },
   created() {
@@ -112,9 +112,11 @@ export default {
     async getOnlieList() {
       const { data: res } = await this.$http.get(`api/online/teach`)
       this.museumList = res.data
+      console.log(res);
     },
     openDialogVisible(item) {
       this.museumInfo = item
+      console.log(this.museumInfo);
       this.dialogVisible = true
     },
   },

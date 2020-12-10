@@ -36,6 +36,19 @@
               <i class="el-icon-menu"></i>
             </span>
             <el-dropdown-menu slot="dropdown"  style="width: 300px">
+              <!-- 头像 -->
+              <div class="user-profile">
+                <div class="dropdown user-pro-body">
+                <div>
+                  <img :src="require('../assets/images/faces/female/25.jpeg')" alt="user-img" class="img-circle"/>
+                </div>
+                <div class="mb-2">
+                  <span class="font-weight-semibold">{{userInfo.teaPosition}}</span>
+                  <br><span class="font-weight-semibold">{{userInfo.realName}}</span>
+                </div>
+                </div>
+              </div>
+              <!-- 工具 -->
               <div class="tool_dropdown">
                 <el-dropdown-item
                   v-for="(tool, index) in toolList"
@@ -56,17 +69,6 @@
     <el-container>
       <!-- 侧边栏 -->
       <el-aside :width="isCollapse ? '0' : '200px'">
-        <!-- 头像 -->
-        <div class="user-profile">
-          <div class="dropdown user-pro-body">
-            <div>
-              <img :src="require('../assets/images/faces/female/25.jpeg')" alt="user-img" class="img-circle"/>
-            </div>
-            <div class="mb-2">
-              <a href="#"><span class="font-weight-semibold">{{userInfo.realName}}</span></a>
-            </div>
-          </div>
-        </div>
         <!-- 侧边栏菜单区域 -->
         <div class="aside_menu">
           <el-menu
@@ -385,7 +387,7 @@ export default {
         },
       ],
       toolList: [
-        { title: '密码更改', icon: 'iconfont icon-xitong', url: 'home' },
+        { title: '密码更改', icon: 'iconfont icon-xitong', url: 'userInfo' },
         { title: '学校资料', icon: 'iconfont icon-xuexiao', url: 'information' },
         { title: '我的班级', icon: 'iconfont icon-banji', url: 'myclass' },
         { title: '课件管理', icon: 'iconfont icon-banji1', url: 'course-wareList' },
@@ -466,6 +468,7 @@ export default {
         this.$store.commit('setClassInfo',classInfo);
         this.school = data.school;
         this.userInfo = data.userInfo;
+        console.log(data);
       })
     },
     goPage(tool) {
@@ -558,24 +561,6 @@ i:hover {
     -o-transition: all 0.3s;
     transition: all 0.3s;
   }
-  .user-profile {
-    padding: 0 0 15px;
-    position: relative;
-    text-align: center;
-    .mb-2 {
-      span:nth-child(1) { color: #fff; font-weight: 600;}
-      span:nth-child(3) {
-        color: #ad5df3 !important ;
-      }
-    }
-    .user-pro-body img {
-      width: 50px;
-      display: block;
-      margin: 0 auto 10px;
-      border: 2px solid #fff;
-      border-radius: 100%;
-    }
-  }
 }
 .el-main {
   height: 100%;
@@ -635,5 +620,32 @@ i:hover {
       font-size: x-large;
     }
   }
-} 
+}
+.user-profile {
+  padding: 0 0 15px;
+  display: flex;
+  .user-pro-body {
+    width: 100%;
+    padding: 0 20px;
+    display: flex;
+  }
+  .mb-2 {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    span{
+      font-weight: 600;
+      color: #ad5df3 !important ;
+    }
+  }
+  .user-pro-body img {
+    width: 80px;
+    display: block;
+    margin: 0 20px 0 0;
+    border: 5px solid rgb(211, 205, 205);
+    border-radius: 100%;
+  }
+}
 </style>

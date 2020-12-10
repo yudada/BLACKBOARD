@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import Login from '../views/Login.vue'
+import Login from '../views/user/Login.vue'
 import Home from '../views/Home.vue'
 import ErrorPage from '../views/404.vue'
 
@@ -16,6 +16,10 @@ const routes = [
     component: Home,
     redirect: '/index1',
     children: [
+      {
+      path: '/userInfo',
+      component: () => import('../views/user/userInfo.vue')
+    },
       // 统计
       {
         path: '/index1',
