@@ -44,7 +44,6 @@
         </el-col>
       </el-row>
     </el-card>
-
     <el-card v-else class="nostudent">
       <div slot="header">
         <span>学生座位</span>
@@ -145,9 +144,14 @@
             ></el-button>
           </div>
           <div class="name_topbox">
-            <span>{{ studentList[selectedStudentIndexs[0]].stuName }}</span>
-            <div v-show="this.sidArr.length > 1">
-              <span v-for="item in sidArr" :key="item.sid">{{ item }}</span>
+            <div v-if="sclectStuName === true">
+              <span>{{ studentList[selectedStudentIndexs[0]].stuName }}</span>
+            </div>
+            <div v-else class="stuName_box">
+              <div v-for="item in sidArr" :key="item.sid">
+                <span v-if="sidArr.length > 1">{{item}},</span>
+                <span v-else>{{item}}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -206,6 +210,7 @@ export default {
       intervalId: null,
       hidenMark: true,
       sidArr: [],
+      sclectStuName: false
     }
   },
   computed: {
@@ -369,11 +374,13 @@ export default {
         clearInterval(this.intervalId)
         this.intervalId = null
         this.hidenMark = false
+        this.sclectStuName = false
         this.sidArr = []
         this.setMarjList()
       } else {
         this.changeName = false
         this.hidenMark = true
+        this.sclectStuName = true
         this.intervalId = setInterval(() => {
           this.selectedStudentIndexs = this.studentIndexs
             .sort(() => 0.5 - Math.random())
@@ -396,6 +403,7 @@ export default {
     closeHandUpDialog() {
       this.markList = []
       this.sidArr = []
+      this.sclectStuName = false
     },
     async goAddStudent() {
       const confirmResult = await this.$confirm(
@@ -571,6 +579,14 @@ export default {
       .name_topbox {
         text-align: center;
         margin: 1rem;
+        .stuName_box{
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+        span {
+          font-size: x-large;
+        }
       }
     }
     .btn_content {
