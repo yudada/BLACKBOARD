@@ -49,7 +49,7 @@
 
         <!-- 弹框 -->
         <el-dialog
-          :title="dialigTitle"
+          :title="bookInfo.bookName"
           :visible.sync="bookDialogVisible"
           fullscreen
           :modal="false"
@@ -57,7 +57,7 @@
           custom-class="dialog"
         >
           <iframe
-            src="https://edudom.11dom.com/courses/18#/section1/part1"
+            :src="bookInfo.bookAddress"
             frameborder="0"
           ></iframe>
         </el-dialog>
@@ -84,7 +84,7 @@ export default {
     return {
       subjectList: [],
       selectDialogVisible: false,
-      dialigTitle: '',
+      bookInfo: {},
       bookDialogVisible: false,
     }
   },
@@ -100,9 +100,9 @@ export default {
       this.subjectList = res.data
     },
     openBookDialogVisible(item) {
-      console.log(item.bookName)
       this.bookDialogVisible = true
-      this.dialigTitle = item.bookName + item.subName
+      this.bookInfo = item;
+      console.log(this.bookInfo);
     },
     addBook() {
       this.selectDialogVisible = true

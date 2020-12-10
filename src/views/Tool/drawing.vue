@@ -17,15 +17,28 @@
             </div>
             <div class="card_body">
               <div v-for="item in toolList" :key="item.id" class="text item">
-                <div class="card_content">
-                  <img :src="require('../../assets/tool/' + item.imgsrc + '.png')"/>
+                <div class="card_content" @click="openDialogVisible(item)">
+                  <img v-if="item.toolImage" :src="item.toolImage"/>
+                  <img v-else src="../../assets/tool/betusorrend--字母顺序.png" alt="">
                   <span>{{ item.toolTitle }}</span>
                 </div>
-            </div>
+              </div>
             </div>
           </el-card>
         </el-col>
-      </el-row>          
+      </el-row>
+      <el-dialog
+        :title="toolInfo.toolTitle"
+        :visible.sync="dialogVisible"
+        fullscreen
+        :append-to-body="true"
+        custom-class="dialog"
+      >
+        <iframe
+          :src="toolInfo.toolAddress"
+          frameborder="0"
+        ></iframe>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -34,13 +47,9 @@
 export default {
   data() {
     return {
-      toolList: [
-        { id: 1, toolTitle:'字母顺序', imgsrc: 'betusorrend--字母顺序'},
-        { id: 2, toolTitle:'元素周期表', imgsrc: 'hetigyakorlo--每周练习' },
-        { id: 3, toolTitle:'颜色', imgsrc: 'szinek--颜色' },
-        { id: 4, toolTitle:'光学工具箱', imgsrc: 'optikaipad--光学工具箱' },
-        { id: 5, toolTitle:'记忆游戏', imgsrc: 'memoria--记忆游戏' }
-      ],
+      toolList: [],
+      dialogVisible: false,
+      toolInfo: {}
     }
   },
   created() {
@@ -51,7 +60,12 @@ export default {
      const { data: res } = await this.$http.get(`api/subjectTools/lists`)
      if (res.statusCode !== 200) return this.$message.error('获取工具列表失败！');
      console.log(res);
-   } 
+     this.toolList = res.data;
+   },
+   openDialogVisible(tool) {
+     this.dialogVisible = true
+     this.toolInfo = tool;
+   }
   }
 }
 </script>
@@ -59,6 +73,9 @@ export default {
 <style lang="scss" scoped>
 .card_body{
   display: flex;
+  img {
+    cursor: pointer;
+  }
   .text{
     width: 20%;
     .card_content{

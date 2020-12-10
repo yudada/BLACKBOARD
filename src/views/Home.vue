@@ -468,11 +468,12 @@ export default {
         this.$store.commit('setClassInfo',classInfo);
         this.school = data.school;
         this.userInfo = data.userInfo;
-        console.log(data);
       })
     },
     goPage(tool) {
-      this.$router.push('/' + tool.url);
+      this.$router.push('/' + tool.url).catch(err =>{
+        console.log('err');
+      });
       this.isMobile();
     },
     firstLogin() {

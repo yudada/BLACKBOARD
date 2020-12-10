@@ -11,7 +11,7 @@
     <div class="main_concent">
         <el-card>
         <div slot="header">
-          <span>用户信息</span>
+          <span></span>
         </div>
         <div>
           <el-col :span="8">
