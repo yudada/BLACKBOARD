@@ -44,7 +44,7 @@
                 </div>
                 <div class="mb-2">
                   <span class="font-weight-semibold">{{userInfo.teaPosition}}</span>
-                  <br><span class="font-weight-semibold">{{userInfo.realName}}</span>
+                  <span class="font-weight-semibold">{{userInfo.realName}}</span>
                 </div>
                 </div>
               </div>
@@ -633,18 +633,20 @@ i:hover {
     width: 50%;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
     span{
       font-weight: 600;
-      color: #ad5df3 !important ;
+      color: #606266;
+    }
+    span:nth-child(2) {
+      color: #b1afaf;
     }
   }
   .user-pro-body img {
-    width: 80px;
+    width: 60px;
     display: block;
     margin: 0 20px 0 0;
-    border: 5px solid rgb(211, 205, 205);
+    border: 5px solid #b1afaf;
     border-radius: 100%;
   }
 }
