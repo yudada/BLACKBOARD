@@ -218,6 +218,7 @@ export default {
         this.publishForm.exeEndTime = this.publishForm.exeEndTime.toString()
         console.log(this.publishForm);
         const { data: res } = await this.$http.post('/api/exercises/store', this.publishForm)
+        console.log(res);
         if (res.statusCode !== 200) return this.$message.error('发布作业失败')
         this.$message.success('发布作业成功!')
         this.canceSubmitl();
