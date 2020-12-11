@@ -104,7 +104,7 @@
                 <el-form-item label="新密码" class="form_half">
                   <el-input clearable type="password" v-model="ruleDetailForm.newpassword"></el-input>
                 </el-form-item>
-                <el-form-item label="电话号码" class="form_half">
+                <el-form-item label="电话号码" class="form_half" prop="userMobile">
                   <el-input clearable v-model="ruleDetailForm.userMobile"></el-input>
                 </el-form-item>
                 <el-form-item label="确认密码" class="form_half">
@@ -209,6 +209,10 @@ export default {
             { required: true, message: '请输入学号', trigger: 'blur' },
             { validator: checkUserName, trigger: 'blur' },
             { min: 6, max: 30, message: '长度在 6 到 30 个字符', trigger: 'blur' }
+          ],
+          userMobile: [
+            { required: true, message: '请输入手机号码', trigger: 'blur' },
+            { validator: checkMobile, trigger: 'blur' }
           ]
         },
         showBtnImg: true,
