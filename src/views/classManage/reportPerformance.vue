@@ -116,11 +116,12 @@ export default {
       this.studentList = [];
       const { data: res } = await this.$http.post('api/student/getName', { class_id: id})
       if(res.statusCode !== 200) return this.$message.error(res.msg)
-      this.$message.success('获取学生信息成功！')
       res.data.map(item=> {
         this.studentList.push(Object.assign({},item,{score: ''}))
       })
       console.log(this.studentList);
+      if(this.studentList.length > 0) return this.$message.success('获取学生信息成功！')
+      this.$message.info('暂无学生！')
     },
     // 发布成绩
     onSubmit() {
