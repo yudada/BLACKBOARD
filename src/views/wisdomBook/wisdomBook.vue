@@ -22,8 +22,8 @@
             @click.native="openBookDialogVisible(item)"
           >
             <div class="card_img">
-              <!-- <img v-if="item.bookImg !== null" :src="item.bookImg" /> -->
-              <img src="../../assets/book/七年级生物.jpg" />
+              <img v-if="item.bookImg !== null" :src="item.bookImg" />
+              <img v-else src="../../assets/book/七年级生物.jpg" />
             </div>
             <div class="card_info">
               <a href="#"
@@ -39,10 +39,7 @@
             @click.native="addBook"
           >
             <div class="card_img">
-              <img src="../../assets/book/addBook.png" />
-            </div>
-            <div class="card_info">
-              <a href="#"><strong> 添加课本</strong></a>
+              <img src="../../assets/book/addBook.jpg" />
             </div>
           </el-card>
         </el-col>

@@ -14,8 +14,8 @@
         <el-checkbox v-for="item in bookList" :key="item.id" :label="item.id">
           <el-card shadow="never" :body-style="{ padding: 0 }">
             <div class="card_img">
-              <!-- <img v-if="item.bookImg !== null" :src="item.bookImg" /> -->
-              <img src="../../../assets/book/七年级生物.jpg" />
+              <img v-if="item.bookImg !== null" :src="item.bookImg" />
+              <img v-else src="../../../assets/book/addBook.jpg" />
             </div>
             <div class="card_info">
               <a href="#"
