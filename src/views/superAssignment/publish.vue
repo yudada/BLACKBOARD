@@ -199,12 +199,14 @@ export default {
     async getClassInfo() {
       const { data: res } = await this.$http.get('api/classroom/myList')
       if(res.statusCode !== 200) return this.$message.error('获取班级列表失败！')
+      console.log(res,1);
       this.classList = res.data
     },
     // 获取课本列表
     async getBookInfo() {
       const { data: res } = await this.$http.get('api/textbook/lists')
       if(res.statusCode !== 200) return this.$message.error('获取课本列表失败！')
+      console.log(res,2);
       this.bookList = res.data
     },
     // 获取作业类型

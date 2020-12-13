@@ -18,8 +18,12 @@
             <div class="card_body">
               <div v-for="item in toolList" :key="item.id" class="text item">
                 <div class="card_content" @click="openDialogVisible(item)">
-                  <img v-if="item.toolImage" :src="item.toolImage"/>
-                  <img v-else src="../../assets/tool/betusorrend--字母顺序.png" alt="">
+                  <img v-if="item.toolImage" :src="item.toolImage" />
+                  <img
+                    v-else
+                    src="../../assets/tool/betusorrend--字母顺序.png"
+                    alt=""
+                  />
                   <span>{{ item.toolTitle }}</span>
                 </div>
               </div>
@@ -34,10 +38,7 @@
         :append-to-body="true"
         custom-class="dialog"
       >
-        <iframe
-          :src="toolInfo.toolAddress"
-          frameborder="0"
-        ></iframe>
+        <iframe :src="toolInfo.toolAddress" frameborder="0" />
       </el-dialog>
     </div>
   </div>
@@ -49,41 +50,48 @@ export default {
     return {
       toolList: [],
       dialogVisible: false,
-      toolInfo: {}
+      toolInfo: {},
     }
   },
   created() {
-    this.getToolList();
+    this.getToolList()
   },
   methods: {
-   async getToolList() {
-     const { data: res } = await this.$http.get(`api/subjectTools/lists`)
-     if (res.statusCode !== 200) return this.$message.error('获取工具列表失败！');
-     console.log(res);
-     this.toolList = res.data;
-   },
-   openDialogVisible(tool) {
-     this.dialogVisible = true
-     this.toolInfo = tool;
-   }
-  }
+    async getToolList() {
+      const { data: res } = await this.$http.get(`api/subjectTools/lists`)
+      if (res.statusCode !== 200)
+        return this.$message.error('获取工具列表失败！')
+      console.log(res)
+      this.toolList = res.data
+    },
+    openDialogVisible(tool) {
+      console.log(tool);
+      this.toolInfo = tool;
+      if(tool.toolAddress !== '#' && tool.toolAddress !== null) {
+        this.dialogVisible = true
+      } else {
+        this.$message.info('功能开发中!!!')
+      }
+    },
+  },
 }
 </script>
 
 <style lang="scss" scoped>
-.card_body{
+.card_body {
   display: flex;
+  flex-wrap: wrap;
   img {
     cursor: pointer;
   }
-  .text{
+  .text {
     width: 20%;
-    .card_content{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
+    .card_content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
   }
 }
 </style>

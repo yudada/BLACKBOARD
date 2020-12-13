@@ -29,6 +29,9 @@
               </el-form-item>
               <el-form-item label="班级邀请码">
                 <el-input disabled v-model="classForm.classInviteCode" class="set_w"></el-input>
+                <el-tooltip class="change_inviteCode" effect="dark" content="是否更新班级邀请码？" placement="top-start" v-if="classId">
+                  <el-checkbox v-model="changeInviteCodeChecked"></el-checkbox>
+                </el-tooltip>
               </el-form-item>
               <el-form-item label="状态">
                 <el-radio-group v-model="classForm.status">
@@ -81,7 +84,8 @@ export default {
         classType: [
           { required: true, message: '请选择班级类型', trigger: 'blur' }
         ]
-      }
+      },
+      changeInviteCodeChecked: false
     }
   },
   created() {
@@ -141,11 +145,14 @@ export default {
     },
     // 修改班级
     saveEditClassRoom() {
+      if(this.changeInviteCodeChecked === true) this.getclassInviteCode()
+
       this.$refs.classFormRef.validate(async valid => {
         if (!valid) return
         const id = parseFloat(this.classId)
         console.log(this.classForm);
-        const {data:res} = await this.$http.patch(`api/classroom/${id}`)
+        const {data:res} = await this.$http.patch(`api/classroom/${id}`, this.classForm)
+        console.log(res);
         if(res.statusCode !== 200) return this.$message.error(res.msg)
         this.$message.success(res.msg)
       })
@@ -168,5 +175,8 @@ export default {
   }
   .goBack:hover {
     color: #fff;
+  }
+  .change_inviteCode {
+    margin-left: 10px;
   }
 </style>

@@ -271,8 +271,13 @@ export default {
      this.questionForm.queKnowledge = res.data.dir_id;
      
      const { queAnswer } = res.data;
-     this.answerContent = decodeURIComponent(atob(queAnswer)).split(',');
-     console.log(this.answerContent);
+     const answerContent = decodeURIComponent(atob(queAnswer)).split(',');
+     console.log(answerContent);
+     if(answerContent.length > 1) {
+       this.answerContent = answerContent
+     } else {
+       this.answerContent = answerContent.toString();
+     }
 
      this.getbookInfo();
     },
