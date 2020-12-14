@@ -14,7 +14,8 @@
             <div class="student_content">
               <!-- <el-tag :type="student.statu" size="medium" class="student_status">已完成</el-tag> -->
               <div class="student_avatar">
-                <img src="../../../assets/二次元宠物-01.png" alt="" />
+                <img :src="student.photo" alt="" />
+                <img v-show="!student.photo" src="../../../assets/二次元宠物-01.png" alt="" />
                 <span v-if="student.stuName">{{ student.stuName }}</span>
                 <span v-else>未知</span>
               </div>
@@ -256,6 +257,7 @@ export default {
       await studentName(info).then(res => {
         const { data } = res.data;
         this.studentList = this.setList(data)
+        console.log(this.studentList);
         this.studentIndexs = this.studentList.map((v, i) => i)
       })
       this.showSeat = true
