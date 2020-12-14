@@ -39,6 +39,7 @@
         custom-class="dialog"
       >
         <iframe :src="toolInfo.toolAddress" frameborder="0" />
+        <!-- <iframe src="../../../public/tool/guangxuebaoshi.html" frameborder="0" /> -->
       </el-dialog>
     </div>
   </div>

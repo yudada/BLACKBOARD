@@ -14,8 +14,7 @@
             <div class="student_content">
               <!-- <el-tag :type="student.statu" size="medium" class="student_status">已完成</el-tag> -->
               <div class="student_avatar">
-                <img :src="student.photo" alt="" />
-                <img v-show="!student.photo" src="../../../assets/二次元宠物-01.png" alt="" />
+                <img :src="student.photo" alt="" :onerror="defaultPic" />
                 <span v-if="student.stuName">{{ student.stuName }}</span>
                 <span v-else>未知</span>
               </div>
@@ -211,7 +210,8 @@ export default {
       intervalId: null,
       hidenMark: true,
       sidArr: [],
-      sclectStuName: false
+      sclectStuName: false,
+      defaultPic: 'this.src="'+require('../../../assets/def_avater.jpg')+'"'
     }
   },
   computed: {
@@ -449,11 +449,13 @@ export default {
     .student_content {
       position: relative;
       padding: 0.25rem;
+      height: 100%;
       .student_status {
         position: absolute;
         margin: 0;
       }
       .student_avatar {
+        width: 100%;
         display: flex;
         flex-direction: column;
         justify-content: center;
