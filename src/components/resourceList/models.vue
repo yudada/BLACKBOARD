@@ -16,7 +16,8 @@
       class="check_list">
       <el-checkbox v-for="item in modelsList" :key="item.id" :label="item.id">
         <div class="checknox_content">
-          <img :src="item.modImage" alt="模型图" />
+          <!-- <img v-if="item.modImage" :src="item.modImage" alt="模型图" /> -->
+          <img v-if="item.modCoverimg" :src="item.modCoverimg" alt="模型图" />
           <span>{{ item.modName }}</span>
         </div>
       </el-checkbox>
@@ -26,7 +27,7 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="currentPage"
-      :page-sizes="[8, 20, 40, 80]"
+      :page-sizes="[8, 20, 40, 80, 9999]"
       :page-size="8"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"

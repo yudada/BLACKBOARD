@@ -49,7 +49,7 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="currentPage"
-      :page-sizes="[10, 20, 40, 100]"
+      :page-sizes="[ 20, 40, 100, 9999]"
       :page-size="40"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"

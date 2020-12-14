@@ -24,8 +24,8 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="currentPage"
-      :page-sizes="[8, 20, 40, 80]"
-      :page-size="8"
+      :page-sizes="[8, 20, 40, 80, 9999]"
+      :page-size="40"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"
     >
@@ -44,7 +44,7 @@ export default {
     return {
       // 分页
       currentPage: 1,
-      pageSize: 8,
+      pageSize: 40,
       total: 0,
       experimentsList: [],
       sendMsg: {

@@ -23,7 +23,7 @@
                 style="width: 20%"
               >
                 <div class="img_model" @click="modelDialogVisible(item)">
-                  <img :src="item.modImage" alt="模型图" />
+                  <img :src="item.modCoverimg" alt="模型图" />
                   <span>{{ item.modName }}</span>
                 </div>
               </div>
