@@ -18,12 +18,7 @@
             <div class="card_body">
               <div v-for="item in toolList" :key="item.id" class="text item">
                 <div class="card_content" @click="openDialogVisible(item)">
-                  <img v-if="item.toolImage" :src="item.toolImage" />
-                  <img
-                    v-else
-                    src="../../assets/tool/betusorrend--字母顺序.png"
-                    alt=""
-                  />
+                  <img :src="item.toolImage" :onerror="defaultPic" />
                   <span>{{ item.toolTitle }}</span>
                 </div>
               </div>
@@ -37,9 +32,10 @@
         fullscreen
         :append-to-body="true"
         custom-class="dialog"
+        :destroy-on-close="true"
       >
         <iframe :src="toolInfo.toolAddress" frameborder="0" />
-        <!-- <iframe src="../../../public/tool/guangxuebaoshi.html" frameborder="0" /> -->
+        <!-- <iframe :src="'static/tool/' + haiyang + '.html'" frameborder="0" /> -->
       </el-dialog>
     </div>
   </div>
@@ -52,6 +48,27 @@ export default {
       toolList: [],
       dialogVisible: false,
       toolInfo: {},
+      defaultPic:
+        'this.src="' +
+        require('../../assets/tool/betusorrend--字母顺序.png') +
+        '"',
+      toolUrlList: [
+        {
+          toolTitle: '光学工具',
+          toolAddress: 'static/tool/guangxuebaoshi.html',
+        },
+        { toolTitle: '海洋', toolAddress: 'static/tool/haiyang.html' },
+        { toolTitle: '超级计算器', toolAddress: 'static/tool/jisuanqi.html' },
+        {
+          toolTitle: '物理单位',
+          toolAddress: 'static/tool/liangzhouchang.html',
+        },
+        { toolTitle: '太阳系', toolAddress: 'static/tool/taiyangxi.html' },
+        {
+          toolTitle: '元素周期表',
+          toolAddress: 'static/tool/yuansuzhouqibiao.html',
+        },
+      ],
     }
   },
   created() {
@@ -62,17 +79,25 @@ export default {
       const { data: res } = await this.$http.get(`api/subjectTools/lists`)
       if (res.statusCode !== 200)
         return this.$message.error('获取工具列表失败！')
-      console.log(res)
       this.toolList = res.data
+      this.toolList.map((item) => {
+        this.toolUrlList.map((item2) => {
+          if (item.toolTitle === item2.toolTitle) {
+            item.toolAddress = item2.toolAddress
+          }
+        })
+      })
+      console.log(this.toolList)
     },
     openDialogVisible(tool) {
-      console.log(tool);
-      this.toolInfo = tool;
-      if(tool.toolAddress !== '#' && tool.toolAddress !== null) {
+      console.log(tool)
+      this.toolInfo = tool
+      if (tool.toolAddress !== '#' && tool.toolAddress !== null) {
         this.dialogVisible = true
       } else {
         this.$message.info('功能开发中!!!')
       }
+      // this.dialogVisible = true
     },
   },
 }

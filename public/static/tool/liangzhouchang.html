@@ -1,0 +1,1820 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测量不规则图形周长</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            font-weight: lighter;
+            list-style: none;
+        }
+
+        #canvas {
+            opacity: 0;
+            display: block;
+            transition: all 2000ms ease;
+        }
+
+        body {
+            height: 100%;
+            position: relative;
+            background-color: #292A2C;
+
+            overflow: hidden;
+        }
+
+        .bottom {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+        }
+
+
+        .btn_green {
+            position: absolute;
+            bottom: 23px;
+            right: 130px;
+
+            width: 50px;
+            height: 50px;
+            background-color: #639976;
+
+            border: none;
+            outline: none;
+            border-radius: 25px;
+            -webkit-radius: 25px;
+            box-shadow: 0 5px 14px rgba(0, 0, 0, 0.28);
+            -webkit-box-shadow: 0 5px 14px rgba(0, 0, 0, 0.28);
+
+            text-align: center;
+            color: #ffffff;
+            font-size: 10px;
+            text-shadow: 0 2px 2px rgba(9, 76, 78, 0.8);
+
+            /* transition: all 1000ms ease; */
+
+            cursor: pointer;
+        }
+
+
+        .btn_blue {
+            position: absolute;
+            bottom: 23px;
+            right: 60px;
+
+            width: 50px;
+            height: 50px;
+            background-color: #00BAD5;
+
+            border: none;
+            outline: none;
+            border-radius: 25px;
+            -webkit-radius: 25px;
+            box-shadow: 0 5px 14px rgba(0, 0, 0, 0.28);
+            -webkit-box-shadow: 0 5px 14px rgba(0, 0, 0, 0.28);
+
+            text-align: center;
+            color: #ffffff;
+            font-size: 10px;
+            text-shadow: 0 2px 2px rgba(9, 76, 78, 0.8);
+
+            /* transition: all 1000ms ease; */
+
+            cursor: pointer;
+        }
+
+        .content {
+            position: relative;
+            font-size: 26px;
+            font-weight: 100;
+        }
+
+        .xuhao_1 {
+            position: absolute;
+            top: 0px;
+            display: inline-block;
+            width: 26px;
+            height: 26px;
+            line-height: 24px;
+
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid #e0e0e0;
+            border-radius: 50%;
+
+            text-align: center;
+            font-size: 16px;
+            margin-top: 0;
+            margin-left: 12px;
+        }
+
+        .content>span,
+        .content>a {
+            display: block;
+            padding-left: 80px;
+            /* position: absolute; */
+            left: 80px;
+            line-height: 1.6;
+            color: #e0e0e0;
+            font-size: 24px;
+            font-family: Microsoft YaHei;
+        }
+
+        .content>a {
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        #crux_span,
+        #crux_span2 {
+
+            font-weight: 500;
+            color: #D5DC87;
+            height: 0px;
+            overflow: hidden;
+
+            transition: all 800ms ease;
+        }
+
+
+        /* 弹出窗口 */
+        .ejectWindow {
+            position: absolute;
+            top: calc(50% - 300px);
+            left: calc(50% - 400px);
+            width: 800px;
+            height: 600px;
+
+            background-color: rgba(25, 26, 28, 0.8);
+            border: 1px solid #000;
+            border-radius: 6px;
+            box-shadow: 0 7px 14px rgba(0, 0, 0, 0.3), 0 0 1px 1px rgba(255, 255, 255, 0.2) inset;
+            z-index: 999;
+
+            color: #ffffff;
+
+            transform: scale(0);
+            /* opacity: 0; */
+        }
+
+        .ejectWindow_exit {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 14px;
+            height: 14px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .ejectWindow_exit>img {
+            width: 14px;
+            height: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <div class="bottom">
+        <button class="btn_green">
+            <span class="btn_green_rebegin">重新<br>开始</span>
+        </button>
+        <button class="btn_blue">
+            <span class="btn_blue_discuss">讨论<br>要点</span>
+        </button>
+    </div>
+    <div class="ejectWindow">
+        <div class="ejectWindow_exit">
+            <img src="./liangzhouchang/icons/nav-btn-close.png" alt="">
+        </div>
+        <div class="title">
+            <img src="./liangzhouchang/icons/btn-taolundian.png" alt="">
+            <span>讨论 :</span>
+        </div>
+        <div class="content">
+            <p class="xuhao_1">1</p>
+            <a id="crux_a2">描述你对误差的理解？</a>
+            <span id="crux_span2">测量时由于测量工具和测量人的不同，误差是难以避免的。可以采取多次测量取平均值等方法，尽可能地减少误差。</span>
+        </div>
+    </div>
+
+    <script src="./liangzhouchang/js/yhhObjClass-1.0.js"></script>
+    <script>
+        let btnBlue = document.getElementsByClassName("btn_blue")[0];// 蓝色按钮
+        let btnBlueDiscuss = document.getElementsByClassName("btn_blue_discuss")[0];// 蓝色按钮 讨论要点文字
+        let btnGreen = document.getElementsByClassName("btn_green")[0];// 绿色按钮
+        let ejectWindow = document.getElementsByClassName("ejectWindow")[0];
+        let ejectWindowExit = document.getElementsByClassName("ejectWindow_exit")[0];
+        let ejectWindowShoow = false;//弹窗的显示
+
+        // 开始试验按钮 点击事件
+        let t, t1, t2, t3, t4;
+        btnBlue.onclick = function () {
+            if (!ejectWindowShoow) {
+                ejectWindow.style.display = "block";
+                clearTimeout(t3);
+                t3 = setTimeout(() => {
+                    ejectWindow.style.transition = " all 800ms cubic-bezier(0, 0, .5, 1.5)";
+                    ejectWindow.style.transform = "scale(1)";
+                }, 30)
+                ejectWindowShoow = !ejectWindowShoow;
+            }
+        }
+
+        // 绿色按钮 点击事件 重新开始
+        btnGreen.onclick = function () {
+            //停止动画
+            clearInterval(timerr);
+            clearInterval(timerr1);
+            clearTimeout(timerr2);
+
+            initData();
+
+            setTimeout(() => {
+                drawAll();
+
+            }, 300)
+        }
+
+        // 退出弹窗
+        ejectWindowExit.onclick = function () {
+            if (ejectWindowShoow) {
+                ejectWindow.style.transition = " all 800ms cubic-bezier(.5, -0.5, 1, 1)";
+                ejectWindow.style.transform = "scale(0)";
+                clearTimeout(t3);
+                t3 = setTimeout(() => {
+                    ejectWindow.style.display = "none";
+                }, 740)
+                ejectWindowShoow = !ejectWindowShoow;
+            }
+        }
+
+        // 点击讨论
+        let cruxA2 = document.getElementById("crux_a2");
+        let cruxSpan2 = document.getElementById("crux_span2");
+        let cruxSpan2Click = false;
+        cruxA2.onclick = function () {
+            if (!cruxSpan2Click) {
+                cruxSpan2.style.height = "114px";
+            } else {
+                cruxSpan2.style.height = "0px";
+            }
+            cruxSpan2Click = !cruxSpan2Click;
+        }
+    </script>
+
+    <script type="text/javascript">
+
+        let canvas = document.getElementById('canvas');
+        canvas.style.opacity = "1"; // 显示画布（记得删除）
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let c = canvas.getContext('2d');
+
+        // 几何体顶点组
+        let geometryArr01 = [
+            1, -22, 8, -36, 12, -51, 16, -62, 16, -72, 21, -88, 26, -99, 34, -92,
+            42, -91, 53, -83, 61, -74, 68, -65, 70, -59, 80, -50, 81, -43, 86, -43,
+            90, -39, 91, -33, 95, -31, 94, -23, 83, -17, 66, -13, 65, -7, 80, -7,
+            94, -6, 95, 11, 91, 23, 87, 33, 83, 45, 77, 52, 73, 63, 64, 72, 55, 80,
+            44, 87, 35, 74, 29, 63, 22, 47, 16, 34, 8, 25, -1, 17, -9, 11, -24, 6,
+            -13, -6, -4, -14
+        ];
+        let geometryArr02 = [
+            54, -88, 59, -82, 65, -77, 66, -75, 72, -73, 78, -65, 76, -61, 81, -58,
+            85, -48, 82, -43, 85, -37, 80, -30, 95, -20, 92, -11, 93, -2, 88, 1, 88,
+            10, 75, 18, 71, 30, 66, 36, 60, 38, 54, 41, 47, 41, 40, 43, 27, 36, 15,
+            26, 10, 19, 6, 28, 3, 36, -6, 43, -15, 47, -21, 42, -29, 47, -33, 45,
+            -46, 47, -52, 41, -59, 42, -63, 36, -67, 31, -73, 27, -74, 12, -69, 3,
+            -77, 1, -80, -4, -87, -6, -89, -13, -93, -25, -88, -32, -94, -39, -91,
+            -48, -89, -56, -84, -60, -83, -69, -73, -71, -68, -75, -55, -72, -51,
+            -84, -45, -93, -38, -92, -35, -98, -25, -98, -20, -96, -12, -101, -3,
+            -101, 6, -101, 12, -94, 22, -96, 28, -90, 31, -84, 36, -86, 39, -81,
+            46, -86
+        ];
+        let geometryArr03 = [
+            39, -72, 51, -51, 59, -34, 66, -11, 66, 16, 60, 41, 51, 66, 41, 81, 31,
+            93, 22, 100, 11, 103, 5, 98, -1, 97, -8, 101, -18, 101, -34, 90, -42,
+            78, -51, 64, -56, 52, -63, 31, -62, -7, -58, -25, -47, -47, -42, -59,
+            -32, -75, -20, -89, -9, -99, 1, -103, 12, -100, 24, -92, 34, -81
+        ];
+        let geometryArr04 = [
+            -81, -39, -51, -54, -23, -67, 4, -80, 36, -95, 50, -59, 60, -28, 72, 4,
+            82, 29, 91, 53, 67, 66, 50, 75, 30, 83, 17, 89, 9, 70, 1, 50, -17, 36,
+            -34, 26, -47, 46, -58, 65, -70, 83, -80, 60, -87, 43, -95, 20, -91, 1,
+            -86, -20
+        ];
+        let geometryArr05 = [
+            -88, -99, -70, -97, -50, -95, -31, -93, -15, -88, 2, -83, 18, -74, 37,
+            -63, 55, -51, 73, -38, 89, -22, 98, -12, 85, 6, 70, 28, 60, 44, 47, 61,
+            36, 75, 26, 92, 16, 105, -2, 92, -21, 82, -44, 75, -66, 73, -87, 72,
+            -102, 73, -99, 38, -97, 3, -94, -34, -92, -70];
+        let geometryArr06 = [
+            -45.5, -29, -48.5, -50, -52.5, -79, -55.5, -105, -32.5, -87, -17.5, -75,
+            -1.5, -62, 12.5, -73, 25.5, -84, 38.5, -94, 52.5, -103, 49.5, -75, 47.5,
+            -56, 46.5, -31, 61.5, -22, 75.5, -14, 89.5, -6, 100.5, 1, 86.5, 11, 68.5,
+            18, 46.5, 28, 47.5, 48, 48.5, 65, 48.5, 80, 49.5, 99, 34.5, 88, 20.5, 76,
+            7.5, 65, 0.5, 59, -11.5, 69, -26.5, 81, -38.5, 90, -51.5, 99, -50.5, 77,
+            -48.5, 58, -46.5, 43, -44.5, 31, -60.5, 22, -73.5, 15, -87.5, 7, -101.5,
+            -1, -88.5, -10, -73.5, -16, -59.5, -22
+        ];
+
+        arr = [];//当前展示轮廓顶点数组
+
+        let canvasW = canvas.width, canvasH = canvas.height;
+
+        let insertFun = function () { };//插入其他内容的函数
+
+        // 1.3 各个图片的初始参数
+        let rope01_data = { //绳子
+            imgSrc: './liangzhouchang/images/shengzi.png',
+            canvas,
+            x: canvasW / 2 + 180,
+            y: canvasH / 2,
+            w: 110,
+            h: 90,
+            visible: false
+
+        }
+        let rope01Text_data = { //绳子的文字
+            canvas,
+            text: "带大头针的绳子",
+            x: rope01_data.x,
+            y: rope01_data.y + rope01_data.h / 2 + 20,
+            size: 16,
+            lineNum: 5, // 一行字数
+            visible: false
+        }
+
+        let ruler01_data = { //尺子
+            imgSrc: './liangzhouchang/images/chizi.png',
+            canvas,
+            x: canvasW / 2,
+            y: canvasH / 2 + 162,
+            w: 953,
+            h: 40,
+            visible: false
+        }
+
+        let tabble01_data = { //表格
+            canvas,
+            x: canvasW / 2 - 440,
+            y: canvasH / 2 + 250,
+            w: 800,
+            h: 80,
+        }
+
+        let geometryBox_data = { //几何体的容器
+            canvas,
+            x: canvasW / 2 + 600,
+            y: canvasH / 2 - 360,
+            w: 340,
+            h: 600
+        }
+
+        let geometry01_data = {//几何01
+            imgSrc: './liangzhouchang/images/yezi01.png',
+            canvas,
+            x: geometryBox_data.x - geometryBox_data.w / 4,
+            y: geometryBox_data.y + 80,
+            w: 130,
+            h: 130
+        }
+        let geometry02_data = {//几何02
+            imgSrc: './liangzhouchang/images/yezi02.png',
+            canvas,
+            x: geometryBox_data.x - geometryBox_data.w / 4,
+            y: geometryBox_data.y + 280,
+            w: 130,
+            h: 130
+        }
+        let geometry03_data = {//几何03
+            imgSrc: './liangzhouchang/images/yezi03.png',
+            canvas,
+            x: geometryBox_data.x - geometryBox_data.w / 4,
+            y: geometryBox_data.y + 480,
+            w: 130,
+            h: 130
+        }
+        let geometry04_data = {//几何04
+            imgSrc: './liangzhouchang/images/jihetu01.png',
+            canvas,
+            x: geometryBox_data.x + geometryBox_data.w / 4,
+            y: geometry01_data.y,
+            w: 130,
+            h: 130
+        }
+        let geometry05_data = {//几何05
+            imgSrc: './liangzhouchang/images/jihetu02.png',
+            canvas,
+            x: geometryBox_data.x + geometryBox_data.w / 4,
+            y: geometry02_data.y,
+            w: 130,
+            h: 130
+        }
+        let geometry06_data = {//几何06
+            imgSrc: './liangzhouchang/images/jihetu03.png',
+            canvas,
+            x: geometryBox_data.x + geometryBox_data.w / 4,
+            y: geometry03_data.y,
+            w: 130,
+            h: 130
+        }
+
+
+        let geometryName01_data = {//几何01名字
+            canvas,
+            text: "图形1",
+            x: geometry01_data.x,
+            y: geometry01_data.y + geometry01_data.h / 2 + 20,
+            size: 16
+        }
+        let geometryName02_data = {//几何02名字
+            canvas,
+            text: "图形2",
+            x: geometry02_data.x,
+            y: geometry02_data.y + geometry02_data.h / 2 + 20,
+            size: 16
+        }
+        let geometryName03_data = {//几何03名字
+            canvas,
+            text: "图形3",
+            x: geometry03_data.x,
+            y: geometry03_data.y + geometry03_data.h / 2 + 20,
+            size: 16
+        }
+        let geometryName04_data = {//几何04名字
+            canvas,
+            text: "图形4",
+            x: geometry04_data.x,
+            y: geometry04_data.y + geometry04_data.h / 2 + 20,
+            size: 16
+        }
+        let geometryName05_data = {//几何05名字
+            canvas,
+            text: "图形5",
+            x: geometry05_data.x,
+            y: geometry05_data.y + geometry05_data.h / 2 + 20,
+            size: 16
+        }
+        let geometryName06_data = {//几何06名字
+            canvas,
+            text: "图形6",
+            x: geometry06_data.x,
+            y: geometry06_data.y + geometry06_data.h / 2 + 20,
+            size: 16
+        }
+
+
+        let geometryPhantom_data = { //几何体投影
+            imgSrc: './liangzhouchang/images/yezi01.png',
+            canvas,
+            x: canvasW / 2 - 120,
+            y: canvasH / 2 - 20,
+            w: geometry01_data.w,
+            h: geometry01_data.h,
+            s: 1.6,
+            alpha: 0.4,
+            visible: false
+        }
+        let ropePhantom_data = { //绳子投影
+            imgSrc: './liangzhouchang/images/shengzi.png',
+            canvas,
+            x: geometryPhantom_data.x + 100,
+            y: geometryPhantom_data.y - 70,
+            w: rope01_data.w,
+            h: rope01_data.h,
+            s: 1,
+            alpha: 0.4,
+            visible: false
+        }
+        let rulerPhantom_data = { //尺子投影
+            imgSrc: './liangzhouchang/images/chizi.png',
+            canvas,
+            x: ruler01_data.x,
+            y: ruler01_data.y - 260,
+            w: ruler01_data.w,
+            h: ruler01_data.h,
+            s: 1,
+            alpha: 0.4,
+            visible: false
+        }
+        let ruler01Text_data = {//尺子投影的文字
+            canvas,
+            text: "27.96cm",
+            x: rulerPhantom_data.x + 200,
+            y: rulerPhantom_data.y - 50,
+            size: 16,
+            visible: false
+        }
+
+
+        let rope01, ruler01, tabble01, geometryBox01,
+            geometry01, geometry02, geometry03, geometry04, geometry05, geometry06,
+            geometryName01, geometryName02, geometryName03, geometryName04, geometryName05, geometryName06,
+            geometryPhantom, ropePhantom, rulerPhantom, rope01Text, ruler01Text;
+
+        // 移动与缩放相关
+        let mouseX, mouseY, ratio, differenceS, can2XBegin, can2YBegin, click_MouseX, click_MouseY, wheelRatioX, wheelRatioY, can2X, can2Y, can2W, can2H, key_Right;
+
+        // 其他动画相关
+        let canChangePhantom, onMoveGeometry, isMoveGeometry, canPutGeometry, isPutGeometry, onMoveRope, isMoveRope, canPutRope, isPutRope, onMoveRuler, isMoveRuler, canPutRuler, isPutRuler, isChangeScale;
+
+        let geometryIndex;
+        let click_obj_x, click_obj_y;
+
+        initData();
+        function initData() {
+
+            rope01 = new imgObj(rope01_data);//绳子
+            ruler01 = new imgObj(ruler01_data);//尺子
+            tabble01 = new tabbleObj(tabble01_data);//表格
+            geometryBox01 = new boxObj(geometryBox_data);//几何体盒子
+            geometry01 = new imgObj(geometry01_data);//几何体1
+            geometry02 = new imgObj(geometry02_data);//几何体2
+            geometry03 = new imgObj(geometry03_data);//几何体3
+            geometry04 = new imgObj(geometry04_data);//几何体4
+            geometry05 = new imgObj(geometry05_data);//新增-几何体01
+            geometry06 = new imgObj(geometry06_data);//新增-几何体02
+
+            geometryName01 = new textObj(geometryName01_data);//几何01名字
+            geometryName02 = new textObj(geometryName02_data);//几何02名字
+            geometryName03 = new textObj(geometryName03_data);//几何03名字
+            geometryName04 = new textObj(geometryName04_data);//几何04名字
+            geometryName05 = new textObj(geometryName05_data);//几何05名字
+            geometryName06 = new textObj(geometryName06_data);//几何06名字
+
+            geometryPhantom = new imgObj(geometryPhantom_data);//几何体投影
+            ropePhantom = new imgObj(ropePhantom_data);//绳子投影
+            rulerPhantom = new imgObj(rulerPhantom_data);//尺子投影
+            rope01Text = new textObj(rope01Text_data);//绳子显示的数字
+            ruler01Text = new textObj(ruler01Text_data);//尺子显示的数字
+
+
+            // 移动与缩放相关
+            mouseX = 0; //当前鼠标的坐标-缓冲canvas
+            mouseY = 0;
+            ratio = 1; //放大/缩小比例
+            differenceS = 0.1; //画布缩放 速度
+            can2XBegin = 0; //点击右键时的 canvas偏移量
+            can2YBegin = 0;
+            click_MouseX = 0; //点击右键时的 鼠标位置
+            click_MouseY = 0;
+            wheelRatioX = 0.5; //滚动时的 鼠标位置与canvas长宽的比
+            wheelRatioY = 0.5;
+            //画布 移动后的 位置、大小
+            can2X = can2XBegin - click_MouseX;
+            can2Y = can2YBegin - click_MouseY;
+            can2W = canvas.width * ratio;
+            can2H = canvas.height * ratio;
+            key_Right = false;//是否右键
+
+            // 其他动画相关
+            canChangePhantom = false;//是否改变投影大小
+
+            onMoveGeometry = true;//操作几何体中
+            isMoveGeometry = false;//是否移动几何体
+            canPutGeometry = false;//是否允许放下几何体(进入范围)
+            isPutGeometry = false;//是否放下几何体
+
+            onMoveRope = false;//操作绳子中
+            isMoveRope = false;//是否移动绳子
+            canPutRope = false;
+            isPutRope = false;
+
+            onMoveRuler = false;//操作尺子中
+            isMoveRuler = false;//是否移动尺子
+            canPutRuler = false;
+            isPutRuler = false;
+
+            isChangeScale = false;//是否改变缩放投影
+
+            geometryIndex = 0;//当前操作的几何体
+
+            click_obj_x = 0; click_obj_y = 0;
+
+            insertFun = function () { };
+        }
+
+        //去掉默认的contextmenu事件，否则会和右键事件同时出现。
+        canvas.oncontextmenu = function (e) {
+            e.preventDefault();
+        };
+        canvas.onmousemove = function (e) {
+            mouseX = e.offsetX - can2X;
+            mouseY = e.offsetY - can2Y;
+            can2W = window.innerWidth * ratio;
+            can2H = window.innerHeight * ratio;
+            wheelRatioX = mouseX / can2W;
+            wheelRatioY = mouseY / can2H;
+
+            // 右键鼠标
+            if (key_Right) {
+                can2X = can2XBegin + e.offsetX - click_MouseX;
+                can2Y = can2YBegin + e.offsetY - click_MouseY;
+                drawAll();
+            } else {
+
+
+                // 移动几何体
+                // 当移动几何体前-1
+                if (onMoveGeometry && !isMoveGeometry && !isPutGeometry) {
+                    // 判断鼠标范围
+                    if (
+                        _onRange(geometry01)
+                        || _onRange(geometry02)
+                        || _onRange(geometry03)
+                        || _onRange(geometry04)
+                        || _onRange(geometry05)
+                        || _onRange(geometry06)
+                    ) {
+                        canvas.style.cursor = "pointer";
+                    } else {
+                        canvas.style.cursor = "default";
+                    }
+                }
+                // 当移动几何体时-3
+                if (onMoveGeometry && isMoveGeometry && !isPutGeometry) {
+                    // 进入影像范围时改变 尺寸与透明度
+                    if (_onRange(geometryPhantom)) {
+                        canPutGeometry = true;
+                        canChangePhantom = true;
+                    } else {
+                        canPutGeometry = false;
+                        canChangePhantom = false;
+                    }
+                    changPhantom(
+                        {
+                            minalpha: 0.4,
+                            maxalpha: 0.8,
+                            minscal: 1.6,
+                            maxscal: 1.8
+                        },
+                        geometryPhantom
+                    );
+                }
+
+
+                // 移动绳子
+                // 当移动绳子前-1
+                if (onMoveRope && !isMoveRope && !isPutRope) {
+                    // 判断鼠标范围
+                    if (_onRange(rope01)) {
+                        canvas.style.cursor = "pointer";
+                    } else {
+                        canvas.style.cursor = "default";
+                    }
+                }
+                // 当移动绳子时-3
+                if (onMoveRope && isMoveRope && !isPutRope) {
+                    // 进入影像范围时改变 尺寸与透明度
+                    if (_onRange(ropePhantom)) {
+                        canPutRope = true;
+                        canChangePhantom = true;
+                    } else {
+                        canPutRope = false;
+                        canChangePhantom = false;
+                    }
+                    changPhantom({
+                        minalpha: 0.4,
+                        maxalpha: 0.8,
+                        minscal: 1,
+                        maxscal: 1.2
+                    }, ropePhantom);
+                }
+
+
+                // 移动尺子
+                // 当移动尺子前-1
+                if (onMoveRuler && !isMoveRuler && !isPutRuler) {
+                    // 判断鼠标范围
+                    if (_onRange(ruler01)) {
+                        // console.log(ruler01);
+                        canvas.style.cursor = "pointer";
+                    } else {
+                        canvas.style.cursor = "default";
+                    }
+                }
+                // 当移动尺子时-3
+                if (onMoveRuler && isMoveRuler && !isPutRuler) {
+                    // 进入影像范围时改变 尺寸与透明度
+                    if (_onRange(rulerPhantom)) {
+                        canPutRuler = true;
+                        canChangePhantom = true;
+                    } else {
+                        canPutRuler = false;
+                        canChangePhantom = false;
+                    }
+                    changPhantom({
+                        minalpha: 0.4,
+                        maxalpha: 0.8,
+                        minscal: 1,
+                        maxscal: 1.1
+                    }, rulerPhantom, "left");
+                }
+
+
+            }
+
+        }
+        canvas.onmousedown = function (e) {
+            // darwPoint2(mouseX, mouseY); // 绘制红点(描边)
+
+            // 点击右键
+            if (e.button == 2) {
+                key_Right = true;
+
+                can2XBegin = can2X;
+                can2YBegin = can2Y;
+                click_MouseX = e.offsetX;
+                click_MouseY = e.offsetY;
+            }
+
+            // 点击左键
+            if (e.button == 0) {
+
+                // 点击移动几何体-2
+                if (onMoveGeometry && !isMoveGeometry && !isPutGeometry) {
+                    if (_onRange(geometry01)) {
+                        isMoveGeometry = true;
+                        geometryIndex = 0;
+                        click_obj_x = mouseX - geometry01.x * ratio;
+                        click_obj_y = mouseY - geometry01.y * ratio;
+                    } else if (_onRange(geometry02)) {
+                        isMoveGeometry = true;
+                        geometryIndex = 1;
+                        click_obj_x = mouseX - geometry02.x * ratio;
+                        click_obj_y = mouseY - geometry02.y * ratio;
+                    } else if (_onRange(geometry03)) {
+                        isMoveGeometry = true;
+                        geometryIndex = 2;
+                        click_obj_x = mouseX - geometry03.x * ratio;
+                        click_obj_y = mouseY - geometry03.y * ratio;
+                    } else if (_onRange(geometry04)) {
+                        isMoveGeometry = true;
+                        geometryIndex = 3;
+                        click_obj_x = mouseX - geometry04.x * ratio;
+                        click_obj_y = mouseY - geometry04.y * ratio;
+                    } else if (_onRange(geometry05)) {
+                        isMoveGeometry = true;
+                        geometryIndex = 4;
+                        click_obj_x = mouseX - geometry05.x * ratio;
+                        click_obj_y = mouseY - geometry05.y * ratio;
+                    } else if (_onRange(geometry06)) {
+                        isMoveGeometry = true;
+                        geometryIndex = 5;
+                        click_obj_x = mouseX - geometry06.x * ratio;
+                        click_obj_y = mouseY - geometry06.y * ratio;
+                    }
+                }
+                if (onMoveGeometry && isMoveGeometry && !isPutGeometry) {
+                    moveGeometry();
+                }
+
+                // 点击移动绳子-2
+                if (onMoveRope && !isMoveRope && !isPutRope) {
+                    if (_onRange(rope01)) {
+                        isMoveRope = true;
+                        click_obj_x = mouseX - rope01.x * ratio;
+                        click_obj_y = mouseY - rope01.y * ratio;
+                    }
+                }
+                if (onMoveRope && isMoveRope && !isPutRope) {
+                    moveRope();
+                }
+
+                // 点击移动尺子-2
+                if (onMoveRuler && !isMoveRuler && !isPutRuler) {
+                    if (_onRange(ruler01)) {
+                        isMoveRuler = true;
+                        click_obj_x = mouseX - ruler01.x * ratio;
+                        click_obj_y = mouseY - ruler01.y * ratio;
+                    }
+                }
+                if (onMoveRuler && isMoveRuler && !isPutRuler) {
+                    moveRuler();
+                }
+            }
+
+            // 顶部提示框
+            // if (!isMove && !isPut) {
+            //     if (_onRange(board01)) {
+            //         changePrompt(1);
+            //         movePrompt01();
+            //     }
+            // }
+
+        }
+        canvas.onmouseup = function (e) {
+            key_Right = false;
+
+            // 移动几何体-4 进入影像范围 将几何体移动到中心 并 放大少许,否则回到原位
+            if (isMoveGeometry && !isPutGeometry) {
+                isMoveGeometry = false;
+                if (canPutGeometry) {
+                    slowMoveGeometry(true);
+                    isPutGeometry = true;
+                    onMoveGeometry = false;
+                    onMoveRope = true;
+                    canvas.style.cursor = "default";
+                } else {
+                    slowMoveGeometry(false);
+                }
+            }
+
+            // 移动绳子-4 进入影像范围 将几何体移动到中心,否则回到原位
+            if (isMoveRope) {
+                isMoveRope = false;
+                if (canPutRope) {
+                    slowMoveRope(true);
+                    isPutRope = true;
+                    onMoveRope = false;
+                    onMoveRuler = true;
+                    canvas.style.cursor = "default";
+                } else {
+                    slowMoveRope(false);
+                }
+            }
+
+            // 移动尺子-4 进入影像范围 将几何体移动到中心,否则回到原位
+            if (isMoveRuler) {
+                isMoveRuler = false;
+                if (canPutRuler) {
+                    isPutRuler = true;
+                    onMoveRuler = false;
+                    canvas.style.cursor = "default";
+                    slowMoveRuler(true);
+                } else {
+                    slowMoveRuler(false);
+                }
+            }
+
+        }
+        canvas.onmousewheel = function (e) {
+
+            if (e.wheelDelta >= 0) {
+                if (ratio < 2) {
+                    ratio += differenceS;
+                    can2X -= canvas.width * differenceS * wheelRatioX;
+                    can2Y -= canvas.height * differenceS * wheelRatioY;
+                }
+            }
+            else {
+                if (ratio > 0.4) {
+                    ratio -= differenceS;
+                    can2X += window.innerWidth * differenceS * wheelRatioX;
+                    can2Y += window.innerHeight * differenceS * wheelRatioY;
+                }
+            }
+
+            drawAll();
+        }
+
+        let timerr, timerr1;//计时器
+        let timerMs = 30;//计时器间隔时间
+        let timerr2;//延时器
+        let timer_rate = 15;//自动动画的间隔次数
+
+        let targetArr = []; //变化后的轮廓周长
+
+        let changPhantom_x1, changPhantom_x2;// 存储投影变化前的位置
+        let changPhantom_x1_first = true;
+
+        // 移动物体时的投影变化-操作响应动画1、2、3
+        function changPhantom(obj, p, direc) {
+            let x_ = 0, y_ = 0, w_ = 0, h_ = 0;
+            let { minalpha, maxalpha, minscal, maxscal } = obj;
+            let a = (maxalpha - minalpha) / 10;//单位时间变化的 透明度
+            let s = (maxscal - minscal) / 10;//单位时间变化的 图片尺寸
+            if (direc === "left" && changPhantom_x1_first) {
+                changPhantom_x1 = p.x;
+                changPhantom_x2 = p.x + (p.w * maxscal - p.w * minscal) / 2;
+                changPhantom_x1_first = false;
+            }
+            x_ = (p.w * maxscal - p.w * minscal) / 20;
+
+            // 当需要改变时再重启定时器
+            if (isChangeScale !== canChangePhantom) {
+                isChangeScale = canChangePhantom;
+
+                if (canChangePhantom) {
+                    clearInterval(timerr1);
+                    timerr1 = setInterval(() => {
+                        p.alpha += a;
+                        p.s += s;
+
+                        p.alpha = _adjustValue(a, p.alpha, maxalpha);
+                        p.s = _adjustValue(s, p.s, maxscal);
+
+
+                        if (direc === "left") {
+                            p.x += x_;
+                            p.x = _adjustValue(x_, p.x, changPhantom_x2);
+                            if (p.alpha === maxalpha && p.s === maxscal && p.x === changPhantom_x2
+                            ) {
+                                clearInterval(timerr1);
+                            }
+                        } else {
+                            if (p.alpha === maxalpha && p.s === maxscal) {
+                                clearInterval(timerr1);
+                            }
+                        }
+                    }, timerMs);
+                } else {
+                    a = -a;
+                    s = -s;
+                    x_ = -x_;
+
+                    clearInterval(timerr1);
+                    timerr1 = setInterval(() => {
+                        p.alpha += a;
+                        p.s += s;
+
+                        p.alpha = _adjustValue(a, p.alpha, minalpha);
+                        p.s = _adjustValue(s, p.s, minscal);
+
+                        if (direc === "left") {
+                            p.x += x_;
+                            p.x = _adjustValue(x_, p.x, changPhantom_x1);
+                            if (p.alpha === minalpha && p.s === minscal && p.x === changPhantom_x1) {
+                                clearInterval(timerr1);
+
+                                changPhantom_x1_first = true;
+                            }
+                        } else {
+                            if (p.alpha === minalpha && p.s === minscal) {
+                                clearInterval(timerr1);
+                            }
+                        }
+                    }, timerMs);
+                }
+            }
+
+        }
+        // 按住移动几何体-操作动画1
+        function moveGeometry() {
+            let x, y;
+            _changeName(false);      // 隐藏当前操作几何体名字
+            _changePhantom(true);    // 显示当前操作几何体投影
+
+            rope01.setImg(rope01_data);     //重置绳子
+            ruler01.setImg(ruler01_data);   //重置尺子
+            ruler01Text.visible = false;
+
+            clearInterval(timerr);
+            if (isMoveGeometry) {
+                timerr = setInterval(() => {
+                    // x = _conversionBackX(mouseX);
+                    // y = _conversionBackX(mouseY);
+                    x = _conversionBackX(mouseX - click_obj_x);
+                    y = _conversionBackX(mouseY - click_obj_y);
+                    _drawGeometry({ x, y });
+                }, timerMs);
+            } else {
+                clearInterval(timerr);
+            }
+        }
+        // 松开移动几何体-自动动画1
+        function slowMoveGeometry(go) {
+            _changePhantom(false);    // 隐藏几何体投影
+
+            let r = timer_rate;//频率
+            let obj = _getGeometryInfo(); // 获取当前操作几何体信息
+            let x = geometryPhantom_data.x,
+                y = geometryPhantom_data.y,
+                w = obj.w * 1.6,
+                h = obj.h * 1.6;
+            if (!go) {
+                x = _getGeometryInfo_init().x;
+                y = _getGeometryInfo_init().y;
+                w = _getGeometryInfo_init().w;
+                h = _getGeometryInfo_init().h;
+            }
+
+            let move_X = (x - obj.x) / r;// 位置X 的差
+            let move_Y = (y - obj.y) / r;
+            let scal_W = (w - obj.w) / r;
+            let scal_H = (h - obj.h) / r;
+
+            console.log("移动几何体开始");
+            clearInterval(timerr);
+            timerr = setInterval(function () {
+
+                obj.x += move_X;
+                obj.y += move_Y;
+                obj.w += scal_W;
+                obj.h += scal_H;
+
+                // 调整尺寸
+                obj.x = _adjustValue(move_X, obj.x, x);
+                obj.y = _adjustValue(move_Y, obj.y, y);
+                obj.w = _adjustValue(scal_W, obj.w, w);
+                obj.h = _adjustValue(scal_H, obj.h, h);
+
+                if (
+                    obj.x == x &&
+                    obj.y == y &&
+                    obj.w == w &&
+                    obj.h == h
+                ) {
+                    clearInterval(timerr);
+                    console.log("移动几何体结束");
+
+                    if (go) {
+                        rope01.visible = true;      // 显示绳子
+                        rope01Text.visible = true;      // 显示绳子的文字
+                    } else {
+                        _changeName(true);
+                    }
+                }
+                _drawGeometry(obj);
+
+            }, timerMs)
+
+        }
+        // 按住移动绳子-操作动画2
+        function moveRope() {
+            let x, y;
+            rope01Text.visible = false;
+            ropePhantom.visible = true;
+
+            clearInterval(timerr);
+            if (isMoveRope) {
+                timerr = setInterval(() => {
+                    // x = _conversionBackX(mouseX);
+                    // y = _conversionBackX(mouseY);
+                    x = _conversionBackX(mouseX - click_obj_x);
+                    y = _conversionBackX(mouseY - click_obj_y);
+                    _drawRope({ x, y })
+                }, timerMs);
+            } else {
+                clearInterval(timerr);
+            }
+        }
+        // 松开移动绳子-自动动画2
+        function slowMoveRope(go) {
+            ropePhantom.visible = false;    // 隐藏绳子投影
+
+            let r = timer_rate;//频率
+            let obj = { // 获取绳子信息
+                x: rope01.x,
+                y: rope01.y,
+                w: rope01.w,
+                h: rope01.h,
+            };
+            let x = ropePhantom_data.x, //移动后的目标信息
+                y = ropePhantom_data.y,
+                w = obj.w * 1.2,
+                h = obj.h * 1.2;
+            if (!go) {
+                x = rope01_data.x;
+                y = rope01_data.y;
+                w = rope01_data.w;
+                h = rope01_data.h;
+            }
+
+            let move_X = (x - obj.x) / r;// 位置X 的差
+            let move_Y = (y - obj.y) / r;
+            let scal_W = (w - obj.w) / r;
+            let scal_H = (h - obj.h) / r;
+
+            console.log("移动绳子开始");
+            clearInterval(timerr);
+            timerr = setInterval(function () {
+
+                obj.x += move_X;
+                obj.y += move_Y;
+                obj.w += scal_W;
+                obj.h += scal_H;
+
+
+                // 调整尺寸
+                obj.x = _adjustValue(move_X, obj.x, x);
+                obj.y = _adjustValue(move_Y, obj.y, y);
+                obj.w = _adjustValue(scal_W, obj.w, w);
+                obj.h = _adjustValue(scal_H, obj.h, h);
+
+                if (
+                    obj.x == x &&
+                    obj.y == y &&
+                    obj.w == w &&
+                    obj.h == h
+                ) {
+                    clearInterval(timerr);
+                    console.log("移动绳子结束");
+
+                    if (go) {
+                        rope01.visible = false;
+                        darwOutline();//执行动画3
+                    } else {
+                        rope01Text.visible = true;
+                    }
+                }
+                _drawRope({ x: obj.x, y: obj.y });
+            }, timerMs)
+
+        }
+        // 绘制轮廓线-自动动画3
+        function darwOutline() {
+
+            _setGeometryArr();
+
+            let a = arr.map((v, i) => {
+                if (i % 2 === 0) {
+                    v = v + geometryPhantom_data.x;
+                } else {
+                    v = v + geometryPhantom_data.y;
+                }
+                return v;
+            });
+
+            timerr2 = setTimeout(function () {
+                console.log("绘制轮廓开始");
+
+                let i = 2;
+
+                clearInterval(timerr);
+                timerr = setInterval(function () {
+
+                    insertFun = function () {
+                        _drawGeometryArr(i, a, true);
+                    }
+                    drawAll();
+
+                    if (i >= arr.length) {
+                        clearInterval(timerr);
+
+                        console.log("绘制轮廓结束");
+
+                        turnMoveGeometry();
+                    } else {
+
+                        i += 2;
+                    }
+
+                }, 30);
+
+            }, 300)
+        }
+        // 移动几何体到原来的位置-自动动画4
+        function turnMoveGeometry() {
+            let a = arr.map((v, i) => {
+                if (i % 2 === 0) {
+                    v = v + geometryPhantom_data.x;
+                } else {
+                    v = v + geometryPhantom_data.y;
+                }
+                return v;
+            });
+
+            let r = timer_rate;//频率
+            let obj = _getGeometryInfo(); // 获取当前操作几何体信息
+            let x = _getGeometryInfo_init().x,
+                y = _getGeometryInfo_init().y,
+                w = _getGeometryInfo_init().w,
+                h = _getGeometryInfo_init().h;
+
+            let move_X = (x - obj.x) / r;// 位置X 的差
+            let move_Y = (y - obj.y) / r;
+            let scal_W = (w - obj.w) / r;
+            let scal_H = (h - obj.h) / r;
+
+            console.log("移动几何体开始");
+            clearInterval(timerr);
+            timerr = setInterval(function () {
+
+                obj.x += move_X;
+                obj.y += move_Y;
+                obj.w += scal_W;
+                obj.h += scal_H;
+
+                // 调整尺寸
+                obj.x = _adjustValue(move_X, obj.x, x);
+                obj.y = _adjustValue(move_Y, obj.y, y);
+                obj.w = _adjustValue(scal_W, obj.w, w);
+                obj.h = _adjustValue(scal_H, obj.h, h);
+
+                if (
+                    obj.x == x &&
+                    obj.y == y &&
+                    obj.w == w &&
+                    obj.h == h
+                ) {
+                    clearInterval(timerr);
+                    console.log("移动几何体结束");
+                    _changeName(true);
+                    moveOutline();//动画4
+                }
+
+                _drawGeometry(obj, () => {
+                    _drawGeometryArr(a.length, a, true);
+                })
+
+            }, timerMs)
+
+        }
+        // 移动轮廓线-自动动画4
+        function moveOutline() {
+            targetArr = [];
+            let a = arr.map((v, i) => { //初始轮廓
+                if (i % 2 === 0) {
+                    v = v + geometryPhantom_data.x;
+                } else {
+                    v = v + geometryPhantom_data.y;
+                }
+                return v;
+            });
+            a.push(a[0], a[1]);
+
+            let l;
+            let targetX = rulerPhantom_data.x - rulerPhantom_data.w / 2 + 12,
+                targetY = rulerPhantom_data.y - 30;
+            targetArr.push(targetX, targetY);
+            for (let i1 = 0; i1 <= arr.length - 1; i1 += 2) {
+                if (i1 <= arr.length - 3) {
+                    l = Math.sqrt(Math.pow(arr[i1 + 2] - arr[i1], 2) + Math.pow(arr[i1 + 3] - arr[i1 + 1], 2)).toFixed(2);
+                } else {
+                    l = Math.sqrt(Math.pow(arr[0] - arr[i1], 2) + Math.pow(arr[1] - arr[i1 + 1], 2)).toFixed(2);
+                }
+                targetArr.push(targetArr[i1] + parseFloat(l), targetArr[1]);
+            }
+
+            let rate = 20;
+            let diffArr = [];
+            for (let i2 = 0; i2 < a.length; i2++) {
+                diffArr.push((targetArr[i2] - a[i2]) / rate);
+            }
+
+            let j = 0;
+            clearTimeout(timerr2);
+            timerr2 = setTimeout(function () {
+                clearInterval(timerr);
+                timerr = setInterval(() => {
+                    for (let i = 0; i < a.length; i++) {
+                        a[i] += diffArr[i];
+                        parseInt(a[i].toFixed());
+                    }
+
+                    if (j >= rate - 1) {
+                        clearInterval(timerr);
+                        ruler01.visible = true;
+                    } else {
+                        j += 1;
+                    }
+
+                    insertFun = function () {
+                        _drawGeometryArr(a.length, a, false);
+                    }
+                    drawAll();
+                }, timerMs);
+            }, 800);
+        }
+        // 按住移动尺子-操作动画3
+        function moveRuler() {
+            let x, y;
+            rulerPhantom.visible = true;
+
+            clearInterval(timerr);
+            if (isMoveRuler) {
+                timerr = setInterval(() => {
+                    // x = _conversionBackX(mouseX);
+                    // y = _conversionBackX(mouseY);
+                    x = _conversionBackX(mouseX - click_obj_x);
+                    y = _conversionBackX(mouseY - click_obj_y);
+                    _drawRuler({ x, y });
+                }, timerMs);
+            } else {
+                clearInterval(timerr);
+            }
+        }
+        // 松开移动尺子-自动动画3
+        function slowMoveRuler(go) {
+            rulerPhantom.visible = false;    // 隐藏投影
+
+            let r = timer_rate;//频率
+            let obj = { // 获取信息
+                x: ruler01.x,
+                y: ruler01.y,
+                w: ruler01.w,
+                h: ruler01.h,
+            };
+            let x = rulerPhantom_data.x, //移动后的目标信息
+                y = rulerPhantom_data.y,
+                w = obj.w * 1,
+                h = obj.h * 1;
+            if (!go) {
+                x = ruler01_data.x;
+                y = ruler01_data.y;
+                w = ruler01_data.w;
+                h = ruler01_data.h;
+            }
+
+            let move_X = (x - obj.x) / r;// 位置X 的差
+            let move_Y = (y - obj.y) / r;
+            let scal_W = (w - obj.w) / r;
+            let scal_H = (h - obj.h) / r;
+
+            console.log("移动尺子开始");
+            clearInterval(timerr);
+            timerr = setInterval(function () {
+
+                obj.x += move_X;
+                obj.y += move_Y;
+                obj.w += scal_W;
+                obj.h += scal_H;
+
+
+                // 调整尺寸
+                obj.x = _adjustValue(move_X, obj.x, x);
+                obj.y = _adjustValue(move_Y, obj.y, y);
+                obj.w = _adjustValue(scal_W, obj.w, w);
+                obj.h = _adjustValue(scal_H, obj.h, h);
+
+                if (
+                    obj.x == x &&
+                    obj.y == y &&
+                    obj.w == w &&
+                    obj.h == h
+                ) {
+                    clearInterval(timerr);
+                    console.log("移动尺子结束");
+
+                    if (go) {
+                        _changeRulerText();
+                        drawAll();
+
+                        onMoveGeometry = true;
+                        isMoveGeometry = false;
+                        canPutGeometry = false;
+                        isPutGeometry = false;
+
+                        onMoveRope = false;
+                        isMoveRope = false;
+                        canPutRope = false;
+                        isPutRope = false;
+
+                        onMoveRuler = false;
+                        isMoveRuler = false;
+                        canPutRuler = false;
+                        isPutRuler = false;
+
+                        geometryPhantom = new imgObj(geometryPhantom_data);
+                        ropePhantom = new imgObj(ropePhantom_data);
+                        rulerPhantom = new imgObj(rulerPhantom_data);
+
+                        if (
+                            tabble01.a1
+                            && tabble01.a2
+                            && tabble01.a3
+                            && tabble01.a4
+                            && tabble01.a5
+                            && tabble01.a6
+                        ) {
+                            ejectPrompt();
+                        }
+
+                    } else {
+                        // rope01Text.visible = true;
+                    }
+                }
+                _drawRuler({ x: obj.x, y: obj.y });
+            }, timerMs)
+
+        }
+
+        // 弹出提示框-动画6
+        function ejectPrompt() {
+            console.log("全部绘画完成！")
+            // changePrompt(2);
+            // movePrompt01();
+        }
+
+
+        // 判断几何体图的范围
+        function _onRange(geometry) {
+            let range = geometry.getRange();
+            return (
+                mouseX > _conversionX(range.l) &&
+                mouseX < _conversionX(range.r) &&
+                mouseY > _conversionY(range.t) &&
+                mouseY < _conversionY(range.b)
+            )
+        }
+        // 计算位移缩放后的物体坐标
+        function _conversionX(v) {
+            return v * ratio;
+        }
+        function _conversionY(v) {
+            return v * ratio;
+        }
+        // 计算屏幕的坐标
+        function _conversionBackX(v) {
+            return v / ratio;
+        }
+        function _conversionBackY(v) {
+            return v / ratio;
+        }
+
+        // 改变几何体名字的显示
+        function _changeName(b) {
+            switch (geometryIndex) {
+                case 0:
+                    setObjV(geometryName01, b);
+                    break;
+                case 1:
+                    setObjV(geometryName02, b);
+                    break;
+                case 2:
+                    setObjV(geometryName03, b);
+                    break;
+                case 3:
+                    setObjV(geometryName04, b);
+                    break;
+                case 4:
+                    setObjV(geometryName01, b);
+                    break;
+                case 5:
+                    setObjV(geometryName02, b);
+                    break;
+                default:
+                    break;
+            }
+            function setObjV(n, b) {
+                n.visible = b;
+                // console.log(n);
+            }
+        }
+        // 改变几何体投影的显示
+        function _changePhantom(b) {
+            geometryPhantom.visible = b;
+            if (b) {
+                switch (geometryIndex) {
+                    case 0:
+                        setP(geometryPhantom, geometry01_data);
+                        break;
+                    case 1:
+                        setP(geometryPhantom, geometry02_data);
+                        break;
+                    case 2:
+                        setP(geometryPhantom, geometry03_data);
+                        break;
+                    case 3:
+                        setP(geometryPhantom, geometry04_data);
+                        break;
+                    case 4:
+                        setP(geometryPhantom, geometry05_data);
+                        break;
+                    case 5:
+                        setP(geometryPhantom, geometry06_data);
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                geometryPhantom.alpha = 0.4;
+                geometryPhantom.s = 1.6;
+            }
+            function setP(phantom, obj_data) {
+                phantom.img.src = obj_data.imgSrc;
+                phantom.w = obj_data.w;
+                phantom.h = obj_data.h;
+            }
+        }
+        // 改变表格文字的显示
+        function _changeTabble(b) {
+            if (b) {
+                switch (geometryIndex) {
+                    case 0:
+                        tabble01.a1 = true;
+                        break;
+                    case 1:
+                        tabble01.a2 = true;
+                        break;
+                    case 2:
+                        tabble01.a3 = true;
+                        break;
+                    case 3:
+                        tabble01.a4 = true;
+                        break;
+                    case 4:
+                        tabble01.a5 = true;
+                        break;
+                    case 5:
+                        tabble01.a6 = true;
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                tabble01.a1 = false;
+                tabble01.a2 = false;
+                tabble01.a3 = false;
+                tabble01.a4 = false;
+                tabble01.a5 = false;
+                tabble01.a6 = false;
+            }
+        }
+
+        // 绘制移动中的当前操作的几何体
+        function _drawGeometry(obj, f) {
+            switch (geometryIndex) {
+                case 0:
+                    __drawObj(geometry01, obj, f);
+                    break;
+                case 1:
+                    __drawObj(geometry02, obj, f);
+                    break;
+                case 2:
+                    __drawObj(geometry03, obj, f);
+                    break;
+                case 3:
+                    __drawObj(geometry04, obj, f);
+                    break;
+                case 4:
+                    __drawObj(geometry05, obj, f);
+                    break;
+                case 5:
+                    __drawObj(geometry06, obj, f);
+                    break;
+                default:
+                    break;
+            }
+        }
+        // 绘制移动中的绳子
+        function _drawRope(obj) {
+            __drawObj(rope01, obj);
+        }
+        // 绘制移动中的尺子
+        function _drawRuler(obj) {
+            __drawObj(ruler01, obj, function () {
+                _drawGeometryArr(targetArr.length, targetArr, false);
+            });
+        }
+        // 绘制移动的物体
+        function __drawObj(obj, para, f) {
+            obj.setImg(para);
+            insertFun = function () {
+                obj.draw(true);
+                if (typeof f === "function") {
+                    f();
+                }
+            };
+            drawAll();
+        }
+        // 几何体修正数值-调整
+        function _adjustValue(differenceValue, nowValue, targetValue) {
+            if (differenceValue >= 0 && nowValue >= targetValue) {
+                nowValue = targetValue;
+            } else if (differenceValue < 0 && nowValue <= targetValue) {
+                nowValue = targetValue;
+            }
+            return nowValue;
+        }
+        // 获取当前几何体信息
+        function _getGeometryInfo() {
+            let obj = {};
+
+            switch (geometryIndex) {
+                case 0:
+                    _getInfo(obj, geometry01);
+                    break;
+                case 1:
+                    _getInfo(obj, geometry02);
+                    break;
+                case 2:
+                    _getInfo(obj, geometry03);
+                    break;
+                case 3:
+                    _getInfo(obj, geometry04);
+                    break;
+                case 4:
+                    _getInfo(obj, geometry05);
+                    break;
+                case 5:
+                    _getInfo(obj, geometry06);
+                    break;
+                default:
+                    break;
+            }
+
+            function _getInfo(obj, geometry) {
+                obj.x = geometry.x;
+                obj.y = geometry.y;
+                obj.w = geometry.w;
+                obj.h = geometry.h;
+            }
+
+            return obj;
+        }
+        // 获取当前几何体初始信息
+        function _getGeometryInfo_init() {
+            let obj = {};
+            switch (geometryIndex) {
+                case 0:
+                    obj = geometry01_data;
+                    break;
+                case 1:
+                    obj = geometry02_data;
+                    break;
+                case 2:
+                    obj = geometry03_data;
+                    break;
+                case 3:
+                    obj = geometry04_data;
+                    break;
+                case 4:
+                    obj = geometry05_data;
+                    break;
+                case 5:
+                    obj = geometry06_data;
+                    break;
+                default:
+                    break;
+            }
+            return obj;
+        }
+        // 修改当前路径数组
+        function _setGeometryArr() {
+            switch (geometryIndex) {
+                case 0:
+                    arr = geometryArr01;
+                    break;
+                case 1:
+                    arr = geometryArr02;
+                    break;
+                case 2:
+                    arr = geometryArr03;
+                    break;
+                case 3:
+                    arr = geometryArr04;
+                    break;
+                case 4:
+                    arr = geometryArr05;
+                    break;
+                case 5:
+                    arr = geometryArr06;
+                    break;
+                default:
+                    break;
+            }
+        }
+        // 绘制当前的绳子
+        function _drawGeometryArr(i, a, b) {
+            // console.log(a);
+            c.save();
+
+            c.beginPath();
+            c.lineWidth = 4;
+            c.strokeStyle = "#FFFFFF";
+            c.lineJoin = "round";
+            c.moveTo(a[0], a[1]);
+
+            for (let j = 2; j < i; j += 2) {
+                c.lineTo(a[j], a[j + 1]);
+            }
+            if (b && i >= arr.length) {
+                c.lineTo(a[0], a[1]);
+            }
+
+            c.stroke();
+
+            c.restore();
+
+            __darwPoint(a[0], a[1]);
+            if (b && i < arr.length) {
+                __darwPoint(a[i], a[i + 1]);
+            } else if (!b) {
+                __darwPoint(a[i - 2], a[i - 1]);
+            }
+        }
+        // 绘制红点
+        function __darwPoint(x, y) {
+            c.save();
+
+            c.beginPath();
+            c.fillStyle = "red";
+            c.arc(x, y, 4, 0, Math.PI * 2, false);
+            c.fill();
+
+            c.restore();
+        }
+        // 改变尺子上显示的文字
+        function _changeRulerText() {
+            switch (geometryIndex) {
+                case 0:
+                    tabble01.a1 = true;
+                    ruler01Text.text = "27.96cm";
+                    break;
+                case 1:
+                    tabble01.a2 = true;
+                    ruler01Text.text = "34.13cm";
+                    break;
+                case 2:
+                    tabble01.a3 = true;
+                    ruler01Text.text = "28.52cm";
+                    break;
+                case 3:
+                    tabble01.a4 = true;
+                    ruler01Text.text = "35.20cm";
+                    break;
+                case 4:
+                    tabble01.a5 = true;
+                    ruler01Text.text = "35.41cm";
+                    break;
+                case 5:
+                    tabble01.a6 = true;
+                    ruler01Text.text = "43.68cm";
+                    break;
+                default:
+                    break;
+            }
+            ruler01Text.visible = true;
+        }
+        // 绘制红点（描边）
+        let arr001 = []
+        function darwPoint2(x, y) {
+            arr001.push(x - geometryPhantom_data.x, y - geometryPhantom_data.y)
+            c.save();
+
+            c.beginPath();
+            c.fillStyle = "red";
+            c.arc(x, y, 4, 0, Math.PI * 2, false);
+            c.fill();
+
+            c.restore();
+            console.log(arr001);
+        }
+
+
+        // 绘制背景
+        function drawBack() {
+            c.save();
+            c.fillStyle = "#292A2C";
+            c.clearRect(0, 0, canvas.width, canvas.height);
+            c.fillRect(0, 0, canvas.width, canvas.height);
+            c.restore();
+        }
+
+        function drawAll(fun) {
+            drawBack();
+            c.save();
+            c.translate(can2X, can2Y);
+            c.scale(ratio, ratio);
+
+            rope01.draw(true);
+            rope01Text.draw();
+            ruler01.draw(true);
+            ruler01Text.draw();
+            tabble01.draw(true);
+
+            geometryBox01.draw();
+
+            geometry01.draw(true);
+            geometryName01.draw();
+            geometry02.draw(true);
+            geometryName02.draw();
+            geometry03.draw(true);
+            geometryName03.draw();
+            geometry04.draw(true);
+            geometryName04.draw();
+            geometry05.draw(true);
+            geometryName05.draw();
+            geometry06.draw(true);
+            geometryName06.draw();
+
+            geometryPhantom.draw(true);
+
+            ropePhantom.draw(true);
+
+            rulerPhantom.draw(true);
+            ruler01Text.draw();
+
+            if (typeof fun === "function") {
+                fun();
+            }
+            insertFun();
+            c.restore();
+        }
+
+        window.onload = function () {
+            drawAll();
+        }
+
+        // 屏幕自适应
+        window.onresize = function () {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            drawAll();
+        }
+
+    </script>
+</body>
+
+</html>

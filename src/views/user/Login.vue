@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import { login } from '../../api/index'
 export default {
   data() {
     return {
@@ -111,8 +112,14 @@ export default {
         } else {
           this.clearCookie()
         }
-
         this.$router.push('/home')
+
+        // console.log(this.loginForm);
+        // login(this.loginForm).then(res=> {
+        // console.log(res.data);
+        // window.sessionStorage.setItem('token', res.data.token);
+        // this.$router.push('/home')
+        // })
       })
     },
     forgetPassword() {

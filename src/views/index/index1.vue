@@ -11,19 +11,7 @@
 
     <div class="index1_concent">
       <el-row :gutter="20">
-        <el-col :span="5" v-for="item in cardList" :key="item.id">
-          <el-card :body-style="{ padding: 0 }">
-            <div :class="'text_card' + item.id">
-              <div class="row">
-                <img :src="require('../../assets/'+item.imgsrc+'.png')"/>
-              </div>
-              <div class="col">
-                <p class="num_people">{{ item.num }}</p>
-                <p>{{ item.title }}</p>
-              </div>
-            </div>
-          </el-card>
-        </el-col>
+        <user-card :cardList="cardList" />
       </el-row>
 
       <el-row :gutter="20">
@@ -37,7 +25,7 @@
         </el-col>
       </el-row>
 
-      <el-row :gutter="20" >
+      <!-- <el-row :gutter="20" >
         <el-col :span="8" :style="{ height: '100%'}">
           <el-card shadow="always" :body-style="{ padding: 0 }" :style="{ height: '100%'}">
             <div class="card_img">
@@ -84,37 +72,11 @@
             </div>
           </el-card>
         </el-col>
-      </el-row>
-
+      </el-row> -->
+    
+      <!-- 教师课件 -->
       <el-row>
-        <el-col :span="24">
-          <el-card shadow="always">
-            <div slot="header">
-              <div>教师课件</div>
-            </div>
-            <el-table :data="teacherTableData" style="width: 100%">
-              <el-table-column prop="num" label="编号" width="80">
-              </el-table-column>
-              <el-table-column prop="name" label="课件名称">
-              </el-table-column>
-              <el-table-column prop="teacher" label="分享老师">
-              </el-table-column>
-              <el-table-column prop="influence" label="教学影响">
-                <template slot-scope="scope">
-                  <el-progress :percentage="scope.row.influence.percentage" :color="scope.row.influence.customColor"></el-progress>
-                </template>
-              </el-table-column>
-              <el-table-column prop="quantity" label="使用人数">
-              </el-table-column>
-              <el-table-column>
-                <template>
-                  <el-button class="edit_btn"><i class="el-icon-edit"></i>体验</el-button>
-                  <el-button class="share_btn"><i class="el-icon-share"></i>分享</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-card>
-        </el-col>
+        <course-waredata :teacherTableData="teacherTableData" />
       </el-row>
     </div>
   </div>
@@ -122,7 +84,11 @@
 
 <script>
 import echarts from "echarts";
+import UserCard from '@/components/cardList/userCard';
+import { schoolData } from '@/api/index'
+import CourseWaredata from '@/components/statisticalData/courseWaredata.vue';
 export default {
+  components: { UserCard, CourseWaredata },
   data() {
     return {
       topTabledate: [
@@ -133,18 +99,16 @@ export default {
         { name: "胡于琳", class: "一年3班", addText: "2019年度", top: '5' }
       ],
       cardList: [
-        { id: 1, num: "453" + "位", title: "老师", imgsrc:'yonghu' },
-        { id: 2, num: "45300" + "个", title: "课件", imgsrc:'yonghu' },
-        { id: 3, num: "453" + "人", title: "学生", imgsrc:'yonghu' },
-        { id: 4, num: "453" + "位", title: "家长", imgsrc:'yonghu' },
+        { num: '', title: "老师", imgsrc:'yonghu' },
+        { num: '', title: "课件", imgsrc:'yonghu' },
+        { num: '', title: "学生", imgsrc:'yonghu' },
+        { num: '', title: "家长", imgsrc:'yonghu' },
       ],
-      teacherTableData: [
-        { num: "001", name: "点点你找到的细胞结构", teacher: "张天语", influence: { percentage: 20, customColor: '#909399' }, quantity: '2600' },
-        { num: "001", name: "点点你找到的细胞结构", teacher: "张天语", influence: { percentage: 40, customColor: '#e6a23c' }, quantity: '2600' },
-        { num: "001", name: "点点你找到的细胞结构", teacher: "张天语", influence: { percentage: 70, customColor: '#1989fa' }, quantity: '2600' },
-        { num: "001", name: "点点你找到的细胞结构", teacher: "张天语", influence: { percentage: 90, customColor: '#5cb87a' }, quantity: '2600' }
-      ]
+      teacherTableData: []
     };
+  },
+  created() {
+    this.getUserNubemr();
   },
   mounted() {
     this.myChart();
@@ -214,137 +178,24 @@ export default {
 
       // 使用刚指定的配置项和数据显示图表。
       myChart.setOption(option);
+    },
+    getUserNubemr() {
+      schoolData().then(res => {
+        const {data} = res.data;
+        console.log(data);
+        this.teacherTableData = data.courseWare;
+        this.cardList[0].num = data.teacher_number + '位';
+        this.cardList[1].num = data.courseWare_number + '个';
+        this.cardList[2].num = data.student_number + '位';
+        this.cardList[3].num = data.parents_number + '位';
+      })
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.text_card1{
-  display: flex;
-  justify-content: space-between;
-  color: #707070;
-  .row{
-    display: flex;
-    width: 80px;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(to bottom right ,#9853af,#623AA2) !important;
-    box-shadow: 0 7px 30px rgba(152, 83, 175, 0.50)!important;
-    img {
-      width: 50%;
-    }
-  }
-  .col{
-    flex: 3;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 15px 0 15px 10px;
-    .num_people {
-      font-size: 32px;
-    }
-    p {margin: 0;}
-  }
-}
-.text_card2{
-  display: flex;
-  justify-content: space-between;
-  color: #707070;
-  .row{
-    display: flex;
-    width: 80px;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(to bottom right, #fbc434 0%, #f66b4e 100%) !important;
-    box-shadow: 0 7px 30px rgba(251, 176, 52, 0.50)!important;
-    img {
-      width: 50%;
-    }
-  }
-  .col{
-    flex: 3;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 15px 0 15px 10px;
-    .num_people {
-      font-size: 32px;
-    }
-    p {margin: 0;}
-  }
-}
-.text_card3{
-  display: flex;
-  justify-content: space-between;
-  color: #707070;
-  .row{
-    display: flex;
-    width: 80px;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(to bottom right,#00f2fe 0%, #2e78df 100%);
-    box-shadow: 0 7px 30px rgba(40, 146, 235, 0.50)!important;
-    img {
-      width: 50%;
-    }
-  }
-  .col{
-    flex: 3;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 15px 0 15px 10px;
-    .num_people {
-      font-size: 32px;
-    }
-    p {margin: 0;}
-  }
-}
-.text_card4{
-  display: flex;
-  justify-content: space-between;
-  color: #707070;
-  .row{
-    display: flex;
-    width: 80px;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(to bottom right, #62fb62, #21a544) !important;
-    box-shadow: 0 7px 30px rgba(26, 122, 16, 0.50)!important;
-    img {
-      width: 50%;
-    }
-  }
-  .col{
-    flex: 3;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 15px 0 15px 10px;
-    .num_people {
-      font-size: 32px;
-    }
-    p {margin: 0;}
-  }
-}
-.card_img{
-  img {
-    width: 100%;
-  }
-}
-.card_info {
-  padding: 0 20px;
-  h3, p {
-    color: #636262;
-  }
-  h3 {
-    margin: 0;
-    padding: 10px;
-    border-bottom: 1px solid #EBEEF5;
-    box-sizing: border-box;
-  }
-}
+
 
 // TOP 按钮
 .top_btn1 {
@@ -384,32 +235,5 @@ export default {
 .top_btn4:hover, .top_btn4:focus {
   color: #fff !important;
   border-color: #fff;
-}
-.edit_btn, .edit_btn:hover, .edit_btn:focus {
-  color: #fff;
-  background: linear-gradient(to bottom right,#9853af,#623AA2);
-}
-.share_btn, .share_btn:hover, .share_btn:focus {
-  color: #fff;
-  background: linear-gradient(to bottom right, #62fb62, #21a544);
-}
-@media (max-width: 768px) {
-  .row{
-    width: 30% !important;
-  }
-  .el-row {
-    height: auto !important;
-  }
-  .share_btn{
-    margin: 0 !important;
-  }
-}
-@media (max-width: 375px) {
-  .row{
-    width: 30% !important;
-  }
-  .el-row {
-    height: auto !important;
-  }
 }
 </style>

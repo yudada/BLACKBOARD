@@ -33,7 +33,7 @@
         <div class="header_icon">
           <el-dropdown trigger="click">
             <span class="el-dropdown-link">
-              <i class="el-icon-menu"></i>
+              <i class="el-icon-s-custom"></i>
             </span>
             <el-dropdown-menu slot="dropdown"  style="width: 300px">
               <!-- 头像 -->
@@ -387,7 +387,7 @@ export default {
         },
       ],
       toolList: [
-        { title: '密码更改', icon: 'iconfont icon-xitong', url: 'userInfo' },
+        { title: '用户信息', icon: 'iconfont icon-yonghu', url: 'userInfo' },
         { title: '学校资料', icon: 'iconfont icon-xuexiao', url: 'information' },
         { title: '我的班级', icon: 'iconfont icon-banji', url: 'myclass' },
         { title: '课件管理', icon: 'iconfont icon-banji1', url: 'course-wareList' },

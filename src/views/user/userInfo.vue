@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="main_header">
-      <h4>修改密码</h4>
+      <h4>用户信息</h4>
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item>用户信息</el-breadcrumb-item>
@@ -9,101 +9,130 @@
     </div>
 
     <div class="main_concent">
-        <el-card>
-        <div slot="header">
-          <span></span>
-        </div>
-        <div>
-          <el-col :span="8">
-            <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-              <el-form-item label="旧密码" prop="userPassword">
-                <el-input v-model.number="ruleForm.userPassword"></el-input>
-              </el-form-item>
-              <el-form-item label="新密码" prop="newPassword">
-                <el-input type="password" v-model="ruleForm.newPassword" autocomplete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="确认密码" prop="checkPass">
-                <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-button type="primary" @click="submitForm">提交</el-button>
-                <el-button @click="resetForm">重置</el-button>
-              </el-form-item>
-            </el-form>
-          </el-col>
-        </div>
-      </el-card>
+      <el-row>
+        <el-col :span="12">
+          <el-card shadow="never">
+            <div v-if="schoolInfo">
+              <el-form :model="userInfo" label-width="80px">
+                <el-form-item label="学校">
+                  <span>{{ schoolInfo.schoolName }}</span>
+                </el-form-item>
+                <el-form-item label="职位">
+                  <span>{{ userInfo.teaPosition }}</span>
+                </el-form-item>
+                <el-form-item label="姓名">
+                  <span>{{ userInfo.realName }}</span>
+                </el-form-item>
+                <el-form-item label="手机号码">
+                  <span>{{ userInfo.mobile }}</span>
+                </el-form-item>
+                <el-form-item label="地址">
+                  <span>{{ userInfo.address }}</span>
+                </el-form-item>
+                <el-form-item class="btn_form">
+                  <el-button class="cn_btn" @click="editUIDialogVisible = true"
+                    >编辑信息</el-button
+                  >
+                  <el-button class="cn_btn" @click="editPWDialogVisible = true"
+                    >修改密码</el-button
+                  >
+                  <el-button
+                    class="cn_btn"
+                    @click="editMobileDialogVisible = true"
+                    >修改手机号码</el-button
+                  >
+                </el-form-item>
+              </el-form>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
     </div>
+    <!-- 编辑信息 -->
+    <el-dialog
+      title="编辑信息"
+      :visible.sync="editUIDialogVisible"
+      width="50%"
+      :append-to-body="true"
+      :before-close="handleClose"
+    >
+      <edit-user-info userInfo="userInfo" />
+    </el-dialog>
+
+    <!-- 修改手机号码 -->
+    <el-dialog
+      title="编辑信息"
+      :visible.sync="editMobileDialogVisible"
+      width="50%"
+      :append-to-body="true"
+      :before-close="handleClose"
+    >
+    <edit-mobile />
+    </el-dialog>
+
+    <!-- 修改密码 -->
+    <el-dialog
+      title="更改密码"
+      :visible.sync="editPWDialogVisible"
+      width="50%"
+      :append-to-body="true"
+      :before-close="handleClose"
+    >
+      <edit-pass-word @closeDialog="fromEdit" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import { userInfo } from '@/api/index'
+import EditPassWord from '@/components/dialogContent/editPassWord.vue'
+import EditUserInfo from '../../components/dialogContent/editUserInfo.vue'
+import EditMobile from '../../components/dialogContent/editMobile.vue'
 export default {
-    data() {
-      var checkOldPass = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入旧密码'));
-        } else {
-          if (this.ruleForm.checkPass !== '') {
-            this.$refs.ruleForm.validateField('checkPass');
-          }
-          callback();
-        }
-      };
-      var validatePass = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入新密码'));
-        } else {
-          if (this.ruleForm.checkPass !== '') {
-            this.$refs.ruleForm.validateField('checkPass');
-          }
-          callback();
-        }
-      };
-      var validatePass2 = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请再次输入新密码'));
-        } else if (value !== this.ruleForm.newPassword) {
-          callback(new Error('两次输入的新密码不一致!'));
-        } else {
-          callback();
-        }
-      };
-      return {
-        ruleForm: {
-          newPassword: '',
-          checkPass: '',
-          userPassword: ''
-        },
-        rules: {
-          newPassword: [
-            { validator: validatePass, trigger: 'blur' }
-          ],
-          checkPass: [
-            { validator: validatePass2, trigger: 'blur' }
-          ],
-          userPassword: [
-            { validator: checkOldPass, trigger: 'blur' }
-          ]
-        }
-      };
-    },
-    methods: {
-      submitForm() {
-        this.$refs.ruleForm.validate(async (valid) => {
-          if (!valid) return 
-          const {data:res} = await this.$http.post(`api/user/modifyPassword`,this.ruleForm)
-          if(res.statusCode !== 200) return this.$message.error(res.msg)
-          this.$message.success(res.msg)
-          this.resetForm();
-        });
-      },
-      resetForm() {
-        this.$refs.ruleForm.resetFields();
-      }
+  components: { EditPassWord, EditUserInfo, EditMobile },
+  data() {
+    return {
+      editPWDialogVisible: false,
+      editUIDialogVisible: false,
+      editMobileDialogVisible: false,
+      schoolInfo: {},
+      userInfo: {},
     }
-  }
+  },
+  created() {
+    this.getUserInfo()
+  },
+  methods: {
+    getUserInfo() {
+      userInfo().then((res) => {
+        const { data } = res.data
+        console.log(data)
+        this.schoolInfo = data.school
+        this.userInfo = data.userInfo
+      })
+    },
+    handleClose() {
+      this.editPWDialogVisible = false
+      this.editUIDialogVisible = false
+      this.editMobileDialogVisible = false
+    },
+    fromEdit(data) {
+      this.editPWDialogVisible = data
+    },
+  },
+}
 </script>
 
 <style lang="scss" scoped>
+.el-card {
+  margin-bottom: 20px;
+}
+</style>
+
+<style lang="scss">
+.btn_form {
+  .el-form-item__content {
+    margin: 0 !important;
+  }
+}
 </style>
