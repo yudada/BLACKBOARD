@@ -17,8 +17,8 @@
             </div>
             <div class="card_body">
               <div v-for="item in toolList" :key="item.id" class="text item">
-                <div class="card_content" @click="openDialogVisible(item)">
-                  <img :src="item.toolImage" :onerror="defaultPic" />
+                <div class="card_content">
+                  <img :src="item.toolImage" :onerror="defaultPic"  @click="openDialogVisible(item)" />
                   <span>{{ item.toolTitle }}</span>
                 </div>
               </div>
