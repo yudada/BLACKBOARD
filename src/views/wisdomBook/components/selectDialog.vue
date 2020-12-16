@@ -14,12 +14,17 @@
         <el-checkbox v-for="item in bookList" :key="item.id" :label="item.id">
           <el-card shadow="never" :body-style="{ padding: 0 }">
             <div class="card_img">
-              <img v-if="item.bookImg !== null" :src="item.bookImg" />
-              <img v-else src="../../../assets/book/addBook.jpg" />
+              <img
+                v-if="item.bookImg !== null"
+                :src="item.bookImg"
+                :onerror="defaultPic"
+              />
+              <img v-else src="@/assets/book/七年级生物.jpg" />
             </div>
             <div class="card_info">
               <a href="#"
-                ><strong>{{ item.bookName }}</strong> {{ item.subName }}</a
+                ><strong>{{ item.bookName }}</strong>
+                {{ item.subName }}</a
               >
             </div>
           </el-card>
@@ -43,6 +48,7 @@ export default {
       classList: [],
       classId: '',
       wisdomBookId: [],
+      defaultPic: 'this.src="' + require('@/assets/book/七年级生物.jpg') + '"',
     }
   },
   computed: {
@@ -166,8 +172,8 @@ export default {
 @media (max-width: 1280px) {
   .check_list {
     .el-checkbox__input {
-      position: absolute ;
-      right: 3px !important;
+      top: 5px !important;
+      right: 5px !important;
     }
   }
 }

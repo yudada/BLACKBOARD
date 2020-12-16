@@ -16,8 +16,7 @@
       class="check_list">
       <el-checkbox v-for="item in modelsList" :key="item.id" :label="item.id">
         <div class="checknox_content">
-          <!-- <img v-if="item.modImage" :src="item.modImage" alt="模型图" /> -->
-          <img v-if="item.modCoverimg" :src="item.modCoverimg" alt="模型图" />
+          <img v-if="item.modCoverimg" :src="item.modCoverimg" alt="模型图" :onerror="defaultPic" />
           <span>{{ item.modName }}</span>
         </div>
       </el-checkbox>
@@ -56,7 +55,8 @@ export default {
       modelsList: [],
       checkAll: false,
       allModels: [],
-      modName: ''
+      modName: '',
+      defaultPic: 'this.src="'+require('@/assets/def_avater.jpg')+'"'
     };
   },
   created() {

@@ -14,7 +14,8 @@
         <el-col :span="6" v-for="item in cardList" :key="item.id" class="addpadding iapd_w">
           <el-card shadow="always" :body-style="{ padding: 0 }">
             <div class="card_img">
-              <img src="../../assets/images/photos/12.jpeg" alt="">
+              <img v-if="item.image" :src="item.image" :onerror="defaultPic"  />
+              <img v-else src="@/assets/images/thumbnails/thumb1.jpeg" />
             </div>
             <div class="card_info">
               <div class="card_text">
@@ -23,7 +24,8 @@
               </div>
               <div class="ava">
                 <div class="ava_img">
-                  <img src="../../assets/images/faces/male/18.jpeg" alt="">
+                  <img v-if="item.photo" :src="item.photo" :onerror="defaultPic"  />
+                  <img v-else src="@/assets/def_avater.jpg" />
                   <div class="info">
                     <p>{{item.realName}}</p>
                     <p>{{item.className}}</p>
@@ -46,7 +48,8 @@
 export default {
   data() {
     return {
-      cardList: []
+      cardList: [],
+      defaultPic: 'this.src="'+require('@/assets/def_avater.jpg')+'"'
     }
   },
   created() {
@@ -57,6 +60,7 @@ export default {
      const { data: res } = await this.$http.post(`api/student/life`)
      if(res.statusCode !==200 ) return this.$message.error(res.msg);
      this.cardList = res.data;
+     console.log(res.data);
    } 
   }
 }

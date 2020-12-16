@@ -10,7 +10,14 @@
               <span>{{ teacher.teaSubject }}</span>
             </div>
             <div class="adviser_card">
-              <img src="../../assets/images/faces/female/15.jpeg" alt="" />
+              <div class="avater_adviser">
+                <img
+                  v-if="teacher.photo"
+                  :src="teacher.photo"
+                  :onerror="defaultPic"
+                />
+                <img v-else src="@/assets/def_avater.jpg" />
+              </div>
               <div class="adviser_info">
                 <h3>{{ teacher.teaName }} 老师</h3>
                 <div class="info_text">
@@ -33,9 +40,9 @@
           </transition>
         </el-col>
       </el-row>
-      <!-- 教学工具组件 -->
-      <div class="classroom_tool">
-        <div>
+      <div class="btn_position">
+        <!-- 教学工具组件 -->
+        <div class="classroom_tool tool">
           <el-dropdown placement="top">
             <el-button type="warning" @click="goCourseWareList">
               超级课件 <i class="el-icon-arrow-up"></i>
@@ -50,18 +57,14 @@
             </el-dropdown-menu>
           </el-dropdown>
         </div>
-      </div>
-      <!-- 切换列表 -->
-      <div class="arrange_seat">
-        <div>
+        <!-- 切换列表 -->
+        <div class="arrange_seat tool">
           <el-button icon="el-icon-s-grid" type="primary" @click="goStudentSeat"
             >学生座位</el-button
           >
         </div>
-      </div>
-      <!-- 退出教室 -->
-      <div class="outclass">
-        <div>
+        <!-- 退出教室 -->
+        <div class="outclass tool">
           <el-button
             icon="el-icon-switch-button"
             type="primary"
@@ -83,8 +86,7 @@ export default {
         { id: 0, name: '创建课件', path: 'create-courseware' },
         { id: 1, name: '课件资源', path: 'bookResource' },
       ],
-      // 班级信息
-      // class_arr: {},
+      defaultPic: 'this.src="' + require('@/assets/def_avater.jpg') + '"',
     }
   },
   created() {
@@ -105,22 +107,18 @@ export default {
     },
     // 退出教室
     async outClassRoom() {
-      const confirmResult = await this.$confirm(
-        '确定要退出教室吗?',
-        '提示',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }
-      ).catch(err => err)
+      const confirmResult = await this.$confirm('确定要退出教室吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }).catch((err) => err)
 
       if (confirmResult !== 'confirm') {
-        return 
+        return
       }
 
       this.$router.push('/home')
-      this.$store.commit('setFooter', true);
+      this.$store.commit('setFooter', true)
       let flag = navigator.userAgent.match(
         /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
       )
@@ -160,12 +158,19 @@ export default {
   font-weight: 600;
 }
 .adviser_card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   text-align: center;
   padding: 20px;
   background: linear-gradient(to left, #9853af, #623aa2);
-  img {
-    width: 40%;
-    border-radius: 100%;
+  .avater_adviser {
+    width: 50%;
+    img {
+      width: 100%;
+      border-radius: 100%;
+    }
   }
   .adviser_info {
     display: flex;
@@ -189,35 +194,34 @@ export default {
     color: #636262;
   }
 }
-
+.btn_position {
+  position: fixed;
+  top: 80%;
+  z-index: 99;
+  .tool {
+    margin-bottom: 10px;
+  }
+}
 // 课件
 .classroom_tool {
-  position: fixed;
-  top: 85%;
   .el-button--primary {
     background: linear-gradient(to bottom right, #9853af, #623aa2) !important;
   }
 }
 // 座位
 .arrange_seat {
-  position: fixed;
-  top: 90%;
   .el-button--primary {
     background: linear-gradient(to bottom right, #9853af, #623aa2) !important;
   }
 }
 // 退出教室
 .outclass {
-  position: fixed;
-  top: 95%;
   .el-button--primary {
     border: #636262;
     background: linear-gradient(to bottom right, #aea9af, #817e85) !important;
   }
 }
 .outclass:hover {
-  position: fixed;
-  top: 95%;
   .el-button--primary {
     opacity: 0.8;
     border: #636262;
@@ -225,20 +229,19 @@ export default {
   }
 }
 @media (max-width: 1280px) {
-  .el-col-4,
+  .el-col-4
+  {
+    width: 20%;
+  }
   .el-col-20 {
-    width: 100%;
+    width: 80%;
   }
   .card_box {
     display: flex;
     justify-content: space-around;
   }
-  .adviser_card {
-    display: flex;
-    justify-content: space-around;
-    img {
-      width: 22%;
-    }
+  .btn_position {
+    top: 75%;
   }
 }
 </style>

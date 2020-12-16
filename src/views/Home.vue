@@ -5,26 +5,30 @@
     <el-header>
       <div class="header_logo">
         <div @click="goHome">
-          <span v-if="school.schoolName">{{school.schoolName}}</span>
+          <span v-if="school.schoolName">{{ school.schoolName }}</span>
         </div>
         <i class="el-icon-s-fold" @click="toggleCollapse"></i>
       </div>
 
       <div class="header_search">
         <!-- 全屏 -->
-        <div class="header_icon" ><i @click="toggleFullScreen" class="el-icon-full-screen"></i></div>
+        <div class="header_icon">
+          <i @click="toggleFullScreen" class="el-icon-full-screen"></i>
+        </div>
         <!-- 选择班级 -->
         <div class="header_icon" v-if="classInfo">
           <el-dropdown>
             <span class="el-dropdown-link">
-              <span >{{classInfo.className}}</span>
+              <span>{{ classInfo.className }}</span>
               <i class="el-icon-caret-bottom"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
               <div v-for="item in classList" :key="item.class_id">
                 <el-dropdown-item
-                icon="iconfont icon-banji"
-                @click.native="handleChangeClass(item)">{{item.className}}</el-dropdown-item>
+                  icon="iconfont icon-banji"
+                  @click.native="handleChangeClass(item)"
+                  >{{ item.className }}</el-dropdown-item
+                >
               </div>
             </el-dropdown-menu>
           </el-dropdown>
@@ -35,17 +39,33 @@
             <span class="el-dropdown-link">
               <i class="el-icon-s-custom"></i>
             </span>
-            <el-dropdown-menu slot="dropdown"  style="width: 300px">
+            <el-dropdown-menu slot="dropdown" style="width: 300px">
               <!-- 头像 -->
               <div class="user-profile">
                 <div class="dropdown user-pro-body">
-                <div>
-                  <img :src="require('../assets/images/faces/female/25.jpeg')" alt="user-img" class="img-circle"/>
-                </div>
-                <div class="mb-2">
-                  <span class="font-weight-semibold">{{userInfo.teaPosition}}</span>
-                  <span class="font-weight-semibold">{{userInfo.realName}}</span>
-                </div>
+                  <div>
+                    <img
+                      v-if="userInfo.photo"
+                      :src="userInfo.photo"
+                      alt="user-img"
+                      class="img-circle"
+                      :onerror="defaultPic"
+                    />
+                    <img
+                      v-else
+                      src="@/assets/def_avater.jpg"
+                      alt="user-img"
+                      class="img-circle"
+                    />
+                  </div>
+                  <div class="mb-2">
+                    <span class="font-weight-semibold">{{
+                      userInfo.teaPosition
+                    }}</span>
+                    <span class="font-weight-semibold">{{
+                      userInfo.realName
+                    }}</span>
+                  </div>
                 </div>
               </div>
               <!-- 工具 -->
@@ -54,12 +74,18 @@
                   v-for="(tool, index) in toolList"
                   :key="index"
                   @click.native="goPage(tool)"
-                  >
-                <i :class="tool.icon"></i>
-                <span>{{tool.title}}</span>
+                >
+                  <i :class="tool.icon"></i>
+                  <span>{{ tool.title }}</span>
                 </el-dropdown-item>
               </div>
-              <el-dropdown-item divided icon="el-icon-switch-button" @click.native="logout" style="text-align: center;">安全退出</el-dropdown-item>
+              <el-dropdown-item
+                divided
+                icon="el-icon-switch-button"
+                @click.native="logout"
+                style="text-align: center"
+                >安全退出</el-dropdown-item
+              >
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -72,12 +98,13 @@
         <!-- 侧边栏菜单区域 -->
         <div class="aside_menu">
           <el-menu
-          background-color="#25202D"
-          text-color="#fff"
-          active-text-color="#ad5df3"
-          :default-active="$route.path"
-          router
-          unique-opened>
+            background-color="#25202D"
+            text-color="#fff"
+            active-text-color="#ad5df3"
+            :default-active="$route.path"
+            router
+            unique-opened
+          >
             <NavMenu :navMenus="menuData"></NavMenu>
           </el-menu>
         </div>
@@ -101,393 +128,472 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import NavMenu from '../components/SideNavMenu/NavMenu.vue'
-import { classList, changeClass, classInfo} from '@/api/index.js'
+import { classList, changeClass, classInfo } from '@/api/index.js'
 export default {
   components: {
-    NavMenu: NavMenu
+    NavMenu: NavMenu,
   },
   data() {
     return {
       flag: '',
       menuData: [
-        { //一级
+        {
+          //一级
           entity: {
             id: 0,
-            name: "#home",
-            icon: "icon-diannao1",
-            alias: "校园大脑",
-          },
-          //二级
-          childs: [
-            { entity: { 
-              id: 0, name: "index1", icon: "icon-xuexiao2", alias: "全校数据"
-              },
-            },
-            { entity: {
-                id: 1,  name: "index2", icon: "icon-jiangbei", alias: "一年级"
-              },
-            },
-            { entity: { 
-                id: 2, name: "index3", icon: "icon-jiangbei", alias: "二年级"
-              },
-            },
-            { entity: {
-                id: 3, name: "index4", icon: "icon-jiangbei", alias: "三年级"
-              },
-            },
-            { entity: {
-                id: 4,  name: "index5", icon: "icon-shetuanhuodong", alias: "兴趣社团"
-              },
-            }
-          ]
-        },
-        { //一级
-          entity: {
-            id: 1,  name: "wisdomBook", icon: "icon-kebiao", alias: "智慧课本"
-          }
-        },
-        { //一级
-          entity: {
-            id: 2,  name: "classroom", icon: "icon-ketang", alias: "互动课堂"
-          }
-        },
-        {
-          //一级
-          entity: {
-            id: 3, name: "#Submenu2", icon: "icon-zuoye", alias: "超级作业",
-          },
-          //二级
-          childs: [
-            { entity: { id: 0, name: "publish", icon: "icon-fabu", alias: "发布作业" },
-            },
-            {
-              entity: { id: 1, name: "prepareTask", icon: "icon-xunke", alias: "立体模型" },
-            },
-            {
-              entity: { id: 2,  name: "readTask", icon: "icon-yuedu", alias: "课本阅读", },
-            },
-            {
-              entity: { id: 3, name: "courseware", icon: "icon-kaoqin", alias: "精选题库" },
-            },
-            {
-              entity: { id: 4,
-                name: "exercitation", icon: "icon-shixi-A", alias: "实验操作" },
-            },
-            {
-              entity: { id: 5, name: "mistakes", icon: "icon-cuoti", alias: "错题锦囊" },
-            }
-          ]
-        },
-        {
-          //一级
-          entity: {
-            id: 4,
-            name: "onlineStudies",
-            icon: "icon-yanjiuzhulu",
-            alias: "在线研学"
-          }
-        },
-        {
-          //一级
-          entity: {
-            id: 5,
-            name: "myclass",
-            icon: "icon-banji",
-            alias: "我的班级"
-          }
-        },
-        {
-          //一级
-          entity: {
-            id: 6,
-            name: "#Uidesign",
-            icon: "icon-banjiguanli",
-            alias: "班级管理",
+            name: '#home',
+            icon: 'icon-diannao1',
+            alias: '校园大脑',
           },
           //二级
           childs: [
             {
               entity: {
                 id: 0,
-                name: "classroomList",
-                icon: "icon-cengji",
-                alias: "班级列表",
+                name: 'index1',
+                icon: 'icon-xuexiao2',
+                alias: '全校数据',
               },
             },
             {
               entity: {
                 id: 1,
-                name: "users-list",
-                icon: "icon-yonghuqunzu",
-                alias: "班级学生列表",
+                name: 'index2',
+                icon: 'icon-jiangbei',
+                alias: '一年级',
               },
             },
             {
               entity: {
                 id: 2,
-                name: "progress",
-                icon: "icon-tongji",
-                alias: "作业统计"
+                name: 'index3',
+                icon: 'icon-jiangbei',
+                alias: '二年级',
               },
             },
             {
               entity: {
                 id: 3,
-                name: "performance",
-                icon: "icon-baogao",
-                alias: "成绩报告"
+                name: 'index4',
+                icon: 'icon-jiangbei',
+                alias: '三年级',
               },
             },
             {
               entity: {
                 id: 4,
-                name: "faq",
-                icon: "icon-biji",
-                alias: "阅读笔记"
+                name: 'index5',
+                icon: 'icon-shetuanhuodong',
+                alias: '兴趣社团',
               },
-            }
-          ]
+            },
+          ],
+        },
+        {
+          //一级
+          entity: {
+            id: 1,
+            name: 'wisdomBook',
+            icon: 'icon-kebiao',
+            alias: '智慧课本',
+          },
+        },
+        {
+          //一级
+          entity: {
+            id: 2,
+            name: 'classroom',
+            icon: 'icon-ketang',
+            alias: '互动课堂',
+          },
+        },
+        {
+          //一级
+          entity: {
+            id: 3,
+            name: '#Submenu2',
+            icon: 'icon-zuoye',
+            alias: '超级作业',
+          },
+          //二级
+          childs: [
+            {
+              entity: {
+                id: 0,
+                name: 'publish',
+                icon: 'icon-fabu',
+                alias: '发布作业',
+              },
+            },
+            {
+              entity: {
+                id: 1,
+                name: 'prepareTask',
+                icon: 'icon-xunke',
+                alias: '立体模型',
+              },
+            },
+            {
+              entity: {
+                id: 2,
+                name: 'readTask',
+                icon: 'icon-yuedu',
+                alias: '课本阅读',
+              },
+            },
+            {
+              entity: {
+                id: 3,
+                name: 'courseware',
+                icon: 'icon-kaoqin',
+                alias: '精选题库',
+              },
+            },
+            {
+              entity: {
+                id: 4,
+                name: 'exercitation',
+                icon: 'icon-shixi-A',
+                alias: '实验操作',
+              },
+            },
+            {
+              entity: {
+                id: 5,
+                name: 'mistakes',
+                icon: 'icon-cuoti',
+                alias: '错题锦囊',
+              },
+            },
+          ],
+        },
+        {
+          //一级
+          entity: {
+            id: 4,
+            name: 'onlineStudies',
+            icon: 'icon-yanjiuzhulu',
+            alias: '在线研学',
+          },
+        },
+        {
+          //一级
+          entity: {
+            id: 5,
+            name: 'myclass',
+            icon: 'icon-banji',
+            alias: '我的班级',
+          },
+        },
+        {
+          //一级
+          entity: {
+            id: 6,
+            name: '#Uidesign',
+            icon: 'icon-banjiguanli',
+            alias: '班级管理',
+          },
+          //二级
+          childs: [
+            {
+              entity: {
+                id: 0,
+                name: 'classroomList',
+                icon: 'icon-cengji',
+                alias: '班级列表',
+              },
+            },
+            {
+              entity: {
+                id: 1,
+                name: 'users-list',
+                icon: 'icon-yonghuqunzu',
+                alias: '班级学生列表',
+              },
+            },
+            {
+              entity: {
+                id: 2,
+                name: 'progress',
+                icon: 'icon-tongji',
+                alias: '作业统计',
+              },
+            },
+            {
+              entity: {
+                id: 3,
+                name: 'performance',
+                icon: 'icon-baogao',
+                alias: '成绩报告',
+              },
+            },
+            {
+              entity: {
+                id: 4,
+                name: 'faq',
+                icon: 'icon-biji',
+                alias: '阅读笔记',
+              },
+            },
+          ],
         },
         {
           //一级
           entity: {
             id: 7,
-            name: "#pages",
-            icon: "icon-xueshengliebiao",
-            alias: "学生管理",
+            name: '#pages',
+            icon: 'icon-xueshengliebiao',
+            alias: '学生管理',
           },
           //二级
           childs: [
             {
               entity: {
                 id: 0,
-                name: "crypto-currencies",
-                icon: "icon-xueshengliebiao",
-                alias: "学生列表",
+                name: 'crypto-currencies',
+                icon: 'icon-xueshengliebiao',
+                alias: '学生列表',
               },
             },
             {
               entity: {
                 id: 1,
-                name: "editprofile",
-                icon: "icon-tianjiajiahaoyoutianjiapengyou",
-                alias: "添加新学生",
+                name: 'editprofile',
+                icon: 'icon-tianjiajiahaoyoutianjiapengyou',
+                alias: '添加新学生',
               },
             },
             {
               entity: {
                 id: 2,
-                name: "blog",
-                icon: "icon-shenghuo",
-                alias: "学生风彩"
+                name: 'blog',
+                icon: 'icon-shenghuo',
+                alias: '学生风彩',
               },
-            }
-          ]
+            },
+          ],
         },
         {
           //一级
           entity: {
             id: 8,
-            name: "drawing",
-            icon: "icon-boshimao",
-            alias: "学科工具",
-          }
+            name: 'drawing',
+            icon: 'icon-boshimao',
+            alias: '学科工具',
+          },
         },
         {
           //一级
           entity: {
             id: 9,
-            name: "#Question",
-            icon: "icon-tiku",
-            alias: "题库资源",
+            name: '#Question',
+            icon: 'icon-tiku',
+            alias: '题库资源',
           },
           //二级
           childs: [
             {
               entity: {
                 id: 0,
-                name: "establish",
-                icon: "icon-chuangjianv",
-                alias: "创建题库",
+                name: 'establish',
+                icon: 'icon-chuangjianv',
+                alias: '创建题库',
               },
             },
             {
               entity: {
                 id: 1,
-                name: "expand",
-                icon: "icon-qita",
-                alias: "练习题",
+                name: 'expand',
+                icon: 'icon-qita',
+                alias: '练习题',
               },
             },
             {
               entity: {
                 id: 2,
-                name: "textbook",
-                icon: "icon-biaoqian",
-                alias: "自检题"
+                name: 'textbook',
+                icon: 'icon-biaoqian',
+                alias: '自检题',
               },
-              
             },
             {
               entity: {
                 id: 3,
-                name: "history",
-                icon: "icon-zhiban",
-                alias: "历年考题"
+                name: 'history',
+                icon: 'icon-zhiban',
+                alias: '历年考题',
               },
-              
-            }
-          ]
+            },
+          ],
         },
         {
           //一级
           entity: {
             id: 10,
-            name: "#Apps",
-            icon: "icon-xitong",
-            alias: "系统设置",
+            name: '#Apps',
+            icon: 'icon-xitong',
+            alias: '系统设置',
           },
           //二级
           childs: [
             {
               entity: {
                 id: 0,
-                name: "information",
-                icon: "icon-gerenxinxi",
-                alias: "学校资料",
+                name: 'information',
+                icon: 'icon-gerenxinxi',
+                alias: '学校资料',
               },
             },
             {
               entity: {
                 id: 1,
-                name: "role",
-                icon: "icon-juese",
-                alias: "角色管理",
+                name: 'role',
+                icon: 'icon-juese',
+                alias: '角色管理',
               },
             },
             {
               entity: {
                 id: 2,
-                name: "account",
-                icon: "icon-zizhanghaoguanli",
-                alias: "账号管理"
+                name: 'account',
+                icon: 'icon-zizhanghaoguanli',
+                alias: '账号管理',
               },
             },
             {
               entity: {
                 id: 3,
-                name: "operationLog",
-                icon: "icon-caozuorizhi",
-                alias: "操作日志"
+                name: 'operationLog',
+                icon: 'icon-caozuorizhi',
+                alias: '操作日志',
               },
-            }
-          ]
+            },
+          ],
         },
       ],
       toolList: [
         { title: '用户信息', icon: 'iconfont icon-yonghu', url: 'userInfo' },
-        { title: '学校资料', icon: 'iconfont icon-xuexiao', url: 'information' },
+        {
+          title: '学校资料',
+          icon: 'iconfont icon-xuexiao',
+          url: 'information',
+        },
         { title: '我的班级', icon: 'iconfont icon-banji', url: 'myclass' },
-        { title: '课件管理', icon: 'iconfont icon-banji1', url: 'course-wareList' },
-        { title: '在线研学', icon: 'iconfont icon-yanjiuzhulu', url: 'onlineStudies' },
+        {
+          title: '课件管理',
+          icon: 'iconfont icon-banji1',
+          url: 'course-wareList',
+        },
+        {
+          title: '在线研学',
+          icon: 'iconfont icon-yanjiuzhulu',
+          url: 'onlineStudies',
+        },
         { title: '学科工具', icon: 'iconfont icon-gongju', url: 'drawing' },
       ],
       classList: [],
       classInfo: {},
       school: {},
-      userInfo: {}
-    };
+      userInfo: {},
+      defaultPic: 'this.src="'+require('../assets/def_avater.jpg')+'"'
+    }
   },
   computed: {
-    ...mapState(['isCollapse','isFooter']),
+    ...mapState(['isCollapse', 'isFooter']),
   },
   created() {
-    this.getClassInfo();
-    this.getClassList();
-    this.isMobile();
+    this.getClassInfo()
+    this.getClassList()
+    this.isMobile()
   },
   methods: {
     ...mapMutations(['setFooter', 'setCollapse']),
     toggleCollapse() {
-      this.flag = this.isCollapse;
-      this.flag = !this.flag;
-      this.$store.commit('setCollapse', this.flag);
+      this.flag = this.isCollapse
+      this.flag = !this.flag
+      this.$store.commit('setCollapse', this.flag)
     },
     goHome() {
       this.isMobile()
-      this.$router.push('/home').catch(err=>{
-        console.log(1);
+      this.$router.push('/home').catch((err) => {
+        console.log(1)
       })
     },
     logout() {
-      window.sessionStorage.clear();
-      this.$router.push('/login');
+      window.sessionStorage.clear()
+      this.$router.push('/login')
     },
     isMobile() {
-      let flag = navigator.userAgent.match( /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i);
+      let flag = navigator.userAgent.match(
+        /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
+      )
       if (flag === null) {
-        this.$store.commit('setCollapse', false);
+        this.$store.commit('setCollapse', false)
       } else {
-        this.$store.commit('setCollapse', true);
+        this.$store.commit('setCollapse', true)
+        this.$store.commit('setFooter', false)
       }
     },
     // 获取班级列表
     async getClassList() {
-      await classList(1).then(res => {
-      const {data} = res.data;
-      this.classList = data;
+      await classList(1).then((res) => {
+        const { data } = res.data
+        this.classList = data
       })
-      this.firstLogin();
+      this.firstLogin()
     },
     // 切换班级
     handleChangeClass(item) {
-      console.log(item);
-      changeClass(item.class_id).then(res => {
-        this.getClassInfo();
-        location.reload();
+      console.log(item)
+      changeClass(item.class_id).then((res) => {
+        this.getClassInfo()
+        location.reload()
       })
     },
     // 切换网页全屏
     toggleFullScreen() {
       if (!document.fullscreenElement) {
-          document.documentElement.requestFullscreen();
+        document.documentElement.requestFullscreen()
       } else {
         if (document.exitFullscreen) {
-          document.exitFullscreen(); 
+          document.exitFullscreen()
         }
       }
     },
     // 当前班级
     getClassInfo() {
-      classInfo().then(res => {
-        const { data } = res.data;
-        const classInfo = data.class;
-        this.classInfo = classInfo;
-        this.$store.commit('setClassInfo',classInfo);
-        this.school = data.school;
-        this.userInfo = data.userInfo;
+      classInfo().then((res) => {
+        const { data } = res.data
+        const classInfo = data.class
+        this.classInfo = classInfo
+        this.$store.commit('setClassInfo', classInfo)
+        this.school = data.school
+        this.userInfo = data.userInfo
+        console.log(this.userInfo)
       })
     },
     goPage(tool) {
-      this.$router.push('/' + tool.url).catch(err =>{
-        console.log('err');
-      });
-      this.isMobile();
-    },
-    firstLogin() {
-      if(!this.classList[0].class_id || !this.classList.length) {
-        this.$message.info('暂无班级已跳转到创建班级页')
-        this.$router.push({ path:'/classroomAdd', query: { tip: 'firstAdd' }}).catch((err) => {
+      this.$router.push('/' + tool.url).catch((err) => {
         console.log('err')
       })
+      this.isMobile()
+    },
+    firstLogin() {
+      if (!this.classList[0].class_id || !this.classList.length) {
+        this.$message.info('暂无班级已跳转到创建班级页')
+        this.$router
+          .push({ path: '/classroomAdd', query: { tip: 'firstAdd' } })
+          .catch((err) => {
+            console.log('err')
+          })
       } else {
         return
       }
-    }
+    },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -585,8 +691,8 @@ i:hover {
     text-decoration: none;
   }
 }
-.el-backtop{
-  background: linear-gradient(to bottom right ,#9853af,#623AA2) !important;
+.el-backtop {
+  background: linear-gradient(to bottom right, #9853af, #623aa2) !important;
   border-radius: 5%;
   color: #fff;
 }
@@ -604,15 +710,15 @@ i:hover {
 <style lang="scss">
 .aside_menu {
   .el-submenu.is-active .el-submenu__title {
-      background: linear-gradient(to left, #9853af, #623aa2);
-    }
+    background: linear-gradient(to left, #9853af, #623aa2);
+  }
 }
-.tool_dropdown{
+.tool_dropdown {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  .el-dropdown-menu__item{
-      width: 60px;
+  .el-dropdown-menu__item {
+    width: 60px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -635,7 +741,7 @@ i:hover {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    span{
+    span {
       font-weight: 600;
       color: #606266;
     }
@@ -647,7 +753,7 @@ i:hover {
     width: 60px;
     display: block;
     margin: 0 20px 0 0;
-    border: 5px solid #b1afaf;
+    border: 5px solid #eee;
     border-radius: 100%;
   }
 }

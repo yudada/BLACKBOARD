@@ -17,7 +17,7 @@
               placeholder="请输入用户名或手机号"
               v-model="loginForm.userName"
               prefix-icon="el-icon-user"
-            ></el-input>
+            />
           </el-form-item>
           <!-- 密码 -->
           <el-form-item prop="password" style="margin: 0">
@@ -27,7 +27,8 @@
               v-model="loginForm.userPassword"
               prefix-icon="el-icon-lock"
               type="password"
-            ></el-input>
+              v-on:keyup.enter.native="login"
+            />
           </el-form-item>
           <el-form-item class="forget_psw">
             <el-button type="text" @click="forgetPassword">忘记密码?</el-button>
@@ -85,10 +86,11 @@ export default {
     }
   },
   created() {
-    if(window.document.cookie.length > 0) return this.loginForm.checked = true;
+    if (window.document.cookie.length > 0)
+      return (this.loginForm.checked = true)
   },
   mounted() {
-    this.getCookie();
+    this.getCookie()
   },
   methods: {
     // 点击重置按钮，重置登录表单
@@ -103,12 +105,16 @@ export default {
           this.loginForm
         )
         if (res.statusCode !== 200) return this.$message.error(res.msg)
-        this.$message.success('登录成功!');
+        this.$message.success('登录成功!')
 
-        window.sessionStorage.setItem('token', res.data.token);
+        window.sessionStorage.setItem('token', res.data.token)
 
         if (this.loginForm.checked === true) {
-          this.setCookie(this.loginForm.userName,this.loginForm.userPassword,7)
+          this.setCookie(
+            this.loginForm.userName,
+            this.loginForm.userPassword,
+            7
+          )
         } else {
           this.clearCookie()
         }
@@ -151,7 +157,7 @@ export default {
     //清除cookie
     clearCookie: function () {
       this.setCookie('', '', -1) //修改2值都为空，天数为负1天就好了
-    }
+    },
   },
 }
 </script>

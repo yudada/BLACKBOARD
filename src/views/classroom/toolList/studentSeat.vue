@@ -14,7 +14,13 @@
             <div class="student_content">
               <!-- <el-tag :type="student.statu" size="medium" class="student_status">已完成</el-tag> -->
               <div class="student_avatar">
-                <img :src="student.photo" alt="" :onerror="defaultPic" />
+                <img
+                  v-if="student.photo"
+                  :src="student.photo"
+                  alt=""
+                  :onerror="defaultPic"
+                />
+                <img v-else src="@/assets/def_avater.jpg" alt="" />
                 <span v-if="student.stuName">{{ student.stuName }}</span>
                 <span v-else>未知</span>
               </div>
@@ -37,8 +43,7 @@
                 class="student_check"
                 v-model="student.isChecked"
                 @change="toggleSelection(studentList)"
-              >
-              </el-checkbox>
+              />
             </div>
           </div>
         </el-col>
@@ -58,13 +63,9 @@
     <!-- 打分模块 -->
     <div class="classroom_mark">
       <div class="mark_btn">
+        <el-button @click="openRewardsDialog">评分</el-button>
+        <el-button @click="switchCheckedBoxDialog">多选</el-button>
         <el-button @click="handleHandUP">举手</el-button>
-        <el-button @click="checkedBoxDialog = !checkedBoxDialog"
-          >多选</el-button
-        >
-        <el-button v-show="checkedBoxDialog === true" @click="openRewardsDialog"
-          >评分</el-button
-        >
       </div>
     </div>
     <!-- 评分弹框 -->
@@ -75,6 +76,7 @@
       width="50%"
       :append-to-body="true"
       :close-on-click-modal="false"
+      :before-close="handleCloseRewardsDialog"
     >
       <div>
         <div class="tag_dialog">
@@ -111,12 +113,8 @@
           >
         </div>
       </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="closeDialog">取 消</el-button>
-        <el-button type="primary" @click="rewardsDialogCn">确 定</el-button>
-      </span>
     </el-dialog>
-    <!--  -->
+    <!-- 举手弹框 -->
     <el-dialog
       v-if="studentList[0]"
       title="举手"
@@ -149,8 +147,8 @@
             </div>
             <div v-else class="stuName_box">
               <div v-for="item in sidArr" :key="item.sid">
-                <span v-if="sidArr.length > 1">{{item}},</span>
-                <span v-else>{{item}}</span>
+                <span v-if="sidArr.length > 1">{{ item }},</span>
+                <span v-else>{{ item }}</span>
               </div>
             </div>
           </div>
@@ -179,7 +177,6 @@ import { classInfo } from '@/api/index.js'
 export default {
   data() {
     return {
-      showSeat: false,
       tagAll: [
         { id: 0, scoreName: '全班扣分 - 1' },
         { id: 1, scoreName: '全班安静 + 1' },
@@ -211,7 +208,7 @@ export default {
       hidenMark: true,
       sidArr: [],
       sclectStuName: false,
-      defaultPic: 'this.src="'+require('../../../assets/def_avater.jpg')+'"'
+      defaultPic: 'this.src="' + require('@/assets/def_avater.jpg') + '"',
     }
   },
   computed: {
@@ -229,7 +226,7 @@ export default {
     // 标签列表
     getTagList() {
       scoreTagList().then((res) => {
-        const { scoreArr } = res.data.data;
+        const { scoreArr } = res.data.data
         scoreArr.map((item) => {
           if (item.type === 1 && item.scoreGlobal === 0) {
             this.tagAddList.push(item)
@@ -243,24 +240,15 @@ export default {
     },
     // 获取学生列表
     async getStudentList() {
-      console.log(this.classInfo);
       let info = {
-        classId: '',
+        classId: this.classInfo.class_id,
         classType: 1,
       }
-      if(this.classInfo) {
-        info.classId = this.classInfo.class_id
-      } else {
-        return
-      }
-      
-      await studentName(info).then(res => {
-        const { data } = res.data;
+      await studentName(info).then((res) => {
+        const { data } = res.data
         this.studentList = this.setList(data)
-        console.log(this.studentList);
         this.studentIndexs = this.studentList.map((v, i) => i)
       })
-      this.showSeat = true
     },
     // 数据处理
     setList(data, checked = false) {
@@ -297,24 +285,21 @@ export default {
     openRewardsDialog() {
       this.rewardsDialog = true
     },
-    // 关闭打分弹框
-    closeDialog() {
-      this.rewardsDialog = false
-    },
-    // 打分
-    rewardsDialogCn() {
-      this.getStudentList()
-      this.checkedBoxDialog = false
-      this.rewardsDialog = false
-      this.handUPDialog = false
-    },
-
     // 加分
     handleTagPlus(item) {
       this.scoreData.sid_arr = this.markList
       this.scoreData.config_score_id = item.id
+      if (this.scoreData.sid_arr.length < 1) {
+        let allStudent = []
+        this.studentList.map((item) => {
+          allStudent.push(item.sid)
+        })
+        this.scoreData.sid_arr = allStudent
+      }
       console.log(this.scoreData)
       score(this.scoreData).then((res) => {
+        const { data } = res
+        if (data.statusCode !== 200) return this.$message.error(data.msg)
         this.$message.success(item.scoreName + ' ' + item.scoreNum)
       })
     },
@@ -322,8 +307,17 @@ export default {
     handleTagMinus(item) {
       this.scoreData.sid_arr = this.markList
       this.scoreData.config_score_id = item.id
+      if (this.scoreData.sid_arr.length < 1) {
+        let allStudent = []
+        this.studentList.map((item) => {
+          allStudent.push(item.sid)
+        })
+        this.scoreData.sid_arr = allStudent
+      }
       console.log(this.scoreData)
       score(this.scoreData).then((res) => {
+        const { data } = res
+        if (data.statusCode !== 200) return this.$message.error(data.msg)
         this.$message.error(item.scoreName + ' ' + item.scoreNum)
       })
     },
@@ -337,7 +331,7 @@ export default {
       this.scoreData.config_score_id = item.id
       score(this.scoreData).then((res) => {
         console.log(res.data)
-        if(item.scoreNum === '+1') {
+        if (item.scoreNum === '+1') {
           this.$message.success(item.scoreName + ' ' + item.scoreNum)
         } else {
           this.$message.error(item.scoreName + ' ' + item.scoreNum)
@@ -407,6 +401,12 @@ export default {
       this.sidArr = []
       this.sclectStuName = false
     },
+    // 关闭打分弹框
+    handleCloseRewardsDialog() {
+      this.getStudentList()
+      this.rewardsDialog = false;
+      this.checkedBoxDialog = false;
+    },
     async goAddStudent() {
       const confirmResult = await this.$confirm(
         '即将退出教室，前往添加学生?',
@@ -414,16 +414,16 @@ export default {
         {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
+          type: 'warning',
         }
-      ).catch(err => err)
+      ).catch((err) => err)
 
       if (confirmResult !== 'confirm') {
-        return 
+        return
       }
 
       this.$router.push('/editprofile')
-      this.$store.commit('setFooter', true);
+      this.$store.commit('setFooter', true)
       let flag = navigator.userAgent.match(
         /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
       )
@@ -432,7 +432,18 @@ export default {
       } else {
         this.$store.commit('setCollapse', true)
       }
-    }
+    },
+    switchCheckedBoxDialog() {
+      if (this.checkedBoxDialog === false) {
+        this.scoreData.sid_arr = []
+        this.markList = [],
+        this.studentList.map(item => {
+          item.isChecked = false;
+        })
+      }
+      this.checkedBoxDialog = !this.checkedBoxDialog
+      console.log(this.scoreData.sid_arr)
+    },
   },
 }
 </script>
@@ -507,7 +518,7 @@ export default {
 .classroom_mark {
   position: fixed;
   right: 0;
-  top: 70%;
+  top: 65%;
   .mark_btn {
     display: flex;
     flex-direction: column;
@@ -537,6 +548,12 @@ export default {
       color: #b1afaf;
       cursor: pointer;
     }
+  }
+}
+
+@media (max-width: 1280px) {
+  .classroom_mark {
+    top: 55%;
   }
 }
 </style>
@@ -583,7 +600,7 @@ export default {
       .name_topbox {
         text-align: center;
         margin: 1rem;
-        .stuName_box{
+        .stuName_box {
           display: flex;
           flex-wrap: wrap;
           justify-content: center;

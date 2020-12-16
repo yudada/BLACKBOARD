@@ -18,7 +18,8 @@
         <!-- 富文本编辑器组件 -->
         <p v-html="courseData.content"></p>
         <el-form-item label="状态">
-          <span>{{ courseData.is_share }}</span>
+          <span v-if="courseData.is_share === 1">共享</span>
+          <span v-if="courseData.is_share === 2">私有</span>
         </el-form-item>
       </el-form>
     </el-card>

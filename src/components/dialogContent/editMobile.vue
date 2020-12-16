@@ -6,7 +6,7 @@
         status-icon
         :rules="mobileInfoFormRules"
         ref="mobileInfoFormRef"
-        label-width="100px"
+        label-width="120px"
       >
         <el-form-item label="手机号码" prop="userMobile">
           <el-input
@@ -14,12 +14,16 @@
             clearable
           ></el-input>
         </el-form-item>
-        <el-form-item label="手机验证码" prop="mobileCode">
-          <el-input v-model.number="mobileInfoForm.mobileCode" clearable>
-            <el-button slot="append" @click="getMobileCode"
-              >获取手机验证码</el-button
+        <el-form-item label="手机验证码" prop="mobileCode" class="edit_moblie">
+          <div class="mobilecode">
+            <el-input v-model.number="mobileInfoForm.mobileCode" clearable />
+            <el-button
+              @click="getMobileCode"
+              :class="{ count_btn: this.timer }"
             >
-          </el-input>
+              {{ btnText }}</el-button
+            >
+          </div>
         </el-form-item>
         <el-form-item>
           <el-button @click="submitForm" class="cn_btn">提交</el-button>
@@ -30,7 +34,7 @@
 </template>
 
 <script>
-import { sendCode } from '@/api/index'
+import { sendCode, changeMobile } from '@/api/index'
 export default {
   data() {
     // 验证手机号的规则
@@ -58,20 +62,61 @@ export default {
           { required: true, message: '请输入手机验证码', trigger: 'blur' },
         ],
       },
+      mobileCode: false,
+      timer: null,
+      count: '',
     }
   },
+  computed: {
+    btnText: function () {
+      return this.timer ? this.count : '获取手机验证码'
+    },
+  },
   methods: {
+    // 获取手机验证码
     async getMobileCode() {
       await this.$refs.mobileInfoFormRef.validateField('userMobile', (err) => {
-        return console.log(err)
+        if (!err) this.mobileCode = true
+        console.log(this.mobileInfoForm.userMobile)
       })
-        console.log(1)
-      sendCode(this.mobileInfoForm.userMobile).then((res) => {
-        const { data } = res.data
-        console.log(data)
+      if (this.mobileCode === true) {
+        const userMobile = {
+          userMobile: this.mobileInfoForm.userMobile,
+        }
+        sendCode(userMobile).then((res) => {
+          const { data } = res
+          console.log(data)
+          if(data.statusCode !== 200) return this.$message.error(data.msg)
+          this.$message.success(data.msg)
+          if (!this.timer) {
+            const TIME_COUNT = 60
+            this.count = TIME_COUNT
+            this.show = false
+            this.timer = setInterval(() => {
+              if (this.count > 0 && this.count <= TIME_COUNT) {
+                this.count--
+              } else {
+                this.show = true
+                clearInterval(this.timer) // 清除定时器
+                this.timer = null
+              }
+            }, 1000)
+          }
+        })
+      }
+    },
+    submitForm() {
+      this.$refs.mobileInfoFormRef.validate(async valid=>{
+        if(!valid) return
+        changeMobile(this.mobileInfoForm).then(res => {
+          const {data} = res;
+          console.log(data);
+          if(data.statusCode !== 200) return this.$message.error(data.msg)
+          this.$message.success(data.msg)
+          this.$emit('closeDialog', false);
+        })
       })
     },
-    submitForm() {},
   },
 }
 </script>
@@ -79,5 +124,29 @@ export default {
 <style lang="scss" scoped>
 .cn_btn {
   width: 80% !important;
+}
+</style>
+
+<style lang="scss">
+.edit_moblie {
+  .mobilecode {
+    display: flex;
+    .el-button {
+      width: 40%;
+      color: #fff !important;
+      background: linear-gradient(to bottom right, #9853af, #623aa2);
+    }
+    .el-button:hover {
+      opacity: 0.8;
+    }
+    .count_btn {
+      opacity: 0.8;
+      border: #636262;
+      background: linear-gradient(to bottom right, #aea9af, #817e85) !important;
+    }
+  }
+  .el-input-group__append {
+    padding: 0 !important;
+  }
 }
 </style>

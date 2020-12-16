@@ -120,6 +120,7 @@ import Exercise from '../../components/resourceList/exercise';
 import experiment from '../../components/resourceList/experiment'
 import models from '../../components/resourceList/models'
 import Read from '../../components/resourceList/read.vue';
+import { mapState } from 'vuex'
 export default {
   components: {
     experiment,
@@ -193,6 +194,12 @@ export default {
   created() {
     this.getClassInfo();
     this.getBookInfo();
+    if(this.classInfo) {
+      this.publishForm.class_id = this.classInfo.class_id;
+    }
+  },
+  computed: {
+    ...mapState(['classInfo']),
   },
   methods: {
     // 获取班级列表

@@ -58,7 +58,7 @@ instance.interceptors.response.use(
     error => {
         console.log('err' + error)
         Message({
-            message: error.message,
+            message: '操作失败!',
             type: 'error',
             durantion: 5 * 1000
         })

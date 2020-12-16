@@ -17,7 +17,12 @@
               <span>班主任</span>
             </div>
             <div class="adviser_card">
-              <img src="../../assets/images/faces/female/15.jpeg" alt="" />
+              <img
+                v-if="adviserInfo.photo"
+                :src="adviserInfo.photo"
+                :onerror="defaultPic"
+              />
+              <img v-else src="@/assets/def_avater.jpg" />
               <div class="adviser_info">
                 <h3>{{ adviserInfo.realName }} 老师</h3>
                 <div class="info_text">
@@ -53,11 +58,15 @@
                 </div>
                 <el-dropdown trigger="click">
                   <span class="el-dropdown-link">
-                    <i style="color: #636262"
-                      class="el-icon-arrow-down el-icon-circle-plus"></i>
+                    <i
+                      style="color: #636262"
+                      class="el-icon-arrow-down el-icon-circle-plus"
+                    ></i>
                   </span>
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item icon="el-icon-plus">黄金糕</el-dropdown-item>
+                    <el-dropdown-item icon="el-icon-plus"
+                      >黄金糕</el-dropdown-item
+                    >
                   </el-dropdown-menu>
                 </el-dropdown>
               </div>
@@ -80,8 +89,13 @@
             placeholder="请输入内容"
             v-model="queryInfo"
             clearable
-            @clear="getStudentList">
-            <el-button slot="append" icon="el-icon-search" @click="getStudentList"></el-button>
+            @clear="getStudentList"
+          >
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="getStudentList"
+            ></el-button>
           </el-input>
           <el-card :body-style="{ padding: 0 }">
             <div slot="header">
@@ -93,12 +107,19 @@
               tooltip-effect="dark"
               style="width: 100%"
               @selection-change="handleSelectionChange"
-              v-loading="loading">
+              v-loading="loading"
+            >
               <el-table-column type="selection"> </el-table-column>
               <el-table-column width="70">
                 <template slot-scope="scope">
-                  <el-avatar v-if="!scope.row.photo" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
-                  <el-avatar v-else :src="scope.row.photo"></el-avatar>
+                  <div class="avater_student">
+                    <img
+                      v-if="scope.row.photo"
+                      :src="scope.row.photo"
+                      :onerror="defaultPic"
+                    />
+                    <img v-else src="@/assets/def_avater.jpg" />
+                  </div>
                 </template>
               </el-table-column>
               <el-table-column label="姓名">
@@ -122,7 +143,8 @@
               :page-sizes="[20, 60, 80, 100]"
               :page-size="pageSize"
               layout="total, sizes, prev, pager, next, jumper"
-              :total="total">
+              :total="total"
+            >
             </el-pagination>
           </el-card>
         </el-col>
@@ -136,47 +158,48 @@ export default {
     return {
       class_arr: {},
       adviserInfo: {
-        realName: "",
-        address: "",
-        mobile: "",
+        realName: '',
+        address: '',
+        mobile: '',
       },
       teacherList: [],
-      queryInfo: "",
+      queryInfo: '',
       currentPage: 1,
       pageSize: 20,
       total: 0,
       studentData: [],
       loading: true,
-    };
+      defaultPic: 'this.src="' + require('@/assets/def_avater.jpg') + '"',
+    }
   },
   created() {
-    this.getUserInfo();
+    this.getUserInfo()
   },
   methods: {
     // 获取用户信息
     async getUserInfo() {
-      const { data: res } = await this.$http.get(`api/user/info`);
+      const { data: res } = await this.$http.get(`api/user/info`)
       if (res.statusCode !== 200)
-        return this.$message.error("获取用户信息失败！");
-      this.class_arr = res.data.class_arr[0];
-      this.getClassInfo();
+        return this.$message.error('获取用户信息失败！')
+      this.class_arr = res.data.class_arr[0]
+      this.getClassInfo()
     },
     // 获取班级信息
     async getClassInfo() {
-      if(!this.class_arr.class_id || this.class_arr.class_id === null) {
-        this.loading = false;
+      if (!this.class_arr.class_id || this.class_arr.class_id === null) {
+        this.loading = false
         return
       }
       const { data: res } = await this.$http.get(
         `api/classroom/${this.class_arr.class_id}`
-      );
-      if (res.statusCode !== 200)
-        return this.$message.error("获取班级信息失败");
-      console.log(res.data);
-      this.teacherList = res.data.teacher;
-      this.adviserInfo = res.data.headmaster.teacher_info;
+      )
+      if (res.statusCode !== 200) return this.$message.error('获取班级信息失败')
+      console.log(res.data)
+      this.teacherList = res.data.teacher
+      this.adviserInfo = res.data.headmaster.teacher_info
+      console.log(this.adviserInfo)
 
-      this.getStudentList();
+      this.getStudentList()
     },
     // 获取学生列表
     async getStudentList() {
@@ -188,49 +211,48 @@ export default {
             page: this.currentPage,
           },
         }
-      );
-      if (res.statusCode !== 200)
-        return this.$message.error("获取学生列表失败");
-        console.log(res.data);
-        this.studentData = res.data.data;
-        this.total = res.data.total;
-        this.currentPage = res.data.current_page;
-        this.pageSize = parseInt(res.data.per_page);
-        this.loading = false;
+      )
+      if (res.statusCode !== 200) return this.$message.error('获取学生列表失败')
+      console.log(res.data)
+      this.studentData = res.data.data
+      this.total = res.data.total
+      this.currentPage = res.data.current_page
+      this.pageSize = parseInt(res.data.per_page)
+      this.loading = false
     },
     // 表格选择栏
     toggleSelection(rows) {
       if (rows) {
         rows.forEach((row) => {
-          this.$refs.multipleTable.toggleRowSelection(row);
-        });
+          this.$refs.multipleTable.toggleRowSelection(row)
+        })
       } else {
-        this.$refs.multipleTable.clearSelection();
+        this.$refs.multipleTable.clearSelection()
       }
     },
     handleSelectionChange(val) {
-      this.multipleSelection = val;
+      this.multipleSelection = val
     },
     // 分页
     handleSizeChange(newSize) {
-      this.pageSize = newSize;
-      this.getStudentList();
+      this.pageSize = newSize
+      this.getStudentList()
     },
     handleCurrentChange(newPage) {
-      this.currentPage = newPage;
-      this.getStudentList();
+      this.currentPage = newPage
+      this.getStudentList()
     },
     // 表格无数据显示占位符
     formatterCellval(row, column, cellValue, index) {
-      console.log(cellValue);
+      console.log(cellValue)
       if (!cellValue) {
-        return "— —";
+        return '— —'
       } else {
-        return cellValue;
+        return cellValue
       }
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -249,7 +271,7 @@ export default {
   padding: 20px;
   background: linear-gradient(to left, #9853af, #623aa2);
   img {
-    width: 40%;
+    // width: 40%;
     border-radius: 100%;
   }
   .adviser_info {
@@ -296,6 +318,13 @@ export default {
     }
   }
 }
+.avater_student {
+  width: 100%;
+  img {
+    width: 100%;
+    border-radius: 50%;
+  }
+}
 @media (max-width: 768px) {
   .el-col-6,
   .el-col-18 {
@@ -304,9 +333,6 @@ export default {
   .adviser_card {
     display: flex;
     justify-content: space-around;
-    img {
-      width: 22%;
-    }
   }
 }
 </style>

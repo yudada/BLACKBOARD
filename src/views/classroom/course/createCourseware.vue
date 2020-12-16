@@ -48,7 +48,7 @@ export default {
       addCoursewareForm: {
         title:'',
         content: '',
-        is_share: ''
+        is_share: 2
       },
       addCoursewareFormRules: {
         title: [

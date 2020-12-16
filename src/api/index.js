@@ -67,3 +67,29 @@ export function sendCode(data) {
     params: data
   })
 }
+
+// 修改手机号码
+export function changeMobile(data) {
+  return http({
+    url: `api/user/modifyMobile`,
+    method: 'post',
+    params: data
+  })
+}
+
+// 修改用户信息
+export function changeUserInfo(data) {
+  return http({
+    url: `api/user/modifyInfo`,
+    method: 'post',
+    params: data
+  })
+}
+
+// 添加教师前获取基础信息
+export function teacherSubject() {
+  return http({
+    url: `api/teacher/create`,
+    method: 'post'
+  })
+}

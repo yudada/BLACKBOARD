@@ -7,7 +7,12 @@
       <el-table :data="courseData" style="width: 100%">
         <el-table-column prop="title" label="标题"></el-table-column>
         <!-- <el-table-column prop="content" label="内容"></el-table-column> -->
-        <el-table-column prop="is_share" label="状态"></el-table-column>
+        <el-table-column prop="is_share" label="状态">
+          <template slot-scope="scope">
+            <span v-if="scope.row.is_share === 1">共享</span>
+            <span v-if="scope.row.is_share === 2">私有</span>
+          </template>
+        </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="text" @click="openDetail(scope.row.id)"

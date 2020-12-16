@@ -22,8 +22,8 @@
             @click.native="openBookDialogVisible(item)"
           >
             <div class="card_img">
-              <img v-if="item.bookImg !== null" :src="item.bookImg" />
-              <img v-else src="../../assets/book/七年级生物.jpg" />
+              <img v-if="item.bookImg !== null" :src="item.bookImg" :onerror="defaultPic" />
+              <img v-else src="@/assets/book/七年级生物.jpg" />
             </div>
             <div class="card_info">
               <a href="#"
@@ -38,8 +38,8 @@
             :body-style="{ padding: 0 }"
             @click.native="addBook"
           >
-            <div class="card_img">
-              <img src="../../assets/book/addBook.jpg" />
+            <div class="space_img">
+              <img src="@/assets/book/addBook.jpg" />
             </div>
           </el-card>
         </el-col>
@@ -83,6 +83,7 @@ export default {
       selectDialogVisible: false,
       bookInfo: {},
       bookDialogVisible: false,
+      defaultPic: 'this.src="'+require('@/assets/book/七年级生物.jpg')+'"'
     }
   },
   created() {
@@ -120,6 +121,12 @@ export default {
   .card_img {
     img {
       width: 100%;
+    }
+  }
+  .space_img {
+    img {
+      width: 100%;
+      margin: 31px 0;
     }
   }
   .card_info {

@@ -8,7 +8,7 @@
         ref="ruleForm"
         class="demo-ruleForm"
         label-position="right"
-        label-width="80px"
+        label-width="100px"
       >
         <el-form-item label="旧密码" prop="userPassword">
           <el-input v-model.number="ruleForm.userPassword"></el-input>
@@ -74,9 +74,15 @@ export default {
         userPassword: '',
       },
       rules: {
-        newPassword: [{ validator: validatePass, trigger: 'blur' }],
-        checkPass: [{ validator: validatePass2, trigger: 'blur' }],
-        userPassword: [{ validator: checkOldPass, trigger: 'blur' }],
+        newPassword: [
+          { required: true, validator: validatePass, trigger: 'blur' }
+        ],
+        checkPass: [
+          { required: true, validator: validatePass2, trigger: 'blur' }
+        ],
+        userPassword: [
+          { required: true, validator: checkOldPass, trigger: 'blur' }
+        ],
       },
     }
   },
@@ -91,7 +97,7 @@ export default {
         if (res.statusCode !== 200) return this.$message.error(res.msg)
         this.$message.success(res.msg)
 
-        this.$emit('closeDialog', fales)
+        this.$emit('closeDialog', false)
         this.resetForm()
       })
     },
@@ -103,7 +109,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .cn_btn {
-    width: 80% !important;
-  }
+.cn_btn {
+  width: 80% !important;
+}
 </style>
