@@ -51,7 +51,7 @@ export default {
       })
     },
     goBack() {
-      this.$router.push('/course-wareList')
+      this.$router.go(-1)
     }
   },
 }

@@ -9,11 +9,11 @@ import 'nprogress/nprogress.css'
 const isDev = process.env.NODE_ENV === 'development';
 
 const instance = axios.create({
-    // baseURL: isDev ? 'api' : 'https://api.vrbook.vip',
+    baseURL: isDev ? 'api' : 'https://api.vrbook.vip',
     timeout: 1000 * 12
 });
 
-instance.defaults.baseURL = 'https://api.vrbook.vip';
+// instance.defaults.baseURL = 'https://api.vrbook.vip';
 
 instance.defaults.headers.post['Content-type'] = 'application/x-www-form-urlencoded';
 
@@ -24,10 +24,11 @@ instance.interceptors.request.use(config => {
 },
     error => {
         Message({
-            message: error.message,
+            message: error.message + '请求失败!',
             type: 'error',
             duration: 2000
         })
+        console.log('err' + error)
         return Promise.error(error);
     })
 
@@ -52,7 +53,8 @@ instance.interceptors.response.use(
                 type: 'error',
                 duration: 2000
             })
-            return Promise.reject(response);
+        console.log('err' + error)
+        return Promise.reject(response);
         }
     },
     error => {

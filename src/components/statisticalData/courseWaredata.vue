@@ -6,8 +6,7 @@
           <div>教师课件</div>
         </div>
         <el-table :data="teacherTableData" style="width: 100%">
-          <el-table-column prop="id" label="编号" width="80">
-          </el-table-column>
+          <el-table-column prop="id" label="编号" width="80"> </el-table-column>
           <el-table-column prop="title" label="课件名称"> </el-table-column>
           <el-table-column prop="teaName" label="分享老师"> </el-table-column>
           <el-table-column prop="influence" label="教学影响">
@@ -15,18 +14,21 @@
               <el-progress
                 :percentage="scope.row.influence"
                 :color="customColors"
-              ></el-progress>
+              />
             </template>
           </el-table-column>
-          <el-table-column prop="use_people" label="使用人数"> </el-table-column>
+          <el-table-column prop="use_people" label="使用人数">
+          </el-table-column>
           <el-table-column>
-            <template>
-              <el-button class="edit_btn"
-                ><i class="el-icon-edit"></i>体验</el-button
-              >
-              <el-button class="share_btn"
-                ><i class="el-icon-share"></i>分享</el-button
-              >
+            <template slot-scope="scope">
+              <el-button class="edit_btn" @click="toCourse(scope.row)">
+                <i class="iconfont icon-bianji" />
+                体验
+              </el-button>
+              <el-button class="share_btn">
+                <i class="el-icon-share" />
+                分享
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -74,25 +76,33 @@ export default {
         this.percentage = 0
       }
     },
+    toCourse(data) {
+      console.log(data);
+      this.$router.push({ path: '/course-detail', query: {id:data.id}})
+    }
   },
 }
 </script>
 
 <style lang="scss" scoped>
-.edit_btn,
-.edit_btn:hover,
-.edit_btn:focus {
+.edit_btn {
   color: #fff;
   background: linear-gradient(to bottom right, #9853af, #623aa2);
 }
-.share_btn,
-.share_btn:hover,
-.share_btn:focus {
+.edit_btn:hover,
+.edit_btn:focus {
+  opacity: 0.7;
+}
+.share_btn {
   color: #fff;
   background: linear-gradient(to bottom right, #62fb62, #21a544);
 }
+.share_btn:hover,
+.share_btn:focus {
+  opacity: 0.7;
+}
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .share_btn {
     margin: 0 !important;
   }

@@ -105,21 +105,7 @@ export default {
         { num: '', title: '家长', imgsrc: 'yonghu' },
       ],
       teacherTableData: [],
-    }
-  },
-  created() {
-    this.getUserNubemr()
-  },
-  mounted() {
-    this.myChart()
-  },
-  methods: {
-    myChart() {
-      // 基于准备好的dom，初始化echarts实例
-      var myChart = echarts.init(document.getElementById('main'))
-
-      // 指定图表的配置项和数据
-      var option = {
+      option: {
         title: {
           text: '课件',
         },
@@ -131,7 +117,18 @@ export default {
           {
             type: 'category',
             boundaryGap: false,
-            data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+            data: [
+              '12.01',
+              '12.02',
+              '12.03',
+              '12.04',
+              '12.05',
+              '12.06',
+              '12.07',
+              '12.08',
+              '12.09',
+              '12.10',
+            ],
             nameTextStyle: {
               fontSize: 16,
             },
@@ -152,28 +149,37 @@ export default {
             type: 'line',
             stack: '总量',
             areaStyle: {
-              color: '#f29848',
+              color: '#764496',
               opacity: 0.9,
             },
             smooth: true,
-            data: [120, 132, 101, 134, 90, 230, 210],
+            data: [120, 180, 132, 245, 156, 450, 210, 555, 324, 645, 485],
           },
           {
             name: '使用人数',
             type: 'line',
             stack: '总量',
             areaStyle: {
-              color: '#764496',
+              color: '#f29848',
               opacity: 0.9,
             },
             smooth: true,
-            data: [220, 182, 191, 234, 290, 330, 310],
+            data: [220, 320, 254, 450, 312, 660, 514, 754, 589, 845, 650],
           },
         ],
-      }
-
-      // 使用刚指定的配置项和数据显示图表。
-      myChart.setOption(option)
+      },
+    }
+  },
+  created() {
+    this.getUserNubemr()
+  },
+  mounted() {
+    this.myChart()
+  },
+  methods: {
+    myChart() {
+      let myChart = echarts.init(document.getElementById('main'))
+      myChart.setOption(this.option)
     },
     getUserNubemr() {
       schoolData().then((res) => {
