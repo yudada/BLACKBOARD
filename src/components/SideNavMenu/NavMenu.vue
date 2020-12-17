@@ -15,7 +15,7 @@
           <span> {{navMenu.entity.alias}}</span>
         </template>
         <!-- 递归 -->
-        <NavMenu :navMenus="navMenu.childs"></NavMenu>
+        <NavMenu :navMenus="navMenu.childs" />
       </el-submenu>
     </template>
 
@@ -28,7 +28,6 @@
     props: ['navMenus'],
     data() {
       return {
-        activePath: ''
       }
     },
     methods: {

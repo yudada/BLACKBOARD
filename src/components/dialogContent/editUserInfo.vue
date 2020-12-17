@@ -94,7 +94,6 @@ export default {
           { required: true, message: '请选择教学科目', trigger: 'blur' },
         ],
       },
-      uploadURL: 'api/api/common/uploadImg',
       headerObj: {
         Authorization: window.sessionStorage.getItem('token'),
       },
@@ -106,9 +105,14 @@ export default {
     editUserInfo: function () {
       return this.uesrInfoForm
     },
+    uploadURL: function() {
+      const isDev = process.env.NODE_ENV === 'development';
+      return isDev ? 'api/api/common/uploadImg' : 'https://api.vrbook.vip/api/common/uploadImg'
+    }
   },
   created() {
-    this.getSubjectArr()
+    this.getSubjectArr();
+    console.log(this.uploadURL);
   },
   methods: {
     getSubjectArr() {

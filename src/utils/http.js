@@ -9,11 +9,11 @@ import 'nprogress/nprogress.css'
 const isDev = process.env.NODE_ENV === 'development';
 
 const instance = axios.create({
-    baseURL: isDev ? 'api' : 'https://api.vrbook.vip',
+    // baseURL: isDev ? 'api' : 'https://api.vrbook.vip',
     timeout: 1000 * 12
 });
 
-// instance.defaults.baseURL = 'https://api.vrbook.vip';
+instance.defaults.baseURL = 'https://api.vrbook.vip';
 
 instance.defaults.headers.post['Content-type'] = 'application/x-www-form-urlencoded';
 

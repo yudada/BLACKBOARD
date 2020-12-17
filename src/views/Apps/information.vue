@@ -67,7 +67,6 @@ export default {
     return {
       // 学校信息
       schoolRuleForm: {},
-      uploadURL: 'api/api/common/uploadImg',
       headerObj: {
         Authorization: window.sessionStorage.getItem('token'),
       },
@@ -84,6 +83,12 @@ export default {
   },
   created() {
     this.getSchoolDetail()
+  },
+  computed: {
+    uploadURL: function() {
+      const isDev = process.env.NODE_ENV === 'development';
+      return isDev ? 'api/api/common/uploadImg' : 'https://api.vrbook.vip/api/common/uploadImg'
+    }
   },
   methods: {
     // 获取学校信息
