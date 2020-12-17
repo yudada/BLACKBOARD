@@ -546,7 +546,6 @@ export default {
     },
     // 切换班级
     handleChangeClass(item) {
-      console.log(item)
       changeClass(item.class_id).then((res) => {
         this.getClassInfo()
         location.reload()
@@ -571,7 +570,6 @@ export default {
         this.$store.commit('setClassInfo', classInfo)
         this.school = data.school
         this.userInfo = data.userInfo
-        console.log(this.userInfo)
       })
     },
     goPage(tool) {
@@ -679,6 +677,7 @@ i:hover {
 .el-menu {
   border-right: 0;
 }
+
 .el-footer {
   color: #707070;
   background: #fff;
@@ -711,6 +710,16 @@ i:hover {
 .aside_menu {
   .el-submenu.is-active .el-submenu__title {
     background: linear-gradient(to left, #9853af, #623aa2);
+  }
+  .el-submenu__title i {
+    color: #fff;
+    font-weight: 400;
+  }
+  .el-menu-item i {
+    color: #fff;
+  }
+  .el-icon-arrow-down:before {
+    font-weight: bold;
   }
 }
 .tool_dropdown {

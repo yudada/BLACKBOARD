@@ -112,7 +112,7 @@ export default {
         legend: {
           data: ['课件数量', '使用人数'],
         },
-        color: ['#f29848', '#764496'],
+        color: ['#764496', '#f29848'],
         xAxis: [
           {
             type: 'category',

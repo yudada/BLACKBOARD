@@ -144,8 +144,7 @@
               :page-size="pageSize"
               layout="total, sizes, prev, pager, next, jumper"
               :total="total"
-            >
-            </el-pagination>
+            />
           </el-card>
         </el-col>
       </el-row>
@@ -182,6 +181,7 @@ export default {
       if (res.statusCode !== 200)
         return this.$message.error('获取用户信息失败！')
       this.class_arr = res.data.class_arr[0]
+      console.log(this.class_arr);
       this.getClassInfo()
     },
     // 获取班级信息
@@ -194,11 +194,8 @@ export default {
         `api/classroom/${this.class_arr.class_id}`
       )
       if (res.statusCode !== 200) return this.$message.error('获取班级信息失败')
-      console.log(res.data)
       this.teacherList = res.data.teacher
       this.adviserInfo = res.data.headmaster.teacher_info
-      console.log(this.adviserInfo)
-
       this.getStudentList()
     },
     // 获取学生列表
@@ -287,7 +284,7 @@ export default {
       font-size: 1rem;
       span {
         color: #fff;
-        font-size: 0.75rem;
+        font-size: 14px;
         opacity: 0.5;
       }
     }

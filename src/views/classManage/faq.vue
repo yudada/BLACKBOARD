@@ -16,61 +16,74 @@
             <div v-for="item in readNote" :key="item.id" class="text">
               <div class="card_body">
                 <h4>{{ item.title }}</h4>
-                <h6>{{ item.resource }}</h6>
-                <p>{{ item.content}}&nbsp;&nbsp;--{{ item.time }}</p>
+                <h6>
+                  摘至: 《{{ item.bookName }}&nbsp;&nbsp;{{
+                    item.subName
+                  }}》&nbsp;&nbsp;{{ item.dirName }}
+                </h6>
+                <p>
+                  {{ item.note }}<span>--{{ item.noteTime }}</span>
+                </p>
               </div>
             </div>
             <!-- 分页 -->
-          <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="queryInfo.pagenum"
-            :page-sizes="[5, 10, 15, 20]"
-            :page-size="queryInfo.pagesize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="total">
-          </el-pagination>
+            <el-pagination
+              style="padding: 10px 20px"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="currentPage"
+              :page-sizes="[20, 60, 80, 100]"
+              :page-size="pageSize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="total"
+            />
           </el-card>
         </el-col>
       </el-row>
     </div>
   </div>
 </template>
+
 <script>
+import { readNote } from '@/api/classManage'
 export default {
-    data() {
-      return {
-        queryInfo: {
-        query: '',
-        pagenum: 1,
-        pagesize: 10,
-      },
-        total: 10,
-        readNote: [
-          { id: 1, title: '...看着他转过去的背景，我的眼泪情不自禁的流了出来...', resource: '摘至<<背影>>.朱之清 片段' , content: '我必须向你们解释，所有这些谴责快乐和赞美痛苦的错误想法是如何产生的，我将给你们一个完整的系统描述，并阐述伟大的真理探索者，人类幸福的缔造者的实际教导。没有人拒绝、厌恶或回避快乐本身，因为它是快乐，但因为那些不知道如何理性地追求快乐的人会遭遇后果', time: '2020-10-22 11:15:02' },
-          { id: 2, title: 'How Can I contact?', resource: '' , content: 'I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequences', time: '2020-10-22 11:15:02' },
-          { id: 3, title: 'Can I use this Plugins in Another Template?', resource: '' , content: 'I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequencesI must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequences', time: '2020-10-22 11:15:02' },
-          { id: 4, title: 'Can I use this Plugins in Another Template?', resource: '' , content: 'I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequences', time: '2020-10-22 11:15:02' },
-          { id: 5, title: 'Can I use this Plugins in Another Template?', resource: '' , content: 'I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequences', time: '2020-10-22 11:15:02' }
-        ]
+  data() {
+    return {
+      currentPage: 1,
+      pageSize: 20,
+      total: 0,
+      readNote: [],
+    }
+  },
+  created() {
+    this.getReadNoteList()
+  },
+  methods: {
+    async getReadNoteList() {
+      this.pageSize = parseFloat(this.pageSize)
+      const params = {
+        limit: this.pageSize,
       }
+      readNote(params).then((res) => {
+        const { data } = res
+        const { total, current_page, per_page } = res.data
+        this.readNote = data.data
+        this.currentPage = current_page
+        this.total = total
+        this.pageSize = parseFloat(per_page)
+        console.log(data)
+      })
     },
-    created() {
-      // this.getReadNoteList();
-    },
-    methods: {
-      async getReadNoteList() {
-        const { data: res } = await this.$http.get('api/reading/notes')
-        if (res.statusCode !== 200) return this.$message.error('获取笔记列表失败！')
-        this.readNote = res
-      },
+    // 分页
     handleSizeChange(newSize) {
-      this.queryInfo.pagesize = newSize
+      this.pageSize = newSize
+      this.getReadNoteList()
     },
     handleCurrentChange(newPage) {
-      this.queryInfo.pagenum = newPage
-    }
-    }
+      this.currentPage = newPage
+      this.getReadNoteList()
+    },
+  },
 }
 </script>
 
@@ -78,16 +91,23 @@ export default {
 .text {
   border-bottom: 1px solid #eaeaea;
 }
-.card_body{
+.card_body {
   padding: 20px;
-  h4, h6, p {
+  h4,
+  h6,
+  p {
     color: #636262;
     margin: 0.5rem;
+    span {
+      color: #999999;
+      padding-left: 30px;
+    }
   }
   h4 {
     font-size: large;
   }
-  h6, p {
+  h6,
+  p {
     font-size: 0.875rem;
     margin-bottom: 0.66em;
     font-family: inherit;

@@ -72,7 +72,7 @@
     <el-dialog
       title="编辑信息"
       :visible.sync="editUIDialogVisible"
-      width="50%"
+      width="35%"
       :append-to-body="true"
       :before-close="handleClose"
       custom-class="info_dialog"
@@ -85,7 +85,7 @@
     <el-dialog
       title="修改手机号码"
       :visible.sync="editMobileDialogVisible"
-      width="40%"
+      width="35%"
       :append-to-body="true"
       :before-close="handleClose"
       top="30vh"
@@ -129,7 +129,7 @@ export default {
         email: '',
         sex: '',
         address: '',
-        teaSubject: ''
+        teaSubject: '',
       },
       defaultPic: 'this.src="' + require('@/assets/def_avater.jpg') + '"',
     }
@@ -140,29 +140,36 @@ export default {
   methods: {
     getUserInfo() {
       userInfo().then((res) => {
-        const { data } = res.data;
-        this.schoolInfo = data.school;
-        this.userInfo = data.userInfo;
-        const { realName, photo, email, sex, address, teaSubject } = data.userInfo;
-        this.uesrInfoForm.realName = realName;
-        this.uesrInfoForm.photo = photo;
-        this.uesrInfoForm.email = email;
-        this.uesrInfoForm.sex = sex;
-        this.uesrInfoForm.address = address;
-        this.uesrInfoForm.teaSubject = teaSubject;
+        const { data } = res.data
+        this.schoolInfo = data.school
+        this.userInfo = data.userInfo
+        const {
+          realName,
+          photo,
+          email,
+          sex,
+          address,
+          teaSubject,
+        } = data.userInfo
+        this.uesrInfoForm.realName = realName
+        this.uesrInfoForm.photo = photo
+        this.uesrInfoForm.email = email
+        this.uesrInfoForm.sex = sex
+        this.uesrInfoForm.address = address
+        this.uesrInfoForm.teaSubject = teaSubject
       })
     },
     handleClose() {
-      this.editPWDialogVisible = false;
-      this.editUIDialogVisible = false;
-      this.editMobileDialogVisible = false;
+      this.editPWDialogVisible = false
+      this.editUIDialogVisible = false
+      this.editMobileDialogVisible = false
     },
     fromEdit(data) {
-      this.editPWDialogVisible = data;
-      this.editUIDialogVisible = data;
-      this.editMobileDialogVisible = data;
+      this.editPWDialogVisible = data
+      this.editUIDialogVisible = data
+      this.editMobileDialogVisible = data
       location.reload()
-    }
+    },
   },
 }
 </script>
@@ -212,7 +219,9 @@ export default {
 }
 
 @media (max-width: 1024px) {
-  .passw_dialog, .moblie_dialog {
+  .passw_dialog,
+  .moblie_dialog,
+  .info_dialog {
     width: 50% !important;
   }
 }
