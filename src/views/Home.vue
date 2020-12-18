@@ -596,7 +596,7 @@ export default {
 
 <style lang="scss" scoped>
 .bgc_color {
-  position: absolute;
+  position: fixed;
   top: 0;
   z-index: 0;
   width: 100%;
@@ -619,7 +619,7 @@ i:hover {
   color: #fff;
   font-size: 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.09);
-  z-index: 1;
+  z-index: 22;
   a {
     color: #fff;
     width: 200px;

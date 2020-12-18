@@ -122,6 +122,7 @@ export default {
 
     return {
       headerObj: {
+        ContentType: 'multipart/form-data',
         Authorization: window.sessionStorage.getItem('token'),
       },
       // 详细信息

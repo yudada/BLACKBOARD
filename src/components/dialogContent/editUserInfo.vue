@@ -95,6 +95,7 @@ export default {
         ],
       },
       headerObj: {
+        ContentType: 'multipart/form-data',
         Authorization: window.sessionStorage.getItem('token'),
       },
       defaultPic: 'this.src="' + require('@/assets/def_avater.jpg') + '"',

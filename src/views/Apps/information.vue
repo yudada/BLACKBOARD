@@ -68,6 +68,7 @@ export default {
       // 学校信息
       schoolRuleForm: {},
       headerObj: {
+        ContentType: 'multipart/form-data',
         Authorization: window.sessionStorage.getItem('token'),
       },
       // 学校信息验证规则

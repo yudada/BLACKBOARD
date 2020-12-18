@@ -55,7 +55,7 @@
               </el-table-column>
               <el-table-column label="编辑信息" prop="monthRemarks" width="120">
                 <template slot-scope="scope">
-                  <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="editStudentPage"></el-button>
+                  <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="editStudentPage(scope.row.sid)"></el-button>
                   <el-button type="danger" size="mini" @click="removeById(scope.row.sid)">删除</el-button>
                 </template>
               </el-table-column>
@@ -117,8 +117,8 @@ export default {
 
       console.log(res.data);
     },
-    editStudentPage() {
-      this.$router.push('./profile')
+    editStudentPage(sid) {
+      this.$router.push({path:'./profile', query: {sid:sid}})
     },
     // 分页
     handleSizeChange(newSize) {

@@ -21,7 +21,7 @@ const service = axios.create({
 
 // service.defaults.baseURL = 'https://api.vrbook.vip';
 
-service.defaults.headers.post['Content-type'] = 'application/x-www-form-urlencoded';
+service.defaults.headers.post['Content-type'] = 'multipart/form-data';
 
 
 // 通过axios拦截器来添加token验证

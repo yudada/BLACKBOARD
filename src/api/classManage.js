@@ -33,3 +33,11 @@ export function nowStudents(class_id,data) {
     params: {limit:data.limit,stuName:data.stuName}
   })
 }
+
+// 作业统计
+export function workStatistics () {
+  return request({
+    url: `api/exercises/statistics`,
+    method: 'post',
+  })
+}
