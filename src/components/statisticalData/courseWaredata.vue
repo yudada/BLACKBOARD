@@ -102,7 +102,7 @@ export default {
   opacity: 0.7;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1435px) {
   .share_btn {
     margin: 0 !important;
   }

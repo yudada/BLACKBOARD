@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { login } from '../../api/index'
+import { login } from '@/api/user'
 export default {
   data() {
     return {
@@ -98,34 +98,26 @@ export default {
       this.$refs.loginFormRef.resetFields()
     },
     login() {
+      // login();
+      // return;
+
       this.$refs.loginFormRef.validate(async (valid) => {
         if (!valid) return this.$message.error('请填写必要项！')
-        const { data: res } = await this.$http.post(
-          `/api/auth/login`,
-          this.loginForm
-        )
-        if (res.statusCode !== 200) return this.$message.error(res.msg)
-        this.$message.success('登录成功!')
-
-        window.sessionStorage.setItem('token', res.data.token)
-
-        if (this.loginForm.checked === true) {
-          this.setCookie(
-            this.loginForm.userName,
-            this.loginForm.userPassword,
-            7
-          )
-        } else {
-          this.clearCookie()
-        }
-        this.$router.push('/home')
-
-        // console.log(this.loginForm);
-        // login(this.loginForm).then(res=> {
-        // console.log(res.data);
-        // window.sessionStorage.setItem('token', res.data.token);
-        // this.$router.push('/home')
-        // })
+        login(this.loginForm).then((res) => {
+          const { data } = res
+          if (res.statusCode !== 200) return
+          window.sessionStorage.setItem('token', data.token)
+          if (this.loginForm.checked === true) {
+            this.setCookie(
+              this.loginForm.userName,
+              this.loginForm.userPassword,
+              7
+            )
+          } else {
+            this.clearCookie()
+          }
+          this.$router.push('/home')
+        })
       })
     },
     forgetPassword() {

@@ -1,5 +1,8 @@
+import 'es6-promise/auto'
+
+// Promise.polyfill();
+
 import axios from 'axios';
-import router from '@/router/index'
 import { Message } from 'element-ui';
 
 // 导入 NProgress 包对应的JS和CSS
@@ -9,13 +12,12 @@ import 'nprogress/nprogress.css'
 const isDev = process.env.NODE_ENV === 'development';
 
 const instance = axios.create({
-    baseURL: isDev ? 'api' : 'https://api.vrbook.vip',
-    timeout: 1000 * 12
+    // baseURL: isDev ? 'api' : 'https://api.vrbook.vip',
+    timeout: 1000 * 12,
+    baseURL: 'https://api.vrbook.vip'
 });
 
-// instance.defaults.baseURL = 'https://api.vrbook.vip';
-
-instance.defaults.headers.post['Content-type'] = 'multipart/form-data';
+instance.defaults.headers.post['Content-type'] = 'application/x-www-form-urlencoded';
 
 instance.interceptors.request.use(config => {
     NProgress.start()
@@ -40,21 +42,17 @@ instance.interceptors.response.use(
     },
     response => {
         NProgress.done()
-        if (response.status === 200) {
-            Message({
-                message: "response.data.msg",
-                type: 'success',
-                duration: 2000
-            })
-            return Promise.resolve(response.data);
-        } else {
+        if (response.status !== 200) {
             Message({
                 message: response,
                 type: 'error',
                 duration: 2000
             })
-        console.log('err' + error)
-        return Promise.reject(response);
+            console.log('err' + error)
+            return Promise.reject(response);
+        } else {
+            console.log(response);
+            return Promise.resolve(response.data);
         }
     },
     error => {

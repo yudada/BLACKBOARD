@@ -1,5 +1,5 @@
 <template>
-  <el-container class="home_container">
+  <div class="home_container">
     <div class="bgc_color"></div>
     <!-- 头部区域 -->
     <el-header>
@@ -124,7 +124,7 @@
       </div>
     </el-footer>
     <el-backtop></el-backtop>
-  </el-container>
+  </div>
 </template>
 
 <script>
@@ -596,7 +596,7 @@ export default {
 
 <style lang="scss" scoped>
 .bgc_color {
-  position: fixed;
+  position: absolute;
   top: 0;
   z-index: 0;
   width: 100%;
@@ -610,6 +610,7 @@ i:hover {
   cursor: pointer;
 }
 .el-header {
+  position: relative;
   background: rgba(225, 225, 225, 0.01);
   color: #fff;
   display: flex;
@@ -666,6 +667,10 @@ i:hover {
     -o-transition: all 0.3s;
     transition: all 0.3s;
   }
+}
+.el-container {
+  position: relative;
+  z-index: 1;
 }
 .el-main {
   height: 100%;

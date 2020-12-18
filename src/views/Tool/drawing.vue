@@ -18,7 +18,11 @@
             <div class="card_body">
               <div v-for="item in toolList" :key="item.id" class="text item">
                 <div class="card_content">
-                  <img :src="item.toolImage" :onerror="defaultPic"  @click="openDialogVisible(item)" />
+                  <img
+                    :src="item.toolImage"
+                    :onerror="defaultPic"
+                    @click="openDialogVisible(item)"
+                  />
                   <span>{{ item.toolTitle }}</span>
                 </div>
               </div>
@@ -35,7 +39,6 @@
         :destroy-on-close="true"
       >
         <iframe :src="toolInfo.toolAddress" frameborder="0" />
-        <!-- <iframe :src="'static/tool/' + haiyang + '.html'" frameborder="0" /> -->
       </el-dialog>
     </div>
   </div>
@@ -80,6 +83,7 @@ export default {
       if (res.statusCode !== 200)
         return this.$message.error('获取工具列表失败！')
       this.toolList = res.data
+
       this.toolList.map((item) => {
         this.toolUrlList.map((item2) => {
           if (item.toolTitle === item2.toolTitle) {
@@ -97,7 +101,6 @@ export default {
       } else {
         this.$message.info('功能开发中!!!')
       }
-      // this.dialogVisible = true
     },
   },
 }

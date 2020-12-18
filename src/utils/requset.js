@@ -15,20 +15,18 @@ const toLogin = () => {
 const isDev = process.env.NODE_ENV === 'development';
 
 const service = axios.create({
-       baseURL: isDev ? 'api' : 'https://api.vrbook.vip',
-    timeout: 1000 * 12
+    //    baseURL: isDev ? 'api' : 'https://api.vrbook.vip',
+    timeout: 1000 * 12,
+    baseURL: 'https://api.vrbook.vip'
 });
 
-// service.defaults.baseURL = 'https://api.vrbook.vip';
-
-service.defaults.headers.post['Content-type'] = 'multipart/form-data';
-
+// service.defaults.headers.post['Content-type'] = 'multipart/form-data';
 
 // 通过axios拦截器来添加token验证
 service.interceptors.request.use(
     config => {
         NProgress.start()
-            // 在请求头中添加Authorization，赋予token值
+        // 在请求头中添加Authorization，赋予token值
         config.headers.Authorization = window.sessionStorage.getItem('token')
         return config
     },
@@ -70,7 +68,7 @@ service.interceptors.response.use(
     error => {
         console.log('err' + error, 1)
         Message({
-            message:'网络错误，请稍后再试!',
+            message: error.message,
             type: 'error',
             durantion: 5 * 1000
         })
