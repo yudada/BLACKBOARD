@@ -3,70 +3,50 @@
     <el-card>
       <div slot="header" class="clearfix">
         <span>基础信息</span>
+        <el-button
+          style="float: right; padding: 3px 0"
+          type="text"
+          @click="openDialog"
+          >编辑信息</el-button
+        >
       </div>
       <div class="student_info">
         <table class="table_wh">
           <tbody class="table_w">
             <tr>
-              <td><strong>姓名 :</strong>{{ basiscInfo.name }}</td>
+              <td><strong>性别 :</strong>{{ studentInfo.sex }}</td>
             </tr>
             <tr>
               <td>
                 <strong>家庭址址 :</strong>
-                {{ basiscInfo.adderss }}
+                {{ studentInfo.address }}
               </td>
             </tr>
             <tr>
-              <td><strong>兴趣爱好 :</strong>{{ basiscInfo.hobby }}</td>
+              <td><strong>兴趣爱好 :</strong>{{ studentInfo.hobby }}</td>
             </tr>
           </tbody>
           <tbody class="table_w">
             <tr>
-              <td><strong>学生微博 :</strong>{{ basiscInfo.weibo }}</td>
+              <td><strong>学生QQ :</strong>{{ studentInfo.qq }}</td>
             </tr>
             <tr>
-              <td><strong>学生邮箱 :</strong>{{ basiscInfo.email }}</td>
+              <td><strong>学生邮箱 :</strong>{{ studentInfo.email }}</td>
             </tr>
             <tr>
-              <td><strong>学生电话 :</strong>{{ basiscInfo.tel }}</td>
-            </tr>
-          </tbody>
-          <tbody class="table_w">
-            <tr>
-              <td></td>
-            </tr>
-            <tr>
-              <td><strong>家长姓名 :</strong>{{ basiscInfo.parents1 }}</td>
-            </tr>
-            <tr>
-              <td><strong>联系电话 :</strong>{{ basiscInfo.parentTel1 }}</td>
+              <td><strong>学生电话 :</strong>{{ studentInfo.userMobile }}</td>
             </tr>
           </tbody>
-          <tbody class="table_w">
+          <tbody
+            class="table_w"
+            v-for="(item, index) in studentInfo.parents"
+            :key="index"
+          >
             <tr>
-              <td></td>
+              <td><strong>家长姓名 :</strong>{{ item.realName }}--{{item.relation}}</td>
             </tr>
             <tr>
-              <td><strong>家长姓名 :</strong>{{ basiscInfo.parents2 }}</td>
-            </tr>
-            <tr>
-              <td><strong>联系电话 :</strong>{{ basiscInfo.parentTel2 }}</td>
-            </tr>
-          </tbody>
-          <tbody class="table_w">
-            <tr>
-              <td><strong>家长姓名 :</strong>{{ basiscInfo.parents3 }}</td>
-            </tr>
-            <tr>
-              <td><strong>联系电话 :</strong>{{ basiscInfo.parentTel3 }}</td>
-            </tr>
-          </tbody>
-          <tbody class="table_w">
-            <tr>
-              <td><strong>家长姓名 :</strong>{{ basiscInfo.parents4 }}</td>
-            </tr>
-            <tr>
-              <td><strong>联系电话 :</strong>{{ basiscInfo.parentTel4 }}</td>
+              <td><strong>联系电话 :</strong>{{ item.mobile }}</td>
             </tr>
           </tbody>
         </table>
@@ -96,12 +76,27 @@
           <el-tab-pane label="点赞互动" name="third">角色管理</el-tab-pane>
         </el-tabs>
       </div>
+      <!-- 编辑信息 -->
+      <el-dialog
+        title="编辑信息"
+        :visible.sync="editUIDialogVisible"
+        width="60%"
+        :append-to-body="true"
+        :before-close="handleClose"
+        custom-class="info_dialog"
+        top="10vh"
+      >
+        <edit-student :studentInfo="studentInfo" />
+      </el-dialog>
     </el-card>
   </div>
 </template>
 
 <script>
+import editStudent from '@/components/dialogContent/editStudent.vue'
 export default {
+  components: { editStudent },
+  props: ['studentInfo'],
   data() {
     return {
       activeName: 'second',
@@ -114,22 +109,6 @@ export default {
         { id: 6, subject: '地理', readed: '60%', note: 36 },
         { id: 7, subject: '地理', readed: '60%', note: 36 },
       ],
-      basiscInfo: {
-        name: '张星伟',
-        adderss: '福建省厦门市翔安区新店镇洪琳湖一里美地亚小区五栋501',
-        hobby: '阅读，跳绳，画画',
-        weibo: 'http://weibo.com/zxw',
-        email: 'zhangxinwei@163.com',
-        tel: '13788888888',
-        parents1: '张明洁 -爸爸',
-        parentTel1: '13699999999',
-        parents2: '吴小芳 -妈妈',
-        parentTel2: '13511111111',
-        parents3: '张铁林 -爷爷',
-        parentTel3: '13366666666',
-        parents4: '无',
-        parentTel4: '无',
-      },
       readList: [
         {
           id: 1,
@@ -176,12 +155,19 @@ export default {
         6: 'el-icon-wallet',
         7: 'el-icon-wallet',
       },
+      editUIDialogVisible: false
     }
   },
   methods: {
     handleClick(tab, event) {
       console.log(1)
     },
+    openDialog() {
+      this.editUIDialogVisible = true;
+    },
+    handleClose() {
+      this.editUIDialogVisible = false;
+    }
   },
 }
 </script>
@@ -241,7 +227,11 @@ table {
     font-size: large;
   }
 }
-
+@media (max-width: 1024px) {
+  .info_dialog {
+    width: 50% !important;
+  }
+}
 @media (max-width: 375px) {
   .table_wh {
     display: inherit;

@@ -13,25 +13,5 @@ module.exports = {
         },
       }
     }
-  },
-  configureWebpack: {
-    plugins: [
-      new webpack.ProvidePlugin({
-        entry: {
-          app: ['babel-polyfill', './src/main.js']
-        }
-      })
-    ],
-
-    module: {
-      rules: [
-        {
-          test: /\.js$/,
-          exclude: /node_modules/, // 处理除了nodde_modules里的js文件
-          loader: 'babel-loader'
-        }
-      ]
-    }
   }
-
 }

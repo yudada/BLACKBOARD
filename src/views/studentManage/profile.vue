@@ -14,20 +14,28 @@
               <span>联系方式</span>
             </div>
             <div class="student_img">
-              <img src="../../assets/images/faces/male/4.jpeg" alt="" />
-              <span>名字</span>
-              <el-rate v-model="value1" disabled>本周</el-rate>
-              <span>生日： {{ birthday }}</span>
+              <img
+                v-if="studentInfo.photo"
+                :src="studentInfo.photo"
+                :onerror="defaultPic"
+              />
+              <img v-else src="../../assets/def_avater.jpg" alt="" />
+              <span>{{ studentInfo.stuName }}</span>
+              <el-rate v-model="value1" disabled></el-rate>
+              <span v-if="studentInfo.birthday"
+                >生日： {{ studentInfo.birthday }}</span
+              >
+              <span v-else>生日： 暂无信息</span>
             </div>
             <div class="student_detail">
               <div class="detial_box">
-                <div v-for="(item,index) in studentDetail" :key="index">
-                  <i class="el-icon-delete"></i>
+                <div v-for="(item, index) in studentDetail" :key="index">
+                  <i :class="item.icon"></i>
                   <span>{{ item.title }}： {{ item.data }}</span>
                 </div>
               </div>
               <div class="msg_btn">
-                <el-button type="warning" icon="el-icon-chat-square"
+                <el-button type="info" icon="el-icon-chat-square"
                   >发送信息</el-button
                 >
               </div>
@@ -36,7 +44,7 @@
         </el-col>
 
         <el-col :span="19">
-          <student-detail />
+          <student-detail :studentInfo="studentInfo" />
         </el-col>
       </el-row>
     </div>
@@ -57,39 +65,56 @@ export default {
         { title: '阅读时长', data: '123分钟', icon: 'el-icon-reading' },
         { title: '练习题型', data: '5套', icon: 'el-icon-copy-document' },
       ],
+      defaultPic: 'this.src="' + require('@/assets/def_avater.jpg') + '"',
       studentInfo: {
-        userName:'',
+        userName: '',
+        userPassword: '',
         userMobile: '',
-        stuName:'',
-        sex:'',
+        stuName: '',
+        sex: '',
         email: '',
         address: '',
         hobby: '',
         qq: '',
-        parents: [
-          {realName: '', mobile: '', relation: 0, relationName: ''}
-        ]
-      }
+        parentsInfo: [
+          { realName: '', mobile: '', relation: 0, relationName: '' },
+        ],
+      },
     }
   },
   created() {
     this.getStudentDetail()
   },
   computed: {
-    sid: function() {
+    sid: function () {
       return this.$route.query.sid
-    }
+    },
   },
   methods: {
     backList() {
       this.$router.push('/crypto-currencies')
     },
     getStudentDetail() {
-      detailStudent(this.sid).then(res => {
-        const {data} = res;
-        console.log(data);
+      detailStudent(this.sid).then((res) => {
+        const { data } = res
+        this.studentInfo = data
+        if (data.parents.length < 2) {
+          this.setParentsData()
+        }
       })
-    }
+    },
+    setParentsData() {
+      const parentsNum =  2 - (this.studentInfo.parents.length)
+      for(let i = 0;i<parentsNum;i++) {
+        const parentsObj = {
+          relation: '',
+          realName: '',
+          mobile: ''
+        }
+        this.studentInfo.parents.push(parentsObj)
+      }
+      console.log(this.studentInfo);
+    },
   },
 }
 </script>
@@ -107,6 +132,15 @@ export default {
     border: 5px solid rgba(167, 180, 201, 0.2);
     border-radius: 50%;
     font-size: 10px;
+  }
+  span {
+    color: #fff;
+    margin: 0.5em 0;
+  }
+  span:nth-child(4) {
+    color: #fff;
+    margin: 0.5em 0;
+    opacity: 0.5;
   }
 }
 .student_detail {

@@ -179,7 +179,6 @@ export default {
   methods: {
     // 信息保存
     async submitDetailForm() {
-      this.ruleDetailForm.userMobile = parseInt(this.ruleDetailForm.userMobile)
       this.$refs.ruleDetailFormRef.validate(async (valid) => {
         if (!valid) return console.log(this.ruleDetailForm, 1)
         const questionInfo = this.ruleDetailForm
@@ -191,8 +190,8 @@ export default {
         console.log(questionInfo)
         await newStudent(questionInfo).then((res) => {
           console.log(res)
-          if(data.statusCode !== 200) return this.$message.error(data.msg);
-          this.$message.success(data.msg);
+          if(res.statusCode !== 200) return this.$message.error(res.msg);
+          this.$message.success(res.msg);
           this.resetDetailForm();
         })
       })

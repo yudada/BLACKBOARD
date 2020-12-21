@@ -15,9 +15,9 @@ const toLogin = () => {
 const isDev = process.env.NODE_ENV === 'development';
 
 const service = axios.create({
-    //    baseURL: isDev ? 'api' : 'https://api.vrbook.vip',
+       baseURL: isDev ? 'api' : 'https://api.vrbook.vip',
     timeout: 1000 * 12,
-    baseURL: 'https://api.vrbook.vip'
+    // baseURL: 'https://api.vrbook.vip'
 });
 
 // service.defaults.headers.post['Content-type'] = 'multipart/form-data';

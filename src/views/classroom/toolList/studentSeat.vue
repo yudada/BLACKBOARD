@@ -12,20 +12,22 @@
             class="student_card"
           >
             <div class="student_content">
-              <div style="position: relative;">
+              <div style="position: relative">
                 <div class="student_avatar" @click="switchStudentScreen(student)">
-                  <img
-                    v-if="student.photo"
-                    :src="student.photo"
-                    alt=""
-                    :onerror="defaultPic"
-                  />
-                  <img v-else src="@/assets/def_avater.jpg" alt="" />
+                  <div class="avater">
+                    <img
+                      v-if="student.photo"
+                      :src="student.photo"
+                      alt=""
+                      :onerror="defaultPic"
+                    />
+                    <img v-else src="@/assets/def_avater.jpg" alt="" />
+                  </div>
                   <span v-if="student.stuName">{{ student.stuName }}</span>
                   <span v-else>未知</span>
                   <div class="status_screen" v-if="student.screenStatus === 1">
                     <div class="content_screen">
-                      <img src="@/assets/images/screenLock.png" alt="">
+                      <img src="@/assets/images/screenLock.png" alt="" />
                       <p>点击可解锁</p>
                     </div>
                   </div>
@@ -71,19 +73,25 @@
     <div class="classroom_mark">
       <div class="mark_btn">
         <el-dropdown placement="top" v-show="checkedBoxDialog">
-            <el-button>工具</el-button>
-            <el-dropdown-menu slot="dropdown" router>
-              <!-- <el-dropdown-item
+          <el-button>工具</el-button>
+          <el-dropdown-menu slot="dropdown" router>
+            <!-- <el-dropdown-item
                 v-for="(tool, index) in subToolList"
                 :key="index"
                 @click.native="open(tool)"
                 >{{ tool.name }}</el-dropdown-item
               > -->
-              <el-dropdown-item  @click.native="switchClassScreen">全班控屏</el-dropdown-item>
-              <el-dropdown-item  @click.native="switchMultiplayerScreen">控屏</el-dropdown-item>
-              <el-dropdown-item @click.native="openRewardsDialog">评分</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
+            <el-dropdown-item @click.native="switchClassScreen"
+              >全班控屏</el-dropdown-item
+            >
+            <el-dropdown-item @click.native="switchMultiplayerScreen"
+              >控屏</el-dropdown-item
+            >
+            <el-dropdown-item @click.native="openRewardsDialog"
+              >评分</el-dropdown-item
+            >
+          </el-dropdown-menu>
+        </el-dropdown>
         <!-- <el-button @click="switchScreen">控屏</el-button> -->
         <!-- <el-button @click="openRewardsDialog">评分</el-button> -->
         <el-button @click="switchCheckedBoxDialog">多选</el-button>
@@ -194,7 +202,13 @@
 
 <script>
 import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
-import { studentName, scoreTagList, score, studentScreen, classScreen } from '@/api/classRoom.js'
+import {
+  studentName,
+  scoreTagList,
+  score,
+  studentScreen,
+  classScreen,
+} from '@/api/classRoom.js'
 import { classInfo } from '@/api/index.js'
 export default {
   data() {
@@ -233,10 +247,10 @@ export default {
       defaultPic: 'this.src="' + require('@/assets/def_avater.jpg') + '"',
       studentScreenInfo: {
         sid_arr: [],
-        screenStatus: ''
+        screenStatus: '',
       },
       screenStatusClass: '',
-      screenStatusMultiplayer: ''
+      screenStatusMultiplayer: '',
     }
   },
   computed: {
@@ -254,7 +268,7 @@ export default {
     // 标签列表
     getTagList() {
       scoreTagList().then((res) => {
-        const { scoreArr } = res.data;
+        const { scoreArr } = res.data
         scoreArr.map((item) => {
           if (item.type === 1 && item.scoreGlobal === 0) {
             this.tagAddList.push(item)
@@ -312,7 +326,7 @@ export default {
       studentList.map((item) => {
         if (item.isChecked === true && item.screenStatus === 0) {
           this.screenStatusMultiplayer = 0
-        } else if(item.isChecked === true && item.screenStatus !== 0) {
+        } else if (item.isChecked === true && item.screenStatus !== 0) {
           this.screenStatusMultiplayer = 1
         }
       })
@@ -334,7 +348,7 @@ export default {
       }
       console.log(this.scoreData)
       score(this.scoreData).then((res) => {
-        console.log(res);
+        console.log(res)
         if (res.statusCode !== 200) return this.$message.error(res.msg)
         this.$message.success(item.scoreName + ' ' + item.scoreNum)
       })
@@ -352,7 +366,7 @@ export default {
       }
       console.log(this.scoreData)
       score(this.scoreData).then((res) => {
-        console.log(res);
+        console.log(res)
         if (res.statusCode !== 200) return this.$message.error(res.msg)
         this.$message.error(item.scoreName + ' ' + item.scoreNum)
       })
@@ -440,8 +454,8 @@ export default {
     // 关闭打分弹框
     handleCloseRewardsDialog() {
       this.getStudentList()
-      this.rewardsDialog = false;
-      this.checkedBoxDialog = false;
+      this.rewardsDialog = false
+      this.checkedBoxDialog = false
     },
     async goAddStudent() {
       const confirmResult = await this.$confirm(
@@ -473,43 +487,43 @@ export default {
       if (this.checkedBoxDialog === false) {
         this.scoreData.sid_arr = []
         this.markList = []
-        this.studentList.map(item => {
-          item.isChecked = false;
+        this.studentList.map((item) => {
+          item.isChecked = false
         })
       }
       this.checkedBoxDialog = !this.checkedBoxDialog
     },
     // 控屏
     switchScreen(data) {
-      console.log(data);
-      studentScreen(data).then(res => {
-        console.log(res);
+      console.log(data)
+      studentScreen(data).then((res) => {
+        console.log(res)
         this.$message.success(res.msg)
         this.getStudentList()
       })
     },
     // 学生个人控屏状态
     switchStudentScreen(student) {
-      if(student.screenStatus === 0) {
+      if (student.screenStatus === 0) {
         this.studentScreenInfo.screenStatus = 1
       } else {
-      this.studentScreenInfo.screenStatus = 0
+        this.studentScreenInfo.screenStatus = 0
       }
-      this.studentScreenInfo.sid_arr = [];
+      this.studentScreenInfo.sid_arr = []
       this.studentScreenInfo.sid_arr.push(student.sid)
-      console.log(this.studentScreenInfo);
+      console.log(this.studentScreenInfo)
       this.switchScreen(this.studentScreenInfo)
     },
     switchMultiplayerScreen() {
-      if(this.screenStatusMultiplayer === 0) {
+      if (this.screenStatusMultiplayer === 0) {
         this.studentScreenInfo.screenStatus = this.screenStatusMultiplayer = 1
       } else {
         this.studentScreenInfo.screenStatus = this.screenStatusMultiplayer = 0
       }
 
-      this.studentScreenInfo.sid_arr = this.markList;
+      this.studentScreenInfo.sid_arr = this.markList
       this.switchScreen(this.studentScreenInfo)
-      this.checkedBoxDialog = false;
+      this.checkedBoxDialog = false
     },
     async switchClassScreen() {
       this.studentList.map((item) => {
@@ -520,21 +534,20 @@ export default {
           this.screenStatusClass = 1
         }
       })
-      if(this.screenStatusClass === 0) {
-        this.studentScreenInfo.screenStatus = 1;
-        this.screenStatusClass = 1;
+      if (this.screenStatusClass === 0) {
+        this.studentScreenInfo.screenStatus = 1
+        this.screenStatusClass = 1
       } else {
-        this.studentScreenInfo.screenStatus = 0;
-        this.screenStatusClass = 0;
+        this.studentScreenInfo.screenStatus = 0
+        this.screenStatusClass = 0
       }
       this.studentList.map((item) => {
         this.markList.push(item.sid)
       })
-      this.studentScreenInfo.sid_arr = this.markList;
-      await this.switchScreen(this.studentScreenInfo);
-      this.checkedBoxDialog = false;
-    }
-
+      this.studentScreenInfo.sid_arr = this.markList
+      await this.switchScreen(this.studentScreenInfo)
+      this.checkedBoxDialog = false
+    },
   },
 }
 </script>
@@ -564,12 +577,20 @@ export default {
         justify-content: center;
         align-items: center;
         position: relative;
-        cursor: pointer;
+        .avater {
+          width: 100%;
+          padding-bottom: 100%;
+          border-radius: 50%;
+          overflow: hidden;
+          height: 0;
+          cursor: pointer;
+        }
         .status_screen {
           position: absolute;
           width: 100%;
           height: 100%;
           background: rgb(0, 0, 0, 0.5);
+          cursor: pointer;
           .content_screen {
             width: 100%;
             height: 100%;

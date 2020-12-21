@@ -39,10 +39,6 @@
             </div>
           </el-card>
         </el-col>
-        <el-col :span="18">
-          <student-detail />
-        </el-col>
-
       </el-row>
     </div>
   </div>
