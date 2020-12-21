@@ -191,9 +191,9 @@ export default {
         console.log(questionInfo)
         await newStudent(questionInfo).then((res) => {
           console.log(res)
-          // if(data.statusCode !== 200) return this.$message.error(data.msg);
-          // this.$message.success(data.msg);
-          // this.resetDetailForm();
+          if(data.statusCode !== 200) return this.$message.error(data.msg);
+          this.$message.success(data.msg);
+          this.resetDetailForm();
         })
       })
     },

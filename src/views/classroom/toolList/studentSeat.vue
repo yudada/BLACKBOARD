@@ -12,7 +12,6 @@
             class="student_card"
           >
             <div class="student_content">
-              <!-- <el-tag v-if="student.screenStatus === 1" type="info" size="medium" class="student_status">控屏中</el-tag> -->
               <div style="position: relative;">
                 <div class="student_avatar" @click="switchStudentScreen(student)">
                   <img
@@ -28,10 +27,6 @@
                     <div class="content_screen">
                       <img src="@/assets/images/screenLock.png" alt="">
                       <p>点击可解锁</p>
-                    <div class="text_content">
-                      <!-- <p>该屏幕已锁定</p> -->
-                      
-                    </div>
                     </div>
                   </div>
                 </div>
@@ -315,19 +310,12 @@ export default {
       })
 
       studentList.map((item) => {
-        if (item.screenStatus === 1) {
-          this.screenStatusMultiplayer === 1
-        }
-      })
-
-      studentList.map((item) => {
         if (item.isChecked === true && item.screenStatus === 0) {
           this.screenStatusMultiplayer = 0
         } else if(item.isChecked === true && item.screenStatus !== 0) {
           this.screenStatusMultiplayer = 1
         }
       })
-      console.log(this.markList);
     },
     // 打卡打分弹框
     openRewardsDialog() {
@@ -524,6 +512,14 @@ export default {
       this.checkedBoxDialog = false;
     },
     async switchClassScreen() {
+      this.studentList.map((item) => {
+        if (item.screenStatus === 0) {
+          this.screenStatusClass = 0
+          return
+        } else {
+          this.screenStatusClass = 1
+        }
+      })
       if(this.screenStatusClass === 0) {
         this.studentScreenInfo.screenStatus = 1;
         this.screenStatusClass = 1;
@@ -581,12 +577,6 @@ export default {
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            .text_content {
-              margin-top: 2rem;
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-            }
             img {
               width: 35%;
               margin-top: 1em;
@@ -594,12 +584,9 @@ export default {
             p {
               color: #fff;
               font-size: 0.5em;
-            }
-            p:nth-child(1) {
               font-weight: bold;
             }
           }
-          
         }
         img {
           width: 100%;
