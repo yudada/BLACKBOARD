@@ -98,14 +98,12 @@ export default {
       this.$refs.loginFormRef.resetFields()
     },
     login() {
-      // login();
-      // return;
-
       this.$refs.loginFormRef.validate(async (valid) => {
         if (!valid) return this.$message.error('请填写必要项！')
         login(this.loginForm).then((res) => {
           const { data } = res
           if (res.statusCode !== 200) return
+          this.$message.success('登录成功！')
           window.sessionStorage.setItem('token', data.token)
           if (this.loginForm.checked === true) {
             this.setCookie(

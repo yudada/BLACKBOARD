@@ -35,7 +35,9 @@
           </el-card>
         </el-col>
 
-        <el-col :span="19"> </el-col>
+        <el-col :span="19">
+          <student-detail />
+        </el-col>
       </el-row>
     </div>
   </div>
@@ -43,15 +45,17 @@
 
 <script>
 import { detailStudent } from '@/api/studentManage'
+import StudentDetail from './components/studentDetail.vue'
 export default {
+  components: { StudentDetail },
   data() {
     return {
       value1: 5,
       birthday: '2000-12-01',
       studentDetail: [
-        { title: '读书笔记', data: '456条', icon: '' },
-        { title: '阅读时长', data: '123分钟', icon: '' },
-        { title: '练习题型', data: '5套', icon: '' },
+        { title: '读书笔记', data: '456条', icon: 'el-icon-edit' },
+        { title: '阅读时长', data: '123分钟', icon: 'el-icon-reading' },
+        { title: '练习题型', data: '5套', icon: 'el-icon-copy-document' },
       ],
       studentInfo: {
         userName:'',

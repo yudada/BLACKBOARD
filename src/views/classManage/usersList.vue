@@ -125,7 +125,8 @@ export default {
   padding: 20px;
   background: linear-gradient(to left, #9853af, #623aa2);
   img {
-    // width: 40%;
+    width: 120px;
+    height: 120px;
     border-radius: 100%;
   }
   .adviser_info {

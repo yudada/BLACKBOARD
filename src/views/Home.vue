@@ -530,10 +530,10 @@ export default {
         /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
       )
       if (flag === null) {
-        this.$store.commit('setCollapse', false)
+        this.$store.commit('setCollapse', false);
       } else {
-        this.$store.commit('setCollapse', true)
-        this.$store.commit('setFooter', false)
+        this.setFooter(false);
+        this.$store.commit('setCollapse', true);
       }
     },
     // 获取班级列表
@@ -656,7 +656,7 @@ i:hover {
 }
 
 .el-aside {
-  height: 100%;
+  min-height: 100%;
   background-color: #25202d;
   padding: 10px 0;
   z-index: 1;
@@ -670,6 +670,7 @@ i:hover {
 }
 .el-container {
   position: relative;
+  min-height: calc(100vh - 120px);
   z-index: 1;
 }
 .el-main {

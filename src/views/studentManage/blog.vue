@@ -39,13 +39,19 @@
             </div>
           </el-card>
         </el-col>
+        <el-col :span="18">
+          <student-detail />
+        </el-col>
+
       </el-row>
     </div>
   </div>
 </template>
 
 <script>
+import studentDetail from './components/studentDetail.vue';
 export default {
+  components: { studentDetail },
   data() {
     return {
       cardList: [],

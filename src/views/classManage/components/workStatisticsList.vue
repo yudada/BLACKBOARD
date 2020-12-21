@@ -46,8 +46,8 @@ export default {
   align-items: center;
   p {
     margin: 6px 0 6px 0 !important;
-    width: 5rem;
-    text-align: right;
+    width: 8rem;
+    text-align: left;
   }
 }
 .el-progress {

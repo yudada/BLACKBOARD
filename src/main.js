@@ -5,7 +5,6 @@ import '@/plugins/element.js'
 import instance from '@/utils/http'
 import store from '@/store/index'
 
-import VConsole from 'vconsole';
 
 // 导入全局样式
 import '@/assets/css/global.scss'
@@ -20,11 +19,6 @@ import VueQuillEditor from 'vue-quill-editor'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
-
-const isDev = process.env.NODE_ENV === 'development';
-if (isDev) {
-  new VConsole()
-}
 
 
 Vue.prototype.$http = instance

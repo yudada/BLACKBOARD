@@ -12,38 +12,50 @@
             class="student_card"
           >
             <div class="student_content">
-              <!-- <el-tag :type="student.statu" size="medium" class="student_status">已完成</el-tag> -->
-              <div class="student_avatar">
-                <img
-                  v-if="student.photo"
-                  :src="student.photo"
-                  alt=""
-                  :onerror="defaultPic"
+              <!-- <el-tag v-if="student.screenStatus === 1" type="info" size="medium" class="student_status">控屏中</el-tag> -->
+              <div style="position: relative;">
+                <div class="student_avatar" @click="switchStudentScreen(student)">
+                  <img
+                    v-if="student.photo"
+                    :src="student.photo"
+                    alt=""
+                    :onerror="defaultPic"
+                  />
+                  <img v-else src="@/assets/def_avater.jpg" alt="" />
+                  <span v-if="student.stuName">{{ student.stuName }}</span>
+                  <span v-else>未知</span>
+                  <div class="status_screen" v-if="student.screenStatus === 1">
+                    <div class="content_screen">
+                      <img src="@/assets/images/screenLock.png" alt="">
+                      <p>点击可解锁</p>
+                    <div class="text_content">
+                      <!-- <p>该屏幕已锁定</p> -->
+                      
+                    </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="student_score">
+                  <el-tag
+                    type="success"
+                    size="medium"
+                    @click="addScoreMark(student.sid)"
+                    >{{ student.addScore }}</el-tag
+                  >
+                  <el-tag
+                    type="danger"
+                    size="medium"
+                    @click="minusScoreMark(student.sid)"
+                    >{{ student.minusScore }}</el-tag
+                  >
+                </div>
+                <el-checkbox
+                  v-show="checkedBoxDialog === true"
+                  class="student_check"
+                  v-model="student.isChecked"
+                  @change="toggleSelection(studentList)"
                 />
-                <img v-else src="@/assets/def_avater.jpg" alt="" />
-                <span v-if="student.stuName">{{ student.stuName }}</span>
-                <span v-else>未知</span>
               </div>
-              <div class="student_score">
-                <el-tag
-                  type="success"
-                  size="medium"
-                  @click="addScoreMark(student.sid)"
-                  >{{ student.addScore }}</el-tag
-                >
-                <el-tag
-                  type="danger"
-                  size="medium"
-                  @click="minusScoreMark(student.sid)"
-                  >{{ student.minusScore }}</el-tag
-                >
-              </div>
-              <el-checkbox
-                v-show="checkedBoxDialog === true"
-                class="student_check"
-                v-model="student.isChecked"
-                @change="toggleSelection(studentList)"
-              />
             </div>
           </div>
         </el-col>
@@ -63,7 +75,22 @@
     <!-- 打分模块 -->
     <div class="classroom_mark">
       <div class="mark_btn">
-        <el-button @click="openRewardsDialog">评分</el-button>
+        <el-dropdown placement="top" v-show="checkedBoxDialog">
+            <el-button>工具</el-button>
+            <el-dropdown-menu slot="dropdown" router>
+              <!-- <el-dropdown-item
+                v-for="(tool, index) in subToolList"
+                :key="index"
+                @click.native="open(tool)"
+                >{{ tool.name }}</el-dropdown-item
+              > -->
+              <el-dropdown-item  @click.native="switchClassScreen">全班控屏</el-dropdown-item>
+              <el-dropdown-item  @click.native="switchMultiplayerScreen">控屏</el-dropdown-item>
+              <el-dropdown-item @click.native="openRewardsDialog">评分</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        <!-- <el-button @click="switchScreen">控屏</el-button> -->
+        <!-- <el-button @click="openRewardsDialog">评分</el-button> -->
         <el-button @click="switchCheckedBoxDialog">多选</el-button>
         <el-button @click="handleHandUP">举手</el-button>
       </div>
@@ -172,7 +199,7 @@
 
 <script>
 import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
-import { studentName, scoreTagList, score } from '@/api/classRoom.js'
+import { studentName, scoreTagList, score, studentScreen, classScreen } from '@/api/classRoom.js'
 import { classInfo } from '@/api/index.js'
 export default {
   data() {
@@ -209,6 +236,12 @@ export default {
       sidArr: [],
       sclectStuName: false,
       defaultPic: 'this.src="' + require('@/assets/def_avater.jpg') + '"',
+      studentScreenInfo: {
+        sid_arr: [],
+        screenStatus: ''
+      },
+      screenStatusClass: '',
+      screenStatusMultiplayer: ''
     }
   },
   computed: {
@@ -226,7 +259,7 @@ export default {
     // 标签列表
     getTagList() {
       scoreTagList().then((res) => {
-        const { scoreArr } = res.data.data
+        const { scoreArr } = res.data;
         scoreArr.map((item) => {
           if (item.type === 1 && item.scoreGlobal === 0) {
             this.tagAddList.push(item)
@@ -245,7 +278,7 @@ export default {
         classType: 1,
       }
       await studentName(info).then((res) => {
-        const { data } = res.data
+        const { data } = res
         this.studentList = this.setList(data)
         this.studentIndexs = this.studentList.map((v, i) => i)
       })
@@ -276,10 +309,25 @@ export default {
     toggleSelection(studentList) {
       this.markList = []
       studentList.map((item) => {
-        if (item.isChecked == true) {
+        if (item.isChecked === true) {
           this.markList.push(item.sid)
         }
       })
+
+      studentList.map((item) => {
+        if (item.screenStatus === 1) {
+          this.screenStatusMultiplayer === 1
+        }
+      })
+
+      studentList.map((item) => {
+        if (item.isChecked === true && item.screenStatus === 0) {
+          this.screenStatusMultiplayer = 0
+        } else if(item.isChecked === true && item.screenStatus !== 0) {
+          this.screenStatusMultiplayer = 1
+        }
+      })
+      console.log(this.markList);
     },
     // 打卡打分弹框
     openRewardsDialog() {
@@ -298,8 +346,8 @@ export default {
       }
       console.log(this.scoreData)
       score(this.scoreData).then((res) => {
-        const { data } = res
-        if (data.statusCode !== 200) return this.$message.error(data.msg)
+        console.log(res);
+        if (res.statusCode !== 200) return this.$message.error(res.msg)
         this.$message.success(item.scoreName + ' ' + item.scoreNum)
       })
     },
@@ -316,8 +364,8 @@ export default {
       }
       console.log(this.scoreData)
       score(this.scoreData).then((res) => {
-        const { data } = res
-        if (data.statusCode !== 200) return this.$message.error(data.msg)
+        console.log(res);
+        if (res.statusCode !== 200) return this.$message.error(res.msg)
         this.$message.error(item.scoreName + ' ' + item.scoreNum)
       })
     },
@@ -330,7 +378,7 @@ export default {
       this.scoreData.sid_arr = allStudent
       this.scoreData.config_score_id = item.id
       score(this.scoreData).then((res) => {
-        console.log(res.data)
+        console.log(res)
         if (item.scoreNum === '+1') {
           this.$message.success(item.scoreName + ' ' + item.scoreNum)
         } else {
@@ -436,14 +484,61 @@ export default {
     switchCheckedBoxDialog() {
       if (this.checkedBoxDialog === false) {
         this.scoreData.sid_arr = []
-        this.markList = [],
+        this.markList = []
         this.studentList.map(item => {
           item.isChecked = false;
         })
       }
       this.checkedBoxDialog = !this.checkedBoxDialog
-      console.log(this.scoreData.sid_arr)
     },
+    // 控屏
+    switchScreen(data) {
+      console.log(data);
+      studentScreen(data).then(res => {
+        console.log(res);
+        this.$message.success(res.msg)
+        this.getStudentList()
+      })
+    },
+    // 学生个人控屏状态
+    switchStudentScreen(student) {
+      if(student.screenStatus === 0) {
+        this.studentScreenInfo.screenStatus = 1
+      } else {
+      this.studentScreenInfo.screenStatus = 0
+      }
+      this.studentScreenInfo.sid_arr = [];
+      this.studentScreenInfo.sid_arr.push(student.sid)
+      console.log(this.studentScreenInfo);
+      this.switchScreen(this.studentScreenInfo)
+    },
+    switchMultiplayerScreen() {
+      if(this.screenStatusMultiplayer === 0) {
+        this.studentScreenInfo.screenStatus = this.screenStatusMultiplayer = 1
+      } else {
+        this.studentScreenInfo.screenStatus = this.screenStatusMultiplayer = 0
+      }
+
+      this.studentScreenInfo.sid_arr = this.markList;
+      this.switchScreen(this.studentScreenInfo)
+      this.checkedBoxDialog = false;
+    },
+    async switchClassScreen() {
+      if(this.screenStatusClass === 0) {
+        this.studentScreenInfo.screenStatus = 1;
+        this.screenStatusClass = 1;
+      } else {
+        this.studentScreenInfo.screenStatus = 0;
+        this.screenStatusClass = 0;
+      }
+      this.studentList.map((item) => {
+        this.markList.push(item.sid)
+      })
+      this.studentScreenInfo.sid_arr = this.markList;
+      await this.switchScreen(this.studentScreenInfo);
+      this.checkedBoxDialog = false;
+    }
+
   },
 }
 </script>
@@ -461,6 +556,7 @@ export default {
       position: relative;
       padding: 0.25rem;
       height: 100%;
+      z-index: 1;
       .student_status {
         position: absolute;
         margin: 0;
@@ -471,12 +567,50 @@ export default {
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        position: relative;
+        cursor: pointer;
+        .status_screen {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          background: rgb(0, 0, 0, 0.5);
+          .content_screen {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            .text_content {
+              margin-top: 2rem;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+            }
+            img {
+              width: 35%;
+              margin-top: 1em;
+            }
+            p {
+              color: #fff;
+              font-size: 0.5em;
+            }
+            p:nth-child(1) {
+              font-weight: bold;
+            }
+          }
+          
+        }
         img {
           width: 100%;
         }
         span {
           color: #636262;
           font-size: 14px;
+          min-height: 2rem;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
       }
       .student_score {
@@ -518,7 +652,7 @@ export default {
 .classroom_mark {
   position: fixed;
   right: 0;
-  top: 65%;
+  bottom: 5%;
   .mark_btn {
     display: flex;
     flex-direction: column;
@@ -548,12 +682,6 @@ export default {
       color: #b1afaf;
       cursor: pointer;
     }
-  }
-}
-
-@media (max-width: 1280px) {
-  .classroom_mark {
-    top: 55%;
   }
 }
 </style>

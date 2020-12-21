@@ -229,8 +229,7 @@ export default {
   }
 }
 @media (max-width: 1280px) {
-  .el-col-4
-  {
+  .el-col-4 {
     width: 20%;
   }
   .el-col-20 {

@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
   export default {
     name: 'NavMenu',
     props: ['navMenus'],
@@ -31,6 +32,7 @@
       }
     },
     methods: {
+    ...mapMutations(['setFooter', 'setCollapse']),
       isMobile() {
         let flag = navigator.userAgent.match(
           /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
@@ -39,7 +41,7 @@
           this.$store.commit('setCollapse', false)
         } else {
           this.$store.commit('setCollapse', true)
-          this.$store.commit('isFooter', false)
+          // this.setFooter(false)
         }
       }
     }
