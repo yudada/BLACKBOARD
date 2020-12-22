@@ -30,13 +30,13 @@
               v-on:keyup.enter.native="login"
             />
           </el-form-item>
+          <!-- 按钮区域 -->
           <el-form-item class="forget_psw">
             <el-button type="text" @click="forgetPassword">忘记密码?</el-button>
           </el-form-item>
           <el-form-item prop="password">
             <el-checkbox v-model="loginForm.checked">记住密码</el-checkbox>
           </el-form-item>
-          <!-- 按钮区域 -->
           <el-form-item class="btns">
             <el-button class="cn_btn" type="primary" @click="login"
               >进入</el-button

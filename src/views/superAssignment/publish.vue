@@ -257,7 +257,6 @@ export default {
       const { data: res } = await this.$http.get('api/classroom/myList')
       if (res.statusCode !== 200)
         return this.$message.error('获取班级列表失败！')
-      console.log(res, 1)
       this.classList = res.data
     },
     // 获取课本列表
@@ -265,7 +264,6 @@ export default {
       const { data: res } = await this.$http.get('api/textbook/lists')
       if (res.statusCode !== 200)
         return this.$message.error('获取课本列表失败！')
-      console.log(res, 2)
       this.bookList = res.data
     },
     // 获取作业类型
@@ -283,7 +281,7 @@ export default {
           this.publishForm
         )
         console.log(res)
-        if (res.statusCode !== 200) return this.$message.error('发布作业失败')
+        if (res.statusCode !== 200) return this.$message.error('发布作业失败!')
         this.$message.success('发布作业成功!')
         this.canceSubmitl()
       })

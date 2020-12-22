@@ -17,3 +17,12 @@ export function detailStudent(sid) {
   })
 }
 
+// 学生编辑修改
+export function saveEditStudent(sid,data) {
+  return request({
+    url: `api/student/${sid}`,
+    method: 'patch',
+    params: data
+  })
+}
+

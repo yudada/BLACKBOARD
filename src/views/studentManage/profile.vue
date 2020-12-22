@@ -29,9 +29,17 @@
             </div>
             <div class="student_detail">
               <div class="detial_box">
-                <div v-for="(item, index) in studentDetail" :key="index">
-                  <i :class="item.icon"></i>
-                  <span>{{ item.title }}： {{ item.data }}</span>
+                <div >
+                  <i class="el-icon-edit"></i>
+                  <span> 答题次数： {{ studentInfo.answer_nums }}</span>
+                </div>
+                <div >
+                  <i class="el-icon-reading"></i>
+                  <span> 阅读次数: {{ studentInfo.reading_nums }}</span>
+                </div>
+                <div >
+                  <i class="el-icon-copy-document"></i>
+                  <span> 浏览模型次数： {{ studentInfo.models_nums }}</span>
                 </div>
               </div>
               <div class="msg_btn">
@@ -60,11 +68,6 @@ export default {
     return {
       value1: 5,
       birthday: '2000-12-01',
-      studentDetail: [
-        { title: '读书笔记', data: '456条', icon: 'el-icon-edit' },
-        { title: '阅读时长', data: '123分钟', icon: 'el-icon-reading' },
-        { title: '练习题型', data: '5套', icon: 'el-icon-copy-document' },
-      ],
       defaultPic: 'this.src="' + require('@/assets/def_avater.jpg') + '"',
       studentInfo: {
         userName: '',
@@ -98,20 +101,20 @@ export default {
       detailStudent(this.sid).then((res) => {
         const { data } = res
         this.studentInfo = data
-        if (data.parents.length < 2) {
+        if (data.parentsInfo.length < 2) {
           this.setParentsData()
         }
       })
     },
     setParentsData() {
-      const parentsNum =  2 - (this.studentInfo.parents.length)
+      const parentsNum =  2 - (this.studentInfo.parentsInfo.length)
       for(let i = 0;i<parentsNum;i++) {
         const parentsObj = {
           relation: '',
           realName: '',
           mobile: ''
         }
-        this.studentInfo.parents.push(parentsObj)
+        this.studentInfo.parentsInfo.push(parentsObj)
       }
       console.log(this.studentInfo);
     },
@@ -145,9 +148,12 @@ export default {
 }
 .student_detail {
   .detial_box {
-    padding: 1.5rem;
+    padding: 1rem;
     div {
       padding: 5px;
+      span, i {
+        color: #636262;
+      }
     }
   }
   .msg_btn {

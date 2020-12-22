@@ -14,40 +14,42 @@
         <table class="table_wh">
           <tbody class="table_w">
             <tr>
-              <td><strong>性别 :</strong>{{ studentInfo.sex }}</td>
+              <td><strong>性别 : </strong>{{ studentInfo.sex }}</td>
             </tr>
             <tr>
               <td>
-                <strong>家庭址址 :</strong>
+                <strong>家庭址址 : </strong>
                 {{ studentInfo.address }}
               </td>
             </tr>
             <tr>
-              <td><strong>兴趣爱好 :</strong>{{ studentInfo.hobby }}</td>
+              <td><strong>兴趣爱好 : </strong>{{ studentInfo.hobby }}</td>
             </tr>
           </tbody>
           <tbody class="table_w">
             <tr>
-              <td><strong>学生QQ :</strong>{{ studentInfo.qq }}</td>
+              <td><strong>学生QQ : </strong>{{ studentInfo.qq }}</td>
             </tr>
             <tr>
-              <td><strong>学生邮箱 :</strong>{{ studentInfo.email }}</td>
+              <td><strong>学生邮箱 : </strong>{{ studentInfo.email }}</td>
             </tr>
             <tr>
-              <td><strong>学生电话 :</strong>{{ studentInfo.userMobile }}</td>
+              <td><strong>学生电话 : </strong>{{ studentInfo.userMobile }}</td>
             </tr>
           </tbody>
           <tbody
             class="table_w"
-            v-for="(item, index) in studentInfo.parents"
+            v-for="(item, index) in studentInfo.parentsInfo"
             :key="index"
           >
-            <tr>
-              <td><strong>家长姓名 :</strong>{{ item.realName }}--{{item.relation}}</td>
+            <div v-if="item.realName">
+              <tr>
+              <td><strong>家长姓名 : </strong>{{ item.realName }}--{{item.relation}}</td>
             </tr>
             <tr>
-              <td><strong>联系电话 :</strong>{{ item.mobile }}</td>
+              <td><strong>联系电话 : </strong>{{ item.mobile }}</td>
             </tr>
+            </div>
           </tbody>
         </table>
       </div>
@@ -242,5 +244,15 @@ table {
       width: 100%;
     }
   }
+}
+</style>
+
+<style lang="scss">
+  .info_dialog {
+  max-height: 88vh;
+  overflow: overlay;
+}
+.info_dialog::-webkit-scrollbar {
+  display: none;
 }
 </style>

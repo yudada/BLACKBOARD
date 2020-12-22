@@ -118,7 +118,7 @@ export default {
           quePracticeSubject: this.quePracticeSubject,
         },
       });
-      if (res.statusCode !== 200) return this.$message.error("请求列表失败！");
+      if (res.statusCode !== 200) return this.$message.error(res.msg);
       this.questionList = res.data.data;
       this.total = res.data.total;
       this.currentPage = res.data.current_page;
@@ -130,7 +130,7 @@ export default {
     },
     async removeById(id) {
       const confirmResult = await this.$confirm(
-        "此操作将永久删除该商品, 是否继续?",
+        "此操作将永久删除该作业, 是否继续?",
         "提示",
         {
           confirmButtonText: "确定",
@@ -144,7 +144,7 @@ export default {
       }
       const { data: res } = await this.$http.delete(`api/library/${id}`);
       if (res.statusCode !== 200) return this.$message.error(res.msg);
-      this.$message.success(res.msg);
+      this.$message.success("删除成功！");
       this.getQueList();
     },
     editById(id) {

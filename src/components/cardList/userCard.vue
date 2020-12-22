@@ -49,7 +49,7 @@ export default {
     justify-content: center;
     padding: 15px 0 15px 10px;
     .num_people {
-      font-size: 32px;
+      font-size: 2em;
     }
     p {
       margin: 0;
@@ -82,7 +82,7 @@ export default {
     justify-content: center;
     padding: 15px 0 15px 10px;
     .num_people {
-      font-size: 32px;
+      font-size: 2em;
     }
     p {
       margin: 0;
@@ -111,7 +111,7 @@ export default {
     justify-content: center;
     padding: 15px 0 15px 10px;
     .num_people {
-      font-size: 32px;
+      font-size: 2em;
     }
     p {
       margin: 0;
@@ -140,7 +140,7 @@ export default {
     justify-content: center;
     padding: 15px 0 15px 10px;
     .num_people {
-      font-size: 32px;
+      font-size: 2em;
     }
     p {
       margin: 0;

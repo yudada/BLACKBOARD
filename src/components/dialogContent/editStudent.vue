@@ -29,19 +29,21 @@
         </div>
         <div class="content_form">
           <el-form-item label="账号" prop="userName">
-            <el-input v-model="editStudentInfo.userName"></el-input>
+            <el-input v-model="editStudentInfo.userName" />
           </el-form-item>
           <el-form-item label="密码">
-            <el-input
-              v-model="editStudentInfo.userPassword"
-              placeholder="学生登录密码，请勿随意更改！"
-            ></el-input>
+            <div v-if="editStudentInfo.userName">
+              <el-button size="mini" @click="resetPassWord">{{buttonText}}</el-button>
+            </div>
+            <div v-else>
+              <el-input v-model="editStudentInfo.userPassword" placeholder="默认123456" disabled />
+            </div>
           </el-form-item>
           <el-form-item label="手机号码" prop="userMobile">
-            <el-input v-model="editStudentInfo.userMobile"></el-input>
+            <el-input v-model="editStudentInfo.userMobile" />
           </el-form-item>
           <el-form-item label="姓名" prop="stuName">
-            <el-input v-model="editStudentInfo.stuName"></el-input>
+            <el-input v-model="editStudentInfo.stuName" />
           </el-form-item>
           <el-form-item label="性别">
             <el-select v-model="editStudentInfo.sex" placeholder="请选择">
@@ -50,24 +52,53 @@
             </el-select>
           </el-form-item>
           <el-form-item label="邮箱">
-            <el-input v-model="editStudentInfo.email"></el-input>
-          </el-form-item>
-          <el-form-item label="地址">
-            <el-input v-model="editStudentInfo.address"></el-input>
-          </el-form-item>
-          <el-form-item label="爱好">
-            <el-input v-model="editStudentInfo.hobby"></el-input>
+            <el-input v-model="editStudentInfo.email" />
           </el-form-item>
           <el-form-item label="QQ">
-            <el-input v-model="editStudentInfo.qq"></el-input>
+            <el-input v-model="editStudentInfo.qq" />
           </el-form-item>
-          <el-form-item></el-form-item>
-          <el-form-item label="家长" v-for="(item,index) in editStudentInfo.parents" :key="index">
-            <el-input placeholder="关系" v-model="item.relation"></el-input>
-            <el-input placeholder="姓名" v-model="item.realName"></el-input>
-            <el-input placeholder="手机号码" v-model="item.mobile"></el-input>
+          <el-form-item label="爱好">
+            <el-input v-model="editStudentInfo.hobby" />
+          </el-form-item>
+          <el-form-item label="生日">
+            <el-date-picker
+              v-model="editStudentInfo.birthday"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="选择日期"
+            >
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="地址">
+            <el-input type="textarea" v-model="editStudentInfo.address" />
           </el-form-item>
         </div>
+        <el-form-item label="家长" class="parentsInfo_form" prop="parentsInfo">
+          <el-select v-model="editStudentInfo.parentsInfo[0].relation" placeholder="请选择关系">
+            <el-option v-for="item2 in parentsInfoRelation" :key="item2.id" :label="item2.relation" :value="item2.relation" />
+          </el-select>
+          <el-input
+            placeholder="姓名(选择其他关系时请填写关系)"
+            v-model="editStudentInfo.parentsInfo[0].realName"
+          />
+          <el-input
+            placeholder="手机号码"
+            v-model="editStudentInfo.parentsInfo[0].mobile"
+          />
+        </el-form-item>
+        <el-form-item
+          class="parentsInfo_form"
+          label="家长"
+          v-for="(item, index) in editStudentInfo.parentsInfo"
+          :key="index"
+          v-show="index !== 0"
+        >
+          <el-select v-model="item.relation" placeholder="请选择关系">
+            <el-option v-for="item2 in parentsInfoRelation" :key="item2.id" :label="item2.relation" :value="item2.relation" />
+          </el-select>
+          <el-input placeholder="姓名(选择其他关系时请填写关系)" v-model="item.realName" />
+          <el-input placeholder="手机号码" v-model="item.mobile" />
+        </el-form-item>
         <el-form-item>
           <el-button @click="submitForm" class="cn_btn">提交</el-button>
         </el-form-item>
@@ -77,7 +108,7 @@
 </template>
 
 <script>
-import { changeUserInfo, teacherSubject } from '@/api/index'
+import { saveEditStudent } from '@/api/studentManage'
 export default {
   props: ['studentInfo'],
   data() {
@@ -99,6 +130,13 @@ export default {
           { required: true, message: '请输入地址', trigger: 'blur' },
           { validator: checkMobile, trigger: 'blur' },
         ],
+        parentsInfo: [
+          {
+            required: true,
+            message: '请至少填写一位家长信息',
+            trigger: 'blur',
+          },
+        ],
       },
       headerObj: {
         ContentType: 'multipart/form-data',
@@ -106,6 +144,16 @@ export default {
       },
       defaultPic: 'this.src="' + require('@/assets/def_avater.jpg') + '"',
       subjectArr: [],
+      parentsInfoRelation: [
+        { id: 1, relation: '爸爸'},
+        { id: 2, relation: '妈妈'},
+        { id: 3, relation: '爷爷'},
+        { id: 4, relation: '奶奶'},
+        { id: 5, relation: '外公'},
+        { id: 6, relation: '外婆'},
+        { id: 7, relation: '其他'},
+      ],
+      resetPW: false
     }
   },
   computed: {
@@ -118,6 +166,18 @@ export default {
         ? 'api/api/common/uploadImg'
         : 'https://api.vrbook.vip/api/common/uploadImg'
     },
+    buttonText: function() {
+      return this.resetPW ? '已重置' : '重置密码'
+    },
+    sid: function() {
+      return this.$route.query.sid
+    }
+  },
+  mounted() {
+    if(!this.editStudentInfo.userName) {
+      this.editStudentInfo.userPassword = '123456'
+    }
+    console.log(this.editStudentInfo);
   },
   methods: {
     // 监听图片上传成功的事件
@@ -132,8 +192,29 @@ export default {
       }
       return isLt2M
     },
+    async resetPassWord() {
+      const confirmResult = await this.$confirm(
+        "是否重置密码为“123456” ?",
+        "提示",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        }
+      ).catch((err) => err);
+
+      if (confirmResult !== "confirm") {
+        return 
+      }
+      this.resetPW = true;
+      this.editStudentInfo.userPassword = '123456'
+    },
     submitForm() {
-      console.log(this.editStudentInfo)
+      console.log(this.sid,this.editStudentInfo);
+
+      saveEditStudent(this.sid,this.editStudentInfo).then(res => {
+        console.log(res);
+      })
     },
   },
 }
@@ -161,7 +242,6 @@ export default {
   .el-upload {
     width: 100px;
     height: 100px;
-    margin: 20px 0;
     position: relative;
     img {
       border-radius: 50%;
@@ -179,12 +259,36 @@ export default {
       padding: 1px;
     }
   }
-}
-.content_form {
-  display: flex;
-  flex-wrap: wrap;
-  .el-form-item {
-    width: 50%;
+  .content_form {
+    display: flex;
+    flex-wrap: wrap;
+    .el-form-item {
+      width: 50%;
+    }
+    .el-select {
+      width: 100% !important;
+    }
+    .el-date-editor {
+      width: 100%;
+    }
+    .el-button {
+      border-radius: 15px;
+      color: #fff;
+      background: linear-gradient(to bottom right, #9853af, #623AA2) !important;
+    }
+  }
+  .parentsInfo_form {
+    .el-input {
+      width: 31%;
+      margin-right: 1em;
+    }
+    .el-select {
+      width: 31%;
+      margin-right: 1em;
+      .el-input {
+        width: 100%;
+      }
+    }
   }
 }
 </style>

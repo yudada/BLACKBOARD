@@ -1,7 +1,3 @@
-import 'es6-promise/auto'
-
-// Promise.polyfill();
-
 import axios from 'axios';
 import { Message } from 'element-ui';
 

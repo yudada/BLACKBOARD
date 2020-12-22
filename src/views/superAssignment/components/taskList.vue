@@ -103,6 +103,7 @@ export default {
       }
       const { data: res } = await this.$http.delete(`api/exercises/${id}`);
       if (res.statusCode !== 200) return this.$message.error(res.msg);
+      this.$message.success("删除成功！");
       this.getExercisesList();
     },
   },
