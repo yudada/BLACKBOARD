@@ -1,14 +1,6 @@
 <template>
   <div class="index1_main">
-    <div class="main_header">
-      <h4>全校数据大屏</h4>
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item><a href="#">校园大脑</a></el-breadcrumb-item>
-        <el-breadcrumb-item>全校数据大屏</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
-
+    <Breadcrumb :navData="navData" />
     <div class="index1_concent">
       <el-row :gutter="20">
         <user-card :cardList="cardList" />
@@ -16,11 +8,11 @@
 
       <el-row :gutter="20">
         <el-col :span="24">
-          <el-card shadow="always">
+          <el-card>
             <div slot="header">
               <div>课件教学</div>
             </div>
-            <div id="main" style="width: 100%; height: 380px"></div>
+            <e-chart :option="option" />
           </el-card>
         </el-col>
       </el-row>
@@ -83,14 +75,19 @@
 </template>
 
 <script>
-import echarts from 'echarts'
 import UserCard from '@/components/cardList/userCard'
 import { schoolData } from '@/api/index'
 import CourseWaredata from '@/components/statisticalData/courseWaredata.vue'
+import EChart from '../../components/eChart.vue'
+import Breadcrumb from '../../components/breadcrumb.vue'
 export default {
-  components: { UserCard, CourseWaredata },
+  components: { UserCard, CourseWaredata, EChart, Breadcrumb },
   data() {
     return {
+      navData: {
+        title: '校园大脑',
+        childTitle: '全校数据大屏'
+      },
       topTabledate: [
         { name: '王小虎', class: '一年3班', addText: '2019年度', top: '1' },
         { name: '吴天宇', class: '一年3班', addText: '2019年度', top: '2' },
@@ -99,10 +96,10 @@ export default {
         { name: '胡于琳', class: '一年3班', addText: '2019年度', top: '5' },
       ],
       cardList: [
-        { num: '', title: '老师', imgsrc: 'yonghu' },
-        { num: '', title: '课件', imgsrc: 'yonghu' },
-        { num: '', title: '学生', imgsrc: 'yonghu' },
-        { num: '', title: '家长', imgsrc: 'yonghu' },
+        { num: '', title: '老师', imgsrc: 'jiaoshi' },
+        { num: '', title: '课件', imgsrc: 'kejian' },
+        { num: '', title: '学生', imgsrc: 'xuesheng' },
+        { num: '', title: '家长', imgsrc: 'jiazhang' },
       ],
       teacherTableData: [],
       option: {
@@ -173,14 +170,7 @@ export default {
   created() {
     this.getUserNubemr()
   },
-  mounted() {
-    this.myChart()
-  },
   methods: {
-    myChart() {
-      let myChart = echarts.init(document.getElementById('main'))
-      myChart.setOption(this.option)
-    },
     getUserNubemr() {
       schoolData().then((res) => {
         const { data } = res.data

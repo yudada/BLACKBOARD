@@ -19,7 +19,7 @@
                 :src="studentInfo.photo"
                 :onerror="defaultPic"
               />
-              <img v-else src="../../assets/def_avater.jpg" alt="" />
+              <img v-else src="@/assets/def_avater.jpg" alt="" />
               <span>{{ studentInfo.stuName }}</span>
               <el-rate v-model="value1" disabled></el-rate>
               <span v-if="studentInfo.birthday"
@@ -124,14 +124,15 @@ export default {
 
 <style lang="scss" scoped>
 .student_img {
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 1.5rem;
+  padding: 20px 0;
   background: linear-gradient(to left, #9853af, #623aa2);
   img {
-    width: 50%;
+    width: 120px;
     border: 5px solid rgba(167, 180, 201, 0.2);
     border-radius: 50%;
     font-size: 10px;

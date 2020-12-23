@@ -40,8 +40,7 @@
                     :picker-options="stratTime"
                     value-format="yyyy-MM-dd HH:mm:ss"
                     clearable
-                  >
-                  </el-date-picker>
+                  />
                 </el-form-item>
                 <el-form-item
                   label="结束时间"
@@ -56,8 +55,7 @@
                     :picker-options="endTime"
                     value-format="yyyy-MM-dd HH:mm:ss"
                     clearable
-                  >
-                  </el-date-picker>
+                  />
                 </el-form-item>
               </div>
               <el-form-item label="班级" prop="class_id">

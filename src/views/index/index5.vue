@@ -20,7 +20,7 @@
                 <i class="el-icon-caret-left"></i>
               </div>
               <div class="row">
-                <img :src="require('../../assets/'+item.imgsrc+'.png')"/>
+                <img :src="require('@/assets/icon/'+item.imgsrc+'.png')"/>
               </div>
             </div>
           </el-card>

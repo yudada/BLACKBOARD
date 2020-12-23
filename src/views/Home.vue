@@ -316,6 +316,14 @@ export default {
             {
               entity: {
                 id: 2,
+                name: 'papers-list',
+                icon: 'icon-wenjian',
+                alias: '试卷列表',
+              },
+            },
+            {
+              entity: {
+                id: 3,
                 name: 'progress',
                 icon: 'icon-tongji',
                 alias: '作业统计',
@@ -323,7 +331,7 @@ export default {
             },
             {
               entity: {
-                id: 3,
+                id: 4,
                 name: 'performance',
                 icon: 'icon-baogao',
                 alias: '成绩报告',
@@ -331,7 +339,7 @@ export default {
             },
             {
               entity: {
-                id: 4,
+                id: 5,
                 name: 'faq',
                 icon: 'icon-biji',
                 alias: '阅读笔记',
@@ -702,7 +710,7 @@ i:hover {
   color: #fff;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 800px) {
   .el-aside {
     position: absolute;
     z-index: 2;

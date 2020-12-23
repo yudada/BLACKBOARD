@@ -214,6 +214,9 @@ export default {
 
       saveEditStudent(this.sid,this.editStudentInfo).then(res => {
         console.log(res);
+        if (res.statusCode !== 200) return this.$message.error(res.msg)
+        this.$message.success(res.msg)
+        this.$emit('closeDialog', false)
       })
     },
   },
@@ -279,11 +282,11 @@ export default {
   }
   .parentsInfo_form {
     .el-input {
-      width: 31%;
+      width: 30%;
       margin-right: 1em;
     }
     .el-select {
-      width: 31%;
+      width: 30%;
       margin-right: 1em;
       .el-input {
         width: 100%;

@@ -43,8 +43,6 @@ export default {
   props: ['teacherTableData'],
   data() {
     return {
-      percentage: 20,
-      customColor: '#409eff',
       customColors: [
         { color: '#909399', percentage: 20 },
         { color: '#e6a23c', percentage: 40 },
@@ -55,27 +53,6 @@ export default {
     }
   },
   methods: {
-    customColorMethod(percentage) {
-      if (percentage < 30) {
-        return '#909399'
-      } else if (percentage < 70) {
-        return '#e6a23c'
-      } else {
-        return '#67c23a'
-      }
-    },
-    increase() {
-      this.percentage += 10
-      if (this.percentage > 100) {
-        this.percentage = 100
-      }
-    },
-    decrease() {
-      this.percentage -= 10
-      if (this.percentage < 0) {
-        this.percentage = 0
-      }
-    },
     toCourse(data) {
       console.log(data);
       this.$router.push({ path: '/course-detail', query: {id:data.id}})

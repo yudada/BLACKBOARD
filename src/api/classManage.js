@@ -41,3 +41,21 @@ export function workStatistics () {
     method: 'post',
   })
 }
+
+// 试卷列表
+export function papersList (data) {
+  return request({
+    url: `api/shijuan/list`,
+    method: 'get',
+    params: { limit:data }
+  })
+}
+
+// 发布试卷
+export function papersAdd (data) {
+  return request({
+    url: `api/shijuan/add`,
+    method: 'post',
+    params: data
+  })
+}

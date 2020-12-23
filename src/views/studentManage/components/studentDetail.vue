@@ -88,7 +88,7 @@
         custom-class="info_dialog"
         top="10vh"
       >
-        <edit-student :studentInfo="studentInfo" />
+        <edit-student :studentInfo="studentInfo" @closeDialog="fromEdit" />
       </el-dialog>
     </el-card>
   </div>
@@ -169,7 +169,10 @@ export default {
     },
     handleClose() {
       this.editUIDialogVisible = false;
-    }
+    },
+    fromEdit(data) {
+      this.editUIDialogVisible = data
+    },
   },
 }
 </script>

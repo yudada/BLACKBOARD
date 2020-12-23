@@ -12,6 +12,12 @@ const toLogin = () => {
     });
 }
 
+const toErr = () => {
+    router.replace({
+        path: '/404'
+    });
+}
+
 const isDev = process.env.NODE_ENV === 'development';
 
 const service = axios.create({
@@ -57,6 +63,12 @@ service.interceptors.response.use(
                             toLogin();
                         }, 1000);
                     })
+                })
+            } else if(res.statusCode === 404) {
+                window.sessionStorage.clear().then(() => {
+                    setTimeout(() => {
+                        toErr();
+                    }, 1000);
                 })
             }
             console.log(response, 2);

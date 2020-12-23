@@ -60,19 +60,27 @@ const routes = [
       },
       {
         path: '/classroomAdd',
-        component: () => import('../views/classManage/classroomAdd.vue')
+        component: () => import('../views/classManage/components/classroomAdd.vue')
       },
       {
         path: '/reportPerformance',
-        component: () => import('../views/classManage/reportPerformance.vue')
+        component: () => import('../views/classManage/components/reportPerformance.vue')
       },
       {
         path: '/perDetial',
-        component: () => import('../views/classManage/perDetial.vue')
+        component: () => import('../views/classManage/components/perDetial.vue')
       },
       {
         path:'/classroomList',
         component: () => import('../views/classManage/classroomList.vue')
+      },
+      {
+        path:'/papers-list',
+        component: () => import('../views/classManage/papersList.vue')
+      },
+      {
+        path:'/papers-add',
+        component: () => import('../views/classManage/components/papersAdd.vue')
       },
       // 我的班级
       {
