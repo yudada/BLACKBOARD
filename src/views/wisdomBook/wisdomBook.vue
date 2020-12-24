@@ -121,8 +121,9 @@ export default {
 .wisdomBook_concent {
   .card_img {
     width: 100%;
-    padding-bottom: 145%;
+    padding-bottom: 140%;
     height: 0;
+    overflow: hidden;
     img {
       width: 100%;
 
@@ -131,13 +132,15 @@ export default {
   .space_img {
     img {
       width: 100%;
-      margin: 45px 0;
+      margin: 38px 0;
     }
   }
   .card_info {
     padding: 1rem;
     height: 3rem;
     overflow: hidden;
+    display: flex;
+    align-items: center;
     .ava {
       display: flex;
       flex-direction: row;
