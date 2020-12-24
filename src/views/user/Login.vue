@@ -1,7 +1,7 @@
 <template>
   <div class="login_container">
     <div class="login_content">
-      <p>AI 教务管理系统</p>
+      <p>AI 教学实训管理系统</p>
       <el-card class="login_card">
         <p>欢迎登录</p>
         <el-form

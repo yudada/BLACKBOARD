@@ -29,6 +29,7 @@
               <a href="#"
                 ><strong>{{ item.bookName }}</strong> {{ item.subName }}</a
               >
+              <!-- <span><strong>{{ item.bookName }}</strong> {{ item.subName }}</span> -->
             </div>
           </el-card>
         </el-col>
@@ -119,18 +120,24 @@ export default {
 }
 .wisdomBook_concent {
   .card_img {
+    width: 100%;
+    padding-bottom: 145%;
+    height: 0;
     img {
       width: 100%;
+
     }
   }
   .space_img {
     img {
       width: 100%;
-      margin: 31px 0;
+      margin: 45px 0;
     }
   }
   .card_info {
     padding: 1rem;
+    height: 3rem;
+    overflow: hidden;
     .ava {
       display: flex;
       flex-direction: row;
@@ -159,6 +166,9 @@ export default {
         }
       }
     }
+  }
+  .card_info::-webkit-scrollbar {
+    display: none;
   }
 }
 .addpadding {
