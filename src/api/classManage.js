@@ -59,3 +59,28 @@ export function papersAdd (data) {
     params: data
   })
 }
+
+// 试卷编辑
+export function papersEdit (id,data) {
+  return request({
+    url: `api/shijuan/edit/${id}`,
+    method: 'post',
+    params: data
+  })
+}
+
+// 试卷详情
+export function parperDetail (id) {
+  return request({
+    url: `api/shijuan/detail/${id}`,
+    method: 'post'
+  })
+}
+
+// 试卷删除
+export function parperDelete (id) {
+  return request({
+    url: `api/shijuan/${id}`,
+    method: 'delete'
+  })
+}

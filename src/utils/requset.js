@@ -12,7 +12,7 @@ const toLogin = () => {
     });
 }
 
-const toErr = () => {
+const to404 = () => {
     router.replace({
         path: '/404'
     });
@@ -58,18 +58,12 @@ service.interceptors.response.use(
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    window.sessionStorage.clear().then(() => {
-                        setTimeout(() => {
-                            toLogin();
-                        }, 1000);
-                    })
+                    window.sessionStorage.clear();
+                    toLogin();
                 })
             } else if(res.statusCode === 404) {
-                window.sessionStorage.clear().then(() => {
-                    setTimeout(() => {
-                        toErr();
-                    }, 1000);
-                })
+                window.sessionStorage.clear();
+                to404();
             }
             console.log(response, 2);
             return Promise.reject(new Error(res.msg || 'Error'))

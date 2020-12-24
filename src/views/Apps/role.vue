@@ -81,7 +81,7 @@ export default {
       ).catch((err) => err);
 
       if (confirmResult !== "confirm") {
-        return this.$message.info("已经取消删除！");
+        return 
       }
 
       deleteRole(id).then(res => {

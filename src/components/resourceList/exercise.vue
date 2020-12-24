@@ -96,7 +96,7 @@
 </template>
 <script>
 export default {
-  props: ['hidenBtn'],
+  props: ['hidenBtn', 'queId'],
   data() {
     return {
       // 分页
@@ -110,7 +110,6 @@ export default {
       },
       exerciseList: [],
       loading: true,
-      allModels: [],
       queTitle: '',
       queType: '',
       queTypeList: [
@@ -122,18 +121,26 @@ export default {
       ],
       quePracticeSubject: '',
       quePracticeSubjectList: [],
+      handlcSelect: []
     }
   },
   created() {
     this.getQuePracticeSubjec()
     this.getExerciseList()
+    if(this.queId && this.queId.length) {
+      this.queId.map(item=>{
+        this.handlcSelect.push(parseFloat(item))
+      })
+    }
   },
   methods: {
     handleSizeChange(val) {
+      this.handlcSelect = this.sendMsg.contentId 
       this.pageSize = val
       this.getExerciseList()
     },
     handleCurrentChange(val) {
+      this.handlcSelect = this.sendMsg.contentId
       this.currentPage = val
       this.getExerciseList()
     },
@@ -145,7 +152,6 @@ export default {
     },
     // 获取题库列表
     async getExerciseList() {
-      this.sendMsg.contentId = []
       const { data: res } = await this.$http.get(`api/library/lists`, {
         params: {
           limit: this.pageSize,
@@ -162,10 +168,16 @@ export default {
       this.pageSize = res.data.per_page
       this.currentPage = res.data.current_page
       this.loading = false
+
+      this.$nextTick(() => {
+        this.setChecked()
+      })
+
     },
     // 发送内容
     sendContentID() {
       this.$emit('func', this.sendMsg)
+      console.log(this.sendMsg);
     },
     toggleSelection(rows) {
       if (rows) {
@@ -177,11 +189,20 @@ export default {
       }
     },
     handleSelectionChange(val) {
-      this.sendMsg.contentId = []
       val.forEach((item) => {
         this.sendMsg.contentId.push(item.id)
       })
-      console.log(this.sendMsg.contentId)
+      this.sendMsg.contentId = Array.from(new Set(this.sendMsg.contentId));
+    },
+    setChecked() {
+      this.exerciseList.forEach((item) => {
+        let obj = this.handlcSelect.find((ele) => {
+          return ele === item.id
+        })
+        if (obj) {
+          this.$refs.multipleTable.toggleRowSelection(item, true)
+        }
+      })
     },
   },
 }

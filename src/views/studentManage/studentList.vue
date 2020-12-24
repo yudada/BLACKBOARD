@@ -142,7 +142,7 @@ export default {
       ).catch(err => err)
 
       if (confirmResult !== 'confirm') {
-        return this.$message.info('已经取消删除！')
+        return 
       }
       console.log(confirmResult);
       const { data: res } = await this.$http.delete(`api/student/${sid}`)

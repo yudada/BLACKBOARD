@@ -5,6 +5,18 @@ import { Message } from 'element-ui';
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
+const toLogin = () => {
+    router.replace({
+        path: '/login'
+    });
+}
+
+const to404 = () => {
+    router.replace({
+        path: '/404'
+    });
+}
+
 const isDev = process.env.NODE_ENV === 'development';
 
 const instance = axios.create({
@@ -47,8 +59,31 @@ instance.interceptors.response.use(
             console.log('err' + error)
             return Promise.reject(response);
         } else {
-            console.log(response);
-            return Promise.resolve(response.data);
+            const res = response.data
+            if (res.statusCode !== 200) {
+                Message({
+                    message: res.msg || 'Error',
+                    type: 'error',
+                    durantion: 5 * 1000
+                })
+                if (res.statusCode === 501) {
+                    MessageBox.confirm('登录超时，请重新登录！', {
+                        confirmButtonText: '重新登录',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        window.sessionStorage.clear();
+                        toLogin();
+                    })
+                } else if (res.statusCode === 404) {
+                    window.sessionStorage.clear();
+                    to404();
+                }
+                console.log(response, 2);
+                return Promise.reject(new Error(res.msg || 'Error'))
+            } else {
+                return Promise.resolve(response.data);
+            }
         }
     },
     error => {

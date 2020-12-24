@@ -102,7 +102,7 @@ export default {
       ).catch(err => err)
 
       if (confirmResult !== 'confirm') {
-        return this.$message.info('已经取消删除！')
+        return 
       }
       const { data: res } = await this.$http.delete(`api/exercises/${id}`)
       if(res.statusCode !== 200) return this.$message.error(res.msg)
