@@ -262,7 +262,7 @@ export default {
   methods: {
     async getQueById() {
      const { data: res } = await this.$http.get(`api/library/${this.queId}`) 
-     if(res.statusCode !== 200) return this.$message.error(res.msg)
+     if(res.statusCode !== 200) return this.$message.error('获取详细信息失败！')
      console.log(res.data);
 
      this.questionForm = res.data;

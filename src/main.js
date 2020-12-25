@@ -2,9 +2,9 @@ import Vue from 'vue'
 import App from '@/App.vue'
 import router from '@/router'
 import '@/plugins/element.js'
+import message from './utils/resetMessage'
 import instance from '@/utils/http'
 import store from '@/store/index'
-
 
 // 导入全局样式
 import '@/assets/css/global.scss'
@@ -20,6 +20,7 @@ import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 
+Vue.prototype.$message = message
 
 Vue.prototype.$http = instance
 

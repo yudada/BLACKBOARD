@@ -26,6 +26,7 @@
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
+    "babel-plugin-transform-remove-console": "^6.9.4",
     "lodash": "^4.17.20",
     "postcss-loader": "^4.0.4",
     "sass": "^1.29.0",

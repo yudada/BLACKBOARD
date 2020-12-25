@@ -116,7 +116,7 @@
             v-for="item in tagAddList"
             :key="item.id"
             size="medium"
-            @click="handleTagPlus(item)"
+            @click="handleTagPlusDebounce(item)"
             >{{ item.scoreName }}{{ item.scoreNum }}</el-tag
           >
         </div>
@@ -127,7 +127,7 @@
             v-for="item in tagMinusList"
             :key="item.id"
             size="medium"
-            @click="handleTagMinus(item)"
+            @click="handleTagMinusDebounce(item)"
             >{{ item.scoreName }}{{ item.scoreNum }}</el-tag
           >
         </div>
@@ -138,7 +138,7 @@
             v-for="item in tagAllList"
             :key="item.id"
             size="medium"
-            @click="handleTagAll(item)"
+            @click="handleTagAllDebounce(item)"
             >{{ item.scoreName }}{{ item.scoreNum }}</el-tag
           >
         </div>
@@ -202,6 +202,7 @@
 
 <script>
 import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
+import _ from 'lodash'
 import {
   studentName,
   scoreTagList,
@@ -336,6 +337,9 @@ export default {
       this.rewardsDialog = true
     },
     // 加分
+    handleTagPlusDebounce: _.debounce(function(item){
+      this.handleTagPlus(item)
+    },300),
     handleTagPlus(item) {
       this.scoreData.sid_arr = this.markList
       this.scoreData.config_score_id = item.id
@@ -354,6 +358,9 @@ export default {
       })
     },
     // 减分
+    handleTagMinusDebounce: _.debounce(function(item){
+      this.handleTagMinus(item)
+    },300),
     handleTagMinus(item) {
       this.scoreData.sid_arr = this.markList
       this.scoreData.config_score_id = item.id
@@ -372,6 +379,9 @@ export default {
       })
     },
     // 全班
+    handleTagAllDebounce: _.debounce(function(item){
+      this.handleTagAll(item)
+    },300),
     handleTagAll(item) {
       let allStudent = []
       this.studentList.map((item) => {

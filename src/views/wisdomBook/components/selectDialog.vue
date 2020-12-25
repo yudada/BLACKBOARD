@@ -9,7 +9,7 @@
       >
       </el-option>
     </el-select>
-    <div>
+    <div v-if="bookList.length">
       <el-checkbox-group v-model="wisdomBookId" class="check_list">
         <el-checkbox v-for="item in bookList" :key="item.id" :label="item.id">
           <el-card shadow="never" :body-style="{ padding: 0 }">
@@ -30,6 +30,9 @@
           </el-card>
         </el-checkbox>
       </el-checkbox-group>
+    </div>
+    <div v-else class="no_data">
+      <span>暂无更多课本！</span>
     </div>
     <span slot="footer" class="dialog-footer">
       <el-button @click="closeDialog">取 消</el-button>
@@ -63,9 +66,11 @@ export default {
     async getBookList() {
       const { data: res } = await this.$http.get(`api/textbook/choose`)
       this.bookList = res.data
+      console.log(this.bookList);
     },
     async getClassList() {
       const { data: res } = await this.$http.get(`api/classroom/select`)
+      console.log(res);
       this.classList = res.data
       this.classId = this.classList[0].class_id
       console.log(this.classList)
@@ -142,6 +147,17 @@ export default {
     .el-checkbox {
       width: 20%;
     }
+  }
+}
+.no_data {
+  height: 10rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  span {
+    font-size: xx-large;
+    color: 666666;
+    opacity: 0.5;
   }
 }
 </style>
