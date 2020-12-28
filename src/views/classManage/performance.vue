@@ -1,9 +1,6 @@
 <template>
   <div class="performance_main">
-    <div class="main_header">
-      <h4>成绩报告</h4>
-      <el-button type="text" @click="reportRer" class="reportRer">发布成绩</el-button>
-    </div>
+    <Breadcrumb :navData="navData" />
 
     <div class="performance_concent">
       <el-row>
@@ -49,9 +46,16 @@
 </template>
 
 <script>
+import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
+  components: { Breadcrumb },
   data() {
     return {
+      navData: {
+        childTitle: '成绩报告',
+        goTo: '发布成绩',
+        path: '/reportPerformance'
+      },
       performanceData: [],
       currentPage: 1,
       pageSize: 20,
@@ -83,10 +87,6 @@ export default {
       this.currentPage = newPage
       this.getPerformance();
     },
-    // 发布成绩
-    reportRer() {
-      this.$router.push('/reportPerformance')
-    },
     // 成绩详情
     openDetail(id) {
       this.$router.push({path:'/perDetial',query: {id: id}})
@@ -108,12 +108,5 @@ export default {
   display: flex;
   justify-content: flex-end;
   margin: 1rem 0;
-}
-.reportRer {
-  color: #fff;
-  font-size: 18px;
-}
-.reportRer:hover {
-  color: #fff;
 }
 </style>

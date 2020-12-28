@@ -75,7 +75,7 @@
               <span>{{ item.uptime }}</span>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="点赞互动" name="third">角色管理</el-tab-pane>
+          <el-tab-pane label="点赞互动" name="third">点赞互动</el-tab-pane>
         </el-tabs>
       </div>
       <!-- 编辑信息 -->
@@ -254,8 +254,5 @@ table {
   .info_dialog {
   max-height: 88vh;
   overflow: overlay;
-}
-.info_dialog::-webkit-scrollbar {
-  display: none;
 }
 </style>

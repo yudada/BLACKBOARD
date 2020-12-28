@@ -17,17 +17,19 @@
 
 <script>
 import taskList from './components/taskList.vue'
+import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
   components: {
-    taskList
+    taskList,
+    Breadcrumb
   },
   data() {
     return {
-      
+      navData: {
+        title: '超级作业',
+        childTitle: '立体模型'
+      }      
     }
   },
 }
 </script>
-
-<style lang="scss" scoped>
-</style>

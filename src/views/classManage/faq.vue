@@ -1,19 +1,12 @@
 <template>
   <div class="faq_main">
-    <div class="main_header">
-      <h4>阅读笔记</h4>
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item><a href="#">班级管理</a></el-breadcrumb-item>
-        <el-breadcrumb-item>阅读笔记</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
+    <Breadcrumb :navData="navData" />
 
     <div class="faq_content">
       <el-row>
         <el-col :span="24">
           <el-card :body-style="{ padding: 0 }">
-            <div v-for="item in readNote" :key="item.id" class="text">
+            <div v-for="item in readNote" :key="item.id">
               <div class="card_body">
                 <h4>{{ item.title }}</h4>
                 <h6>
@@ -46,9 +39,15 @@
 
 <script>
 import { readNote } from '@/api/classManage'
+import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
+  components: { Breadcrumb },
   data() {
     return {
+      navData: {
+        title: '班级管理',
+        childTitle: '阅读笔记',
+      },
       currentPage: 1,
       pageSize: 20,
       total: 0,

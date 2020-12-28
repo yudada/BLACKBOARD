@@ -1,12 +1,6 @@
 <template>
   <div class="detial_main">
-    <div class="main_header">
-      <h4>题库详情</h4>
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/expand' }">返回列表</el-breadcrumb-item>
-        <el-breadcrumb-item>题库详情</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
+    <Breadcrumb :navData="navData" />
 
     <div class="detial_concent">
       <el-row>
@@ -70,9 +64,15 @@
 </template>
 
 <script>
+import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
+  components: { Breadcrumb },
   data() {
     return {
+      navData: {
+        childTitle: '题库详情',
+        goTo: '返回列表'
+      },
       questionList: {},
       queOptions:[],
       queAnswer: ''

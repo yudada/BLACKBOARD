@@ -1,31 +1,10 @@
 <template>
   <div class="index4_main">
-    <div class="main_header">
-      <h4>三年级数据看板</h4>
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item><a href="#">校园大脑</a></el-breadcrumb-item>
-        <el-breadcrumb-item>三年级数据看板</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
+    <Breadcrumb :navData="navData" />
 
     <div class="index4_concent">
       <el-row :gutter="20">
-        <el-col :span="5" v-for="item in cardList" :key="item.id">
-          <el-card :class="'pro_card'+ item.id">
-            <div class="progress_box">
-              <div class="row">
-                <el-progress type="circle" :percentage="item.percentage" :width="60" :color="item.color"></el-progress>
-              </div>
-              <div >
-                <div class="col">
-                  <p class="num_people">{{ item.num }}</p>
-                  <p class="num_title">{{ item.title }}</p>
-                </div>
-             </div>
-           </div>
-          </el-card>
-        </el-col>
+        <progress-card />
       </el-row>
       
       <el-row :gutter="20">
@@ -55,7 +34,7 @@
             <div slot="header">
               <div>答题准确率</div>
             </div>
-            <div v-for="(item, index) in exactList" :key="index" class="item top_box">
+            <div v-for="(item, index) in exactList" :key="index" class="top_box">
               <div class="top_ava">
                 <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
                 <div class="ava_info">
@@ -74,7 +53,7 @@
             <div slot="header">
               <div>优秀榜单</div>
             </div>
-            <div v-for="(item, index) in excellentList" :key="index" class="item top_box">
+            <div v-for="(item, index) in excellentList" :key="index" class="top_box">
               <div class="top_ava">
                 <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
                 <div class="ava_info">
@@ -93,7 +72,7 @@
             <div slot="header">
               <div>答题先锋</div>
             </div>
-            <div v-for="(item, index) in topList" :key="index" class="item top_box">
+            <div v-for="(item, index) in topList" :key="index" class="top_box">
               <div class="top_ava">
                 <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
                 <div class="ava_info">
@@ -111,36 +90,7 @@
 
       <el-row :gutter="20">
         <el-col :span="8">
-          <el-card shadow="always" :body-style="{ padding: '0'}">
-            <div class="weather_card">
-              <div class="card_header">
-                <div class="header_icon">
-                  <i class="el-icon-arrow-left"></i>
-                  <i class="el-icon-setting"></i>
-                </div>
-                  <div class="header_text">
-                      <h1>Clear Night</h1>
-                    <h3>Toronto, Canada</h3>
-                    <p>
-                      <span>30</span>
-                      <span>℃</span>
-                    </p>
-                  </div>
-              </div>
-              <div class="card_content">
-                <div class="content_icon">
-                  <i class="el-icon-arrow-up"></i>
-                </div>
-                <div class="content_weather" v-for="item in weatherList" :key="item.id">
-                  <span>{{ item.date }}</span>
-                  <div class="icon">
-                    <i :class="weatherIcon[item.weather]"></i>
-                    <span>{{ item.temperature }}℃</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </el-card>
+          <weather />
         </el-col>
 
         <el-col :span="16">
@@ -167,10 +117,18 @@
 </template>
 
 <script>
+import Breadcrumb from '@/components/breadcrumb.vue';
 import echarts from "echarts";
+import ProgressCard from '../../components/cardList/progressCard.vue';
+import Weather from '../../components/statisticalData/weather.vue';
 export default {
+  components: { Breadcrumb, ProgressCard, Weather },
   data() {
     return {
+      navData: {
+        title: '校园大脑',
+        childTitle: '三年级数据看板'
+      },
       option: {
         tooltip: {
           trigger: "axis",
@@ -337,40 +295,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.progress_box{
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  .col {
-    p { margin: 0.5rem; }
-    .num_people{
-      font-size: 25px;
-      font-weight: 600;
-      }
-    .num_title {
-    font-size: 14px;
-    }
-  }
-}
-.pro_card1{
-  color: #fff;
-  background: linear-gradient(to bottom right ,#d9ee62,#8ab414) !important;
-}
-.pro_card2{
-  color: #fff;
-  background: linear-gradient(to bottom right, #62fb62, #21a544) !important;
-}
-.pro_card3{
-  color: #fff;
-  background: linear-gradient(to bottom right, #fbc434 0%, #f66b4e 100%) !important;
-}
-.pro_card4{
-  color: #fff;
-  background: linear-gradient(to bottom right,#00f2fe 0%, #1e63c3 100%);
-}
 .top_box{
   display: flex;
   justify-content: space-between;
+  padding: 10px;
   .top_ava {
     display: flex;
     justify-content: space-between;
@@ -391,55 +319,5 @@ export default {
 }
 .top_btn:hover, .top_btn:focus {
   color: #fff;
-}
-.weather_card {
-  .card_header{
-    padding: 1rem;
-    background: linear-gradient(rgba(112, 64, 165,0.7),rgba(112, 64, 165,0.7)),url(../../assets/images/toronto.jpeg) no-repeat;
-    background-size: cover;
-    background-position: center;
-    .header_icon{
-      display: flex;
-      justify-content: space-between;
-      i {
-        color: #fff;
-        font-size: 20px;
-      }
-    }
-    .header_text{
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      h1 { font-size: 35px; }
-      h3 { font-size: 21px;}
-      p span {
-        font-size: 84px;
-      }
-    }
-  }
-  .card_content {
-    padding: 2rem;
-    .content_icon {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      i {
-        font-size: 25px;
-        cursor: pointer;
-        }
-    
-    }
-    .content_weather {
-      display: flex;
-      justify-content: space-between;
-      span, i { font-size: 25px;}
-      i { padding-right: 0.25rem;}
-    }
-    .content_weather:nth-child(3) {
-        color: rgba(0, 0, 0, 0.25);
-      }
-  }
 }
 </style>

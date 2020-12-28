@@ -2,7 +2,6 @@ import Vue from 'vue'
 import App from '@/App.vue'
 import router from '@/router'
 import '@/plugins/element.js'
-import message from './utils/resetMessage'
 import instance from '@/utils/http'
 import store from '@/store/index'
 
@@ -20,7 +19,6 @@ import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 
-Vue.prototype.$message = message
 
 Vue.prototype.$http = instance
 

@@ -1,13 +1,6 @@
 <template>
   <div class="studentList_main">
-    <div class="main_header">
-      <h4>学生列表</h4>
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item><a href="#">学生管理</a></el-breadcrumb-item>
-        <el-breadcrumb-item>学生列表</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
+    <Breadcrumb :navData="navData" />
 
     <div class="studentList_concent">
       <el-row>
@@ -77,9 +70,15 @@
 </template>
 
 <script>
+import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
+  components: { Breadcrumb },
   data() {
     return {
+      navData: {
+        title: '学生管理',
+        childTitle: '学生列表'
+      },
       classInfo: {},
       studentList: [],
       studentList: [],

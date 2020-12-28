@@ -1,10 +1,6 @@
 <template>
   <div class="addClassroom_main">
-    <div class="main_header">
-      <h4 v-if="classId">修改班级</h4>
-      <h4 v-else>创建班级</h4>
-        <el-button type="text" @click="goBackList" class="goBack">返回列表</el-button>
-    </div>
+    <Breadcrumb :navData="navData" />
 
     <div class="addClassroom_concent">
       <el-row>
@@ -66,9 +62,15 @@
 </template>
 
 <script>
+import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
+  components: { Breadcrumb },
   data() {
     return {
+      navData: {
+        childTitle: '创建班级',
+        goTo: '返回列表',
+      },
       classForm: {
         className: '',
         classDeclaration: '',
@@ -91,6 +93,9 @@ export default {
   created() {
     this.getclassInviteCode();
     this.getClassType();
+    if (this.classId) {
+      this.navData.childTitle = '修改班级信息'
+    }
   },
   computed: {
     tip: function() {

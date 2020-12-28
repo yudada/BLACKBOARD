@@ -13,45 +13,8 @@ body {
 a {
   text-decoration: none;
 }
-.text {
-  font-size: 14px;
-}
-
-.item {
-  margin-bottom: 18px;
-}
-.card-header{
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  padding: 0 0 0.5rem 0;
-  border-bottom: 1px solid #ccc;
-}
-.card-header:first-child {
-  border-radius: calc(3px - 1px) calc(3px - 1px) 0 0;
-}
-.card-title {
-  font-size: 1.125rem;
-  line-height: 1.2;
-  font-weight: 500;
-}
-// 主题 头部
-.main_header {
-  background: rgba(225, 225, 225, 0);
-  color: #fff;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 80px;
-  h4 {
-    font-size: 25px;
-    font-weight: 600;
-    line-height: 1.5rem;
-    color: #fff;
-  }
-  .el-breadcrumb-item {
-  color: #fff;
-  }
+#cnzz_stat_icon_1279567890 {
+  display: none;
 }
 // 确定、创建、发布按钮
 .cn_btn {
@@ -86,19 +49,10 @@ a {
   color: #e22018 !important;
   padding-left: 10px !important;
 }
-
-// 
-// 自适应
-// @media (max-width: 1280px) {
-//   .el-col-8,.el-col-16, .el-col-12, .el-col-19{
-//     width: 100% !important;
-//     margin-bottom: 1rem !important;
-//   }
-//   .el-col-5 {
-//     width: 50% !important;
-//     margin-bottom: 1rem !important;
-//   }
-// }
+// 隐藏滚动条
+::-webkit-scrollbar {
+  display: none;
+}
 @media (max-width: 768px) {
   .el-col-8,.el-col-16, .el-col-12, .el-col-19{
     width: 100% !important;
@@ -124,5 +78,3 @@ a {
     width: 100% !important;
     }
 }
-
-

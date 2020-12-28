@@ -62,7 +62,7 @@
 import { papersList, parperDelete } from '@/api/classManage'
 import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
-  components: {Breadcrumb},
+  components: { Breadcrumb },
   data() {
     return {
       navData: {

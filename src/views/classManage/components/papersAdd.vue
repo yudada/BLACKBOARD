@@ -9,14 +9,22 @@
           :rules="papersFormRules"
           label-position="top"
         >
-          <div class="content_form">
-            <el-form-item label="试卷标题" prop="exaTitle">
-              <el-input
-                clearable
-                placeholder="例：期中考试测评"
-                v-model="papersForm.exaTitle"
-              />
-            </el-form-item>
+          <el-form-item label="试卷标题" prop="exaTitle">
+            <el-input
+              clearable
+              placeholder="例：期中考试测评"
+              v-model="papersForm.exaTitle"
+            />
+          </el-form-item>
+          <el-form-item label="试卷说明" prop="exaRemarks">
+            <el-input
+              type="textarea"
+              :rows="2"
+              clearable
+              v-model="papersForm.exaRemarks"
+            />
+          </el-form-item>
+          <div class="select-time">
             <el-form-item label="考试科目" prop="bookid">
               <el-select
                 clearable
@@ -31,9 +39,6 @@
                 >
                 </el-option>
               </el-select>
-            </el-form-item>
-            <el-form-item label="试卷说明" prop="exaRemarks">
-              <el-input clearable v-model="papersForm.exaRemarks" />
             </el-form-item>
             <el-form-item label="答题次数" prop="exaDatinum">
               <el-select
@@ -50,6 +55,8 @@
                 </el-option>
               </el-select>
             </el-form-item>
+          </div>
+          <div class="select-time">
             <el-form-item label="考试开始时间" prop="exaStarttime">
               <el-date-picker
                 v-model="papersForm.exaStarttime"
@@ -70,50 +77,56 @@
                 clearable
               />
             </el-form-item>
-            <el-form-item label="答题时间(分钟)" prop="exaDatitime">
-              <el-input
-                clearable
-                type="number"
-                placeholder="请输入数字"
-                v-model="papersForm.exaDatitime"
-              />
-            </el-form-item>
-            <el-form-item label="试卷题型结构" prop="exaQStructure">
-              <el-button class="btn_select" size="mini" @click="selectType">选择题型</el-button>
-              <br />
-              <span>已选: </span>
-              <span
-                v-for="(item, index) in papersForm.exaQStructure"
-                :key="index"
-              >
-                <span v-if="item.num">{{ item.type }} {{ item.num }} 道 </span>
-                <span v-else>{{ item.type }} 0 道 </span>
-              </span>
-            </el-form-item>
-            <el-form-item label="选择题目" prop="exaQSid">
-              <el-button class="btn_select" size="mini" @click="addType">添加题目</el-button
-              ><span> 已选：{{ papersForm.exaQSid.length }} 道题</span>
-            </el-form-item>
-            <el-form-item label="取分规则" prop="exaJifenfangshi">
-              <el-radio-group v-model="papersForm.exaJifenfangshi">
-                <el-radio :label="1">分布式</el-radio>
-                <el-radio :label="2">等第式（不显示平均分）</el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item label="试卷状态" prop="status">
-              <el-radio-group v-model="papersForm.status">
-                <el-radio :label="2">暂时存稿</el-radio>
-                <el-radio :label="1">立即发布</el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item label="发布">
-              <span>
-                <el-button @click="onSubmit()" class="cn_btn">{{
-                  btnText
-                }}</el-button>
-              </span>
-            </el-form-item>
           </div>
+          <el-form-item label="答题时间(分钟)" prop="exaDatitime">
+            <el-input
+              clearable
+              type="number"
+              placeholder="请输入数字"
+              v-model="papersForm.exaDatitime"
+            />
+          </el-form-item>
+          <!--  -->
+          <el-form-item label="试卷题型结构" prop="exaQStructure">
+            <el-button class="btn_select" size="mini" @click="selectType"
+              >选择题型</el-button
+            >
+            <br />
+            <span>已选: </span>
+            <div v-for="(item, index) in papersForm.exaQStructure" :key="index" class="select-que">
+              <span v-if="item.num">{{ item.type }} {{ item.num }} 道 ,</span>
+              <span v-else>{{ item.type }} 0 道 </span>
+              <span v-if="item.score">
+                每道题 {{ item.score }} 分, 共
+                {{ item.score * item.num }} 分。</span
+              >
+              <div v-if="item.num">
+                <el-button class="btn_select" size="mini" @click="addQue"
+                  >添加题目</el-button
+                ><span> 已选：{{ papersForm.exaQSid.length }} 道题</span>
+              </div>
+            </div>
+          </el-form-item>
+          <!--  -->
+          <el-form-item label="取分规则" prop="exaJifenfangshi">
+            <el-radio-group v-model="papersForm.exaJifenfangshi">
+              <el-radio :label="1">最高分</el-radio>
+              <el-radio :label="2">平均分</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="试卷状态" prop="status">
+            <el-radio-group v-model="papersForm.status">
+              <el-radio :label="2">暂时存稿</el-radio>
+              <el-radio :label="1">立即发布</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="发布">
+            <span>
+              <el-button @click="onSubmit()" class="cn_btn">{{
+                btnText
+              }}</el-button>
+            </span>
+          </el-form-item>
         </el-form>
       </el-card>
     </div>
@@ -136,7 +149,7 @@
       :append-to-body="true"
       :before-close="handleClose"
     >
-      <Select-que @func="getQueType" :queType="papersForm.exaQStructure"  />
+      <Select-que @func="getQueType" :queType="papersForm.exaQStructure" />
     </el-dialog>
   </div>
 </template>
@@ -237,7 +250,7 @@ export default {
     },
   },
   methods: {
-    addType() {
+    addQue() {
       this.queDialogVisible = true
     },
     selectType() {
@@ -251,7 +264,6 @@ export default {
     getContentId(data) {
       this.papersForm.exaQSid = data.contentId
       this.queDialogVisible = false
-      console.log(this.papersForm.exaQSid.length)
     },
     getQueType(data) {
       this.typeDialogVisible = false
@@ -267,7 +279,6 @@ export default {
     // 获取试卷详情
     getParpersDetail() {
       parperDetail(this.parperId).then((res) => {
-        console.log(res)
         this.papersForm = res.data
         this.papersForm.exaQStructure.map((item) => {
           if (item.type === 'judge') item.type = '判断题'
@@ -308,12 +319,11 @@ export default {
           })
         } else {
           // 编辑
-          console.log('编辑')
           delete this.papersForm.created_at
-          papersEdit(this.parperId,this.papersForm).then((res) => {
+          papersEdit(this.parperId, this.papersForm).then((res) => {
             if (res.statusCode !== 200) return
             this.$message.success('编辑试卷成功!')
-            this.getParpersDetail();
+            this.getParpersDetail()
           })
         }
       })
@@ -329,28 +339,43 @@ export default {
 .el-card {
   margin-bottom: 20px;
 }
-.content_form {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  .el-date-editor,
-  .el-select {
-    width: 100%;
-  }
-  .el-form-item {
-    width: 45%;
-    margin: 0 20px 20px 20px;
-  }
+.el-date-editor,
+.el-select {
+  width: 100%;
+}
+.el-form-item {
+  width: 45%;
+  margin: 0 20px 20px 20px;
 }
 .btn_select {
   color: #fff !important;
-  background: linear-gradient(to bottom right, #9853af, #623AA2) !important;
+  background: linear-gradient(to bottom right, #9853af, #623aa2) !important;
 }
-.btn_select:hover, .btn_select:focus {
+.btn_select:hover,
+.btn_select:focus {
   opacity: 0.8;
 }
 .cn_btn {
   width: 80%;
+}
+.select-time {
+  display: flex;
+  .el-form-item {
+    width: 20%;
+  }
+}
+.select-que {
+  display: flex;
+}
+@media (max-width: 800px) {
+  .el-form-item {
+    width: 90%;
+  }
+  .select-time {
+    display: flex;
+    .el-form-item {
+      width: 50%;
+    }
+  }
 }
 </style>

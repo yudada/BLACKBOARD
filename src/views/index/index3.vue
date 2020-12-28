@@ -1,29 +1,10 @@
 <template>
   <div class="index3_main">
-    <div class="main_header">
-      <h4>二年级数据看板</h4>
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item><a href="#">校园大脑</a></el-breadcrumb-item>
-        <el-breadcrumb-item>二年级数据看板</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
+    <Breadcrumb :navData="navData" />
 
     <div class="index3_concent">
       <el-row :gutter="20">
-        <el-col :span="5" v-for="item in cardList" :key="item.id">
-          <el-card :body-style="{ padding: '20px' }">
-            <div :class="'text_card' + item.id">
-              <div class="col">
-                <p>{{ item.num }}</p>
-                <p class="num_people">{{ item.title }}</p>
-              </div>
-              <div class="row">
-                <img :src="require('@/assets/icon/' + item.imgsrc + '.png')" />
-              </div>
-            </div>
-          </el-card>
-        </el-col>
+        <user-card2 :cardList="cardList" />
       </el-row>
 
       <el-row :gutter="20" :style="{ height:'480px'}">
@@ -62,13 +43,13 @@
         </el-col>
       </el-row>
 
-      <el-row :gutter="20" :style="{ height:'35vh'}">
+      <el-row :gutter="20" :style="{ height:'40vh'}">
         <el-col :span="8">
           <el-card>
             <div slot="header">
               <span>优秀榜单</span>
             </div>
-            <div v-for="(item, index) in topList" :key="index" class="item top_box">
+            <div v-for="(item, index) in topList" :key="index" class="top_box">
               <div class="top_ava">
                 <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
                 <div class="ava_info">
@@ -143,9 +124,16 @@
 
 <script>
 import echarts from "echarts";
+import userCard2 from '@/components/cardList/userCard2';
+import Breadcrumb from '@/components/breadcrumb.vue';
 export default {
+  components: { userCard2, Breadcrumb },
   data() {
     return {
+      navData: {
+        title: '校园大脑',
+        childTitle: '二年级数据看板'
+      },
       option: {
         tooltip: {
           trigger: "axis",
@@ -184,10 +172,10 @@ export default {
         ],
       },
       cardList: [
-        { id: 1, num: "453" + "位", title: "老师", imgsrc: "yonghu" },
-        { id: 2, num: "453" + "人", title: "学生", imgsrc: "yonghu" },
-        { id: 3, num: "453" + "个", title: "课件", imgsrc: "yonghu" },
-        { id: 4, num: "453" + "位", title: "家长", imgsrc: "yonghu" },
+        { id: 1, num: "453" + "位", title: "老师", imgsrc: "jiaoshi" },
+        { id: 2, num: "453" + "人", title: "学生", imgsrc: "xuesheng" },
+        { id: 3, num: "453" + "个", title: "课件", imgsrc: "kejian" },
+        { id: 4, num: "453" + "位", title: "家长", imgsrc: "jiazhang" },
       ],
       progressList: [
         { id: 1, name: "雷珊珊", percentage: 70, status: "success" },
@@ -256,138 +244,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.text_card1 {
-  display: flex;
-  justify-content: space-between;
-  color: #636262;
-  .row {
-    display: flex;
-    width: 70px;
-    height: 70px;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(to bottom right, #9853af, #623aa2) !important;
-    border-radius: 50%;
-    box-shadow: 0 7px 30px rgba(152, 83, 175, 0.5) !important;
-    img {
-      width: 50%;
-    }
-  }
-  .col {
-    flex: 3;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-left: 20px;
-    .num_people {
-      font-size: 32px;
-    }
-    p {
-      margin: 0;
-    }
-  }
-}
-.text_card2 {
-  display: flex;
-  justify-content: space-between;
-  color: #636262;
-  .row {
-    display: flex;
-    width: 70px;
-    height: 70px;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(
-      to bottom right,
-      #fbc434 0%,
-      #f66b4e 100%
-    ) !important;
-    border-radius: 50%;
-    box-shadow: 0 7px 30px rgba(251, 176, 52, 0.5) !important;
-    img {
-      width: 50%;
-    }
-  }
-  .col {
-    flex: 3;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-left: 20px;
-    .num_people {
-      font-size: 32px;
-    }
-    p {
-      margin: 0;
-    }
-  }
-}
-.text_card3 {
-  display: flex;
-  justify-content: space-between;
-  color: #636262;
-  .row {
-    display: flex;
-    width: 70px;
-    height: 70px;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(to bottom right, #00f2fe 0%, #2e78df 100%);
-    border-radius: 50%;
-    box-shadow: 0 7px 30px rgba(40, 146, 235, 0.5) !important;
-    img {
-      width: 50%;
-    }
-  }
-  .col {
-    flex: 3;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-left: 20px;
-    .num_people {
-      font-size: 32px;
-    }
-    p {
-      margin: 0;
-    }
-  }
-}
-.text_card4 {
-  display: flex;
-  justify-content: space-between;
-  color: #636262;
-  .row {
-    display: flex;
-    width: 70px;
-    height: 70px;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(to bottom right, #62fb62, #21a544) !important;
-    border-radius: 50%;
-    box-shadow: 0 7px 30px rgba(26, 122, 16, 0.5) !important;
-    img {
-      width: 50%;
-    }
-  }
-  .col {
-    flex: 3;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-left: 20px;
-    .num_people {
-      font-size: 32px;
-    }
-    p {
-      margin: 0;
-    }
-  }
-}
-
 .top_box{
   display: flex;
   justify-content: space-between;
+  padding: 10px;
   .top_ava {
     display: flex;
     justify-content: space-between;
@@ -433,9 +293,6 @@ export default {
 }
 .el-card {
   overflow: scroll;
-}
-.el-card::-webkit-scrollbar {
-  display: none;
 }
 @media (max-width: 768px) {
   .el-col, .el-card  {

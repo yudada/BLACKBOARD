@@ -49,13 +49,11 @@ export default {
   },
   created() {
     if(this.queType.length) {
-      console.log(this.queType);
       this.queTypeForm = this.queType;
     }
   },
   methods: {
     sendMsgToF() {
-      console.log(this.queTypeForm)
       this.$emit('func', this.queTypeForm)
     },
   },

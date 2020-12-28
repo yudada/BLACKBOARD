@@ -1,30 +1,23 @@
 <template>
   <div class="progress_main">
-    <div class="main_header">
-      <h4>作业统计</h4>
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item><a href="#">班级管理</a></el-breadcrumb-item>
-        <el-breadcrumb-item>作业统计</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
+    <Breadcrumb :navData="navData" />
 
     <div class="progress_concent">
       <el-row :gutter="20">
-        <!-- 答题统计 -->
         <el-col :span="12">
           <work-statistics-list
             :statisticsList="accuracyList"
             :startTime="startTime"
             :endTime="endTime"
+            :title="'答题统计'"
           />
         </el-col>
-        <!-- 错题统计 -->
         <el-col :span="12">
           <work-statistics-list
             :statisticsList="errorList"
             :startTime="startTime"
             :endTime="endTime"
+            :title="'错题统计'"
           />
         </el-col>
       </el-row>
@@ -34,14 +27,19 @@
 <script>
 import { workStatistics } from '@/api/classManage'
 import workStatisticsList from './components/workStatisticsList.vue'
+import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
-  components: { workStatisticsList },
+  components: { workStatisticsList, Breadcrumb },
   data() {
     return {
+      navData: {
+        title: '班级管理',
+        childTitle: '作业统计'
+      },
       accuracyList: [],
       errorList: [],
       endTime: '',
-      startTime: '',
+      startTime: ''
     }
   },
   created() {
@@ -50,13 +48,12 @@ export default {
   methods: {
     getWorkStatisticsList() {
       workStatistics().then((res) => {
-        const { data } = res
         const { accuracy_student, error_student, endTime, startTime } = res.data
         this.accuracyList = accuracy_student
         this.errorList = error_student
         this.startTime = startTime
         this.endTime = endTime
-        console.log(this.errorList)
+        console.log(res)
       })
     },
   },

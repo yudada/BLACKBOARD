@@ -1,12 +1,6 @@
 <template>
   <div class="establish_main">
-    <div class="main_header">
-      <h4>编辑题库</h4>
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/expand' }">返回列表</el-breadcrumb-item>
-        <el-breadcrumb-item>编辑题库</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
+    <Breadcrumb :navData="navData" />
 
     <div class="establish_concent">
       <el-row>
@@ -192,9 +186,15 @@
 </template>
 
 <script>
+import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
+  components: { Breadcrumb },
   data() {
     return {
+      navData: {
+        childTitle: '编辑题库',
+        goTo: '返回列表'
+      },
       questionForm: {
         queSubjectType: '',
         queType: '',

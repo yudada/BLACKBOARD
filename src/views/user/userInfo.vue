@@ -1,12 +1,6 @@
 <template>
   <div>
-    <div class="main_header">
-      <h4>用户信息</h4>
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>用户信息</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
+    <Breadcrumb :navData="navData" />
 
     <div class="userinfo_concent">
       <el-row>
@@ -114,10 +108,15 @@ import { userInfo } from '@/api/index'
 import EditPassWord from '@/components/dialogContent/editPassWord.vue'
 import EditUserInfo from '@/components/dialogContent/editUserInfo.vue'
 import EditMobile from '@/components/dialogContent/editMobile.vue'
+import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
-  components: { EditPassWord, EditUserInfo, EditMobile },
+  components: { EditPassWord, EditUserInfo, EditMobile, Breadcrumb },
   data() {
     return {
+      navData: {
+        title: '',
+        childTitle: '用户信息',
+      },
       editPWDialogVisible: false,
       editUIDialogVisible: false,
       editMobileDialogVisible: false,

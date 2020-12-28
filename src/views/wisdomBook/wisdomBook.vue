@@ -1,12 +1,6 @@
 <template>
   <div class="wisdomBook_main">
-    <div class="main_header">
-      <h4>智慧课本</h4>
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>智慧课本</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
+    <Breadcrumb :navData="navData" />
 
     <div class="wisdomBook_concent">
       <el-row :gutter="20">
@@ -66,6 +60,8 @@
           width="80%"
           :append-to-body="true"
           :destroy-on-close="true"
+          top="8vh"
+          custom-class="select-dialog"
         >
           <select-dialog @closeDialog="fromSun"></select-dialog>
         </el-dialog>
@@ -76,10 +72,14 @@
 
 <script>
 import selectDialog from './components/selectDialog.vue'
+import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
-  components: { selectDialog },
+  components: { selectDialog, Breadcrumb },
   data() {
     return {
+      navData: {
+        childTitle: '智慧课本'
+      },
       subjectList: [],
       selectDialogVisible: false,
       bookInfo: {},
@@ -170,11 +170,15 @@ export default {
       }
     }
   }
-  .card_info::-webkit-scrollbar {
-    display: none;
-  }
 }
 .addpadding {
   padding-bottom: 20px;
 }
+</style>
+
+<style lang="scss">
+  .select-dialog {
+    height: 84vh;
+    overflow: overlay;
+  }
 </style>

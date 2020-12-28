@@ -1,12 +1,6 @@
 <template>
   <div class="widgets_main">
-    <div class="main_header">
-      <h4>{{ classInfo.className }}</h4>
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>我的班级</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
+    <Breadcrumb :navData="navData" />
 
     <div class="widgets_concent">
       <!-- 内容头部 进度卡 -->
@@ -60,6 +54,7 @@ import ReadTop from '@/components/top/readTop.vue'
 import StudentLife from './components/studentLife.vue'
 import ReadBook from './components/readBook.vue'
 import StudentLive from './components/studentLive.vue'
+import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
   components: {
     progressCard,
@@ -69,12 +64,21 @@ export default {
     StudentLife,
     ReadBook,
     StudentLive,
+    Breadcrumb
   },
   data() {
-    return {}
+    return {
+      navData: {
+        title: '我的班级',
+        childTitle: ''
+      },
+    }
   },
   computed: {
     ...mapState(['classInfo']),
+  },
+  mounted() {
+    this.navData.childTitle = this.classInfo.className
   },
 }
 </script>
@@ -95,9 +99,6 @@ export default {
   .el-card__body {
     height: 100%;
   }
-}
-.el-card::-webkit-scrollbar {
-  display: none;
 }
 @media (max-width: 1280px) {
   .second-row {

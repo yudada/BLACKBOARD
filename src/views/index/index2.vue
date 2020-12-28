@@ -279,9 +279,6 @@ export default {
   .el-card {
     overflow: scroll;
   }
-  .el-card::-webkit-scrollbar {
-    display: none;
-  }
 
   @media (max-width: 768px) {
     .el-col,

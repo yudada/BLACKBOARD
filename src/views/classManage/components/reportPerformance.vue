@@ -1,9 +1,6 @@
 <template>
   <div class="reportPerformance_main">
-    <div class="main_header">
-      <h4>发布成绩</h4>
-      <el-button type="text" @click="goBack" class="back_btn">返回</el-button>
-    </div>
+    <Breadcrumb :navData="navData" />
 
     <div class="reportPerformance_concent">
       <el-row>
@@ -96,9 +93,15 @@
 </template>
 
 <script>
+import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
+  components: { Breadcrumb },
   data() {
     return {
+      navData: {
+        childTitle: '发布成绩',
+        goTo: '返回列表'
+      },
       classList: [],
       reportPerformanceForm: {
         class_id: '',
@@ -137,10 +140,6 @@ export default {
     this.getClassInfo()
   },
   methods: {
-    // 返回按钮
-    goBack() {
-      this.$router.push('/performance')
-    },
     // 获取班级信息
     async getClassInfo() {
       const { data: res } = await this.$http.get('api/classroom/myList')

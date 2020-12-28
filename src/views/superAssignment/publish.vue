@@ -1,13 +1,6 @@
 <template>
   <div class="publish_main">
-    <div class="main_header">
-      <h4>发布作业</h4>
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item><a href="#">超级作业</a></el-breadcrumb-item>
-        <el-breadcrumb-item>发布作业</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
+    <Breadcrumb :navData="navData" />
 
     <div class="publish_concent">
       <el-row>
@@ -162,10 +155,11 @@
 </template>
 
 <script>
-import Exercise from '../../components/resourceList/exercise'
-import experiment from '../../components/resourceList/experiment'
-import models from '../../components/resourceList/models'
-import Read from '../../components/resourceList/read.vue'
+import Exercise from '@/components/resourceList/exercise'
+import experiment from '@/components/resourceList/experiment'
+import models from '@/components/resourceList/models'
+import Read from '@/components/resourceList/read.vue'
+import Breadcrumb from '@/components/breadcrumb.vue'
 import { mapState } from 'vuex'
 export default {
   components: {
@@ -173,9 +167,14 @@ export default {
     models,
     Read,
     Exercise,
+    Breadcrumb
   },
   data() {
     return {
+      navData: {
+        title: '超级作业',
+        childTitle: '发布作业'
+      },
       // 创建作业表单
       publishForm: {
         exeTitle: '',

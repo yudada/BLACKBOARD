@@ -1,22 +1,16 @@
 <template>
   <div class="drawing_main">
-    <div class="main_header">
-      <h4>学科工具集</h4>
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>学科工具</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
+    <Breadcrumb :navData="navData" />
 
     <div class="drawing_concent">
       <el-row>
         <el-col :span="24">
           <el-card class="box-card">
             <div slot="header" class="clearfix">
-              <span>学科工具</span>
+              <span> </span>
             </div>
             <div class="card_body">
-              <div v-for="item in toolList" :key="item.id" class="text item">
+              <div v-for="item in toolList" :key="item.id" class="text">
                 <div class="card_content">
                   <img
                     :src="item.toolImage"
@@ -45,9 +39,14 @@
 </template>
 
 <script>
+import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
+  components: { Breadcrumb },
   data() {
     return {
+      navData: {
+        childTitle: '学科工具'
+      },
       toolList: [],
       dialogVisible: false,
       toolInfo: {},

@@ -23,7 +23,7 @@ export default {
       classInfoList: [
         { id: 1, num: '55', title: '班级人数', imgsrc: 'yonghu' },
         { id: 2, num: '1270', title: '点赞数', imgsrc: 'zan' },
-        { id: 3, num: '4645', title: '笔记留言', imgsrc: 'zan' },
+        { id: 3, num: '4645', title: '笔记留言', imgsrc: 'biji' },
         { id: 4, num: '454', title: 'POST', imgsrc: 'youjian' },
       ],
     }

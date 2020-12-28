@@ -2,7 +2,7 @@
   <div class="work_pross">
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <span>答题统计</span>
+        <span>{{title}}</span>
         <div>
           <span>开始时间: {{ startTime }} </span>
           <span> 结束时间: {{ endTime }}</span>
@@ -23,7 +23,7 @@
 
 <script>
 export default {
-  props: ['statisticsList', 'startTime', 'endTime'],
+  props: ['statisticsList', 'startTime', 'endTime', 'title'],
   data() {
     return {
       customColors: [

@@ -1,13 +1,6 @@
 <template>
   <div class="textbook_main">
-    <div class="main_header">
-      <h4>自检题</h4>
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item><a href="#">题库资源</a></el-breadcrumb-item>
-        <el-breadcrumb-item>自检题</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
+    <Breadcrumb :navData="navData" />
 
     <div class="textbook_concent">
       <questionList :type="2"></questionList>
@@ -16,17 +9,22 @@
 </template>
 
 <script>
-import questionList from './components/questionList.vue'
+import questionList from "./components/questionList.vue";
+import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
   components: {
-    questionList
+    questionList,
+    Breadcrumb
   },
   data() {
-    return {}
+    return {
+      navData: {
+        title: '题库资源',
+        childTitle: '自检题'
+      }
+    };
   },
+  created() {},
   methods: {},
-}
+};
 </script>
-
-<style lang="scss" scoped>
-</style>

@@ -1,9 +1,6 @@
 <template>
   <div class="detial_main">
-    <div class="main_header">
-      <h4>作业详情</h4>
-      <el-button type="text" @click="goBack" class="back_btn">返回</el-button>
-    </div>
+    <Breadcrumb :navData="navData" />
 
     <div class="detial_concent">
       <el-row>
@@ -34,9 +31,15 @@
 </template>
 
 <script>
+import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
+  components: { Breadcrumb },
   data() {
     return {
+      navData: {
+        childTitle: '作业详情',
+        goTo: '返回列表'
+      },
       detialTableData: [],
       loading: true
     };
@@ -45,10 +48,6 @@ export default {
       this.getdetail();
   },
   methods: {
-      // 返回按钮
-    goBack() {
-      this.$router.go(-1);
-    },
     async getdetail() {
       const { data: res } = await this.$http.post(`api/exercises/detail/${this.id}`);
       if (res.statusCode !== 200) return this.$message.error('获取详细信息失败！')
@@ -64,13 +63,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-.back_btn {
-  color: #fff;
-  font-size: 18px;
-}
-.back_btn:hover {
-  color: #fff;
-}
-</style>

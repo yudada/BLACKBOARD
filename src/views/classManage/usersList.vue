@@ -1,13 +1,6 @@
 <template>
   <div class="usersList_main">
-    <div class="main_header">
-      <h4>学生列表</h4>
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item><a href="#">班级管理</a></el-breadcrumb-item>
-        <el-breadcrumb-item>学生列表</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
+    <Breadcrumb :navData="navData" />
 
     <div class="usersList_concent">
       <el-row :gutter="20">
@@ -72,10 +65,15 @@
 <script>
 import { uesrInfo, nowClassInfo } from '@/api/classManage'
 import StudentList from './components/studentList'
+import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
-  components: { StudentList },
+  components: { StudentList, Breadcrumb },
   data() {
     return {
+      navData: {
+        title: '班级管理',
+        childTitle: '学生列表'
+      },
       adviserInfo: {
         realName: '',
         address: '',
@@ -156,8 +154,13 @@ export default {
   justify-content: space-between;
   margin-bottom: 1rem;
   .teacher_info {
+    width: 100%;
     display: flex;
     justify-content: space-between;
+    img {
+      width: 3rem;
+      border-radius: 100%;
+    }
     .info_text {
       display: flex;
       flex-direction: column;

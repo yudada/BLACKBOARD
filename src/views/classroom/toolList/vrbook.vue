@@ -7,7 +7,7 @@
       <el-col :span="5" v-for="(item, index) in subjectList" :key="index">
         <el-card :body-style="{ padding: 0 }" @click.native="dialogVisible = true">
           <div class="card_img">
-            <img :src="require('../../../assets/book/'+item.id+'.jpg')" />
+            <img :src="require('@/assets/book/'+item.id+'.jpg')" />
           </div>
           <div class="card_info">
             <a href="#"><strong>{{ item.bookName }}</strong> {{ item.subName}}</a>

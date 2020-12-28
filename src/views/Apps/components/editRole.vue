@@ -1,9 +1,6 @@
 <template>
   <div class="editRole_main">
-    <div class="main_header">
-      <h4>编辑角色</h4>
-      <el-button type="text" @click="goBack" class="back_btn">返回</el-button>
-    </div>
+    <Breadcrumb :navData="navData" />
 
     <div class="editRole_concent">
       <el-row>
@@ -40,9 +37,15 @@
 
 <script>
 import { rightsList, roleInfo, editRole } from '@/api/Apps/role.js'
+import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
+  components: {Breadcrumb},
   data() {
     return {
+      navData: {
+        childTitle: '编辑角色',
+        goTo: '返回列表'
+      },
       roleForm: {
         roleName: '',
         module_ids: []

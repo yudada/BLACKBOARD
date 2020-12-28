@@ -1,9 +1,6 @@
 <template>
   <div class="detial_main">
-    <div class="main_header">
-      <h4>成绩详情</h4>
-      <el-button type="text" @click="goBack" class="back_btn">返回</el-button>
-    </div>
+    <Breadcrumb :navData="navData" />
 
     <div class="detial_concent">
       <el-row>
@@ -52,9 +49,15 @@
 </template>
 
 <script>
+import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
+  components: { Breadcrumb },
   data() {
     return {
+      navData: {
+        childTitle: '成绩详情',
+        goTo: '返回列表'
+      },
       detialData: [],
       studentData: [],
       loading: false

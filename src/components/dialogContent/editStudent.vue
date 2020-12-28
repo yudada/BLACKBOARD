@@ -125,9 +125,9 @@ export default {
     }
     return {
       editStudentInfoRules: {
-        userName: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
+        userName: [{ required: true, message: '请输入登录账号', trigger: 'blur' }],
         userMobile: [
-          { required: true, message: '请输入地址', trigger: 'blur' },
+          { required: true, message: '请输入手机号码', trigger: 'blur' },
           { validator: checkMobile, trigger: 'blur' },
         ],
         parentsInfo: [

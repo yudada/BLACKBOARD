@@ -19,10 +19,7 @@
 <script>
 export default {
   name: 'UserCard',
-  props: ['cardList'],
-  data() {
-    return {}
-  },
+  props: ['cardList']
 }
 </script>
 

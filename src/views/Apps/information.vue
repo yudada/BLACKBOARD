@@ -1,36 +1,19 @@
 <template>
   <div class="information_main">
-    <div class="main_header">
-      <h4>学校资料</h4>
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item><a href="#">系统设置</a></el-breadcrumb-item>
-        <el-breadcrumb-item>学校资料</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
+    <Breadcrumb :navData="navData" />
 
     <div class="information_concent">
       <el-row>
         <el-col :span="24">
           <el-card class="box-card" v-if="schoolRuleForm">
             <div slot="header" class="clearfix">
-              <span>信息内容</span>
+              <span>编辑资料</span>
             </div>
             <el-form
               :model="schoolRuleForm"
               :rules="schoolRuleFormRules"
               ref="schoolRuleFormRef"
             >
-              <el-form-item label="学校名称(School Name)" prop="schoolName">
-                <el-input v-model="schoolRuleForm.schoolName"></el-input>
-              </el-form-item>
-              <el-form-item label="地址(Address)" prop="schoolAddress">
-                <el-input v-model="schoolRuleForm.schoolAddress"></el-input>
-              </el-form-item>
-              <el-form-item label="学校介绍"></el-form-item>
-              <!-- 富文本编辑器组件 -->
-              <quill-editor v-model="schoolRuleForm.schoolIntroduce" />
-              <el-form-item label="学校logo"></el-form-item>
               <!-- logo上传 -->
               <el-upload
                 :class="{ uoloadSty: showBtnImg, disUoloadSty: noneBtnImg }"
@@ -41,7 +24,6 @@
                 :headers="headerObj"
                 :on-success="handleSuccess"
                 :on-change="handleChange"
-                :auto-upload="false"
               >
                 <img
                   v-if="this.schoolRuleForm.schoolLogo"
@@ -50,8 +32,17 @@
                 />
                 <el-button v-else size="small" type="text">点击上传</el-button>
               </el-upload>
+              <el-form-item label="学校名称(School Name)" prop="schoolName">
+                <el-input v-model="schoolRuleForm.schoolName"></el-input>
+              </el-form-item>
+              <el-form-item label="地址(Address)" prop="schoolAddress">
+                <el-input v-model="schoolRuleForm.schoolAddress"></el-input>
+              </el-form-item>
+              <el-form-item label="学校介绍"></el-form-item>
+              <!-- 富文本编辑器组件 -->
+              <quill-editor v-model="schoolRuleForm.schoolIntroduce" />
               <div class="submit_btn">
-                <el-button @click="submitForm">提交学校信息</el-button>
+                <el-button @click="submitForm">保存学校信息</el-button>
               </div>
             </el-form>
           </el-card>
@@ -62,11 +53,23 @@
 </template>
 
 <script>
+import { schoolDetail, editSchoolDetail } from '@/api/apps'
+import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
+  components: { Breadcrumb },
   data() {
     return {
+      navData: {
+        title: '系统设置',
+        childTitle: '学校资料'
+      },
       // 学校信息
-      schoolRuleForm: {},
+      schoolRuleForm: {
+        schoolName: '',
+        schoolAddress: '',
+        schoolIntroduce: '',
+        schoolLogo: '',
+      },
       headerObj: {
         ContentType: 'multipart/form-data',
         Authorization: window.sessionStorage.getItem('token'),
@@ -86,18 +89,29 @@ export default {
     this.getSchoolDetail()
   },
   computed: {
-    uploadURL: function() {
-      const isDev = process.env.NODE_ENV === 'development';
-      return isDev ? 'api/api/common/uploadImg' : 'https://api.vrbook.vip/api/common/uploadImg'
-    }
+    uploadURL: function () {
+      const isDev = process.env.NODE_ENV === 'development'
+      return isDev
+        ? 'api/api/common/uploadImg'
+        : 'https://api.vrbook.vip/api/common/uploadImg'
+    },
   },
   methods: {
     // 获取学校信息
     async getSchoolDetail() {
-      const { data: res } = await this.$http.get(`api/school/detail`)
-      if (res.statusCode !== 200) return this.$message.error(res.msg)
-      this.schoolRuleForm = res.data
-      console.log(this.schoolRuleForm)
+      schoolDetail().then((res) => {
+        const {
+          schoolAddress,
+          schoolName,
+          schoolIntroduce,
+          schoolLogo,
+        } = res.data
+        this.schoolRuleForm.schoolName = schoolName
+        this.schoolRuleForm.schoolAddress = schoolAddress
+        this.schoolRuleForm.schoolIntroduce = schoolIntroduce
+        this.schoolRuleForm.schoolLogo = schoolLogo
+        console.log(res)
+      })
     },
     handleChange(file) {
       this.noneBtnImg = true
@@ -108,21 +122,18 @@ export default {
       this.showBtnImg = true
     },
     handleSuccess(response) {
-      console.log(response)
+      console.log(response.data.path)
       if (response.statusCode !== 200) return this.$message.error(response.msg)
       this.schoolRuleForm.schoolLogo = response.data.path
     },
     // 提交学校信息
     submitForm() {
-      this.$refs.upload.submit()
       this.$refs.schoolRuleFormRef.validate(async (valid) => {
         if (!valid) return
         console.log(this.schoolRuleForm)
-        const { data: res } = await this.$http.post(
-          `api/school/update`,
-          this.schoolRuleForm
-        )
-        if (res.statusCode !== 200) return this.$message.error(res.msg)
+        editSchoolDetail(this.schoolRuleForm).then((res) => {
+          console.log(res)
+        })
       })
     },
   },
@@ -157,6 +168,8 @@ export default {
   }
   .box-card {
     .uoloadSty {
+      display: flex;
+      justify-content: center;
       .el-upload--picture-card {
         width: 148px;
         height: 148px;
@@ -168,7 +181,7 @@ export default {
         display: none;
       }
     }
-    .avatar{
+    .avatar {
       width: 100%;
     }
   }

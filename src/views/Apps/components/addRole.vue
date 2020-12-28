@@ -1,9 +1,6 @@
 <template>
   <div class="addClassroom_main">
-    <div class="main_header">
-      <h4>添加角色</h4>
-      <el-button type="text" @click="goBack" class="back_btn">返回</el-button>
-    </div>
+    <Breadcrumb :navData="navData" />
 
     <div class="addClassroom_concent">
       <el-row>
@@ -57,9 +54,15 @@
 
 <script>
 import { rightsList, addRole } from '@/api/Apps/role.js'
+import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
+  components: { Breadcrumb },
   data() {
     return {
+      navData: {
+        childTitle: '添加角色',
+        goTo: '返回列表'
+      },
       roleForm: {
         roleName: '',
         module_ids: [],
@@ -83,10 +86,6 @@ export default {
     this.getRightsList()
   },
   methods: {
-    // 返回按钮
-    goBack() {
-      this.$router.push('/role')
-    },
     // 获取系统模块列表
     getRightsList() {
       rightsList().then((res) => {

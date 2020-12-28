@@ -1,9 +1,6 @@
 <template>
   <div class="addTeacher_main">
-    <div class="main_header">
-      <h4>添加老师</h4>
-      <el-button type="text" @click="goBack" class="back_btn">返回</el-button>
-    </div>
+    <Breadcrumb :navData="navData" />
 
     <div class="addTeacher_concent">
       <el-row>
@@ -83,7 +80,9 @@
 </template>
 
 <script>
+import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
+  components: {Breadcrumb},
   data() {
     // 验证邮箱的规则
     var checkEmail = (rule, value, cb) => {
@@ -110,6 +109,10 @@ export default {
       cb(new Error('请输入合法的手机号'))
     }
     return {
+      navData: {
+        childTitle: '添加老师',
+        goTo: '返回列表'
+      },
       teacherForm: {
         schoolName: '',
         sex: '男',

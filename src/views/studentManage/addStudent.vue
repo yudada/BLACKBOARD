@@ -1,13 +1,6 @@
 <template>
   <div class="editprofile_main">
-    <div class="main_header">
-      <h4>学生资料</h4>
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item><a href="#">学生管理</a></el-breadcrumb-item>
-        <el-breadcrumb-item>添加新同学</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
+    <Breadcrumb :navData="navData" />
 
     <div class="editprofile_concent">
       <el-row :gutter="20" class="mobile_card">
@@ -86,10 +79,15 @@
 <script>
 import { newStudent } from '@/api/studentManage.js'
 import addStudentForm from './components/addStudentForm.vue'
+import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
-  components: { addStudentForm },
+  components: { addStudentForm, Breadcrumb },
   data() {
     return {
+      navData: {
+        title: '学生管理',
+        childTitle: '添加新同学'
+      },
       // 快速创建信息
       ruleIntroductionForm: {
         schoolName: '',

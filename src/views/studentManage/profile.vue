@@ -1,11 +1,7 @@
 <template>
   <div class="profile_main">
-    <div class="main_header">
-      <h4>学生资料</h4>
-      <el-button type="text" @click="backList" class="back_btn"
-        >返回列表 /</el-button
-      >
-    </div>
+    <Breadcrumb :navData="navData" />
+    
     <div class="profile_concent">
       <el-row :gutter="20" class="mobile_card">
         <el-col :span="5" class="set_width">
@@ -43,7 +39,7 @@
                 </div>
               </div>
               <div class="msg_btn">
-                <el-button type="info" icon="el-icon-chat-square"
+                <el-button type="info" icon="el-icon-chat-square" class="none-now"
                   >发送信息</el-button
                 >
               </div>
@@ -62,10 +58,15 @@
 <script>
 import { detailStudent } from '@/api/studentManage'
 import StudentDetail from './components/studentDetail.vue'
+import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
-  components: { StudentDetail },
+  components: { StudentDetail, Breadcrumb },
   data() {
     return {
+      navData: {
+        childTitle: '学生资料',
+        goTo: '返回列表'
+      },
       value1: 5,
       birthday: '2000-12-01',
       defaultPic: 'this.src="' + require('@/assets/def_avater.jpg') + '"',
@@ -189,5 +190,9 @@ export default {
   .set_width {
     width: 100% !important;
   }
+}
+
+.none-now {
+  cursor: no-drop;
 }
 </style>

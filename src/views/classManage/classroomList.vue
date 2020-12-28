@@ -1,9 +1,7 @@
 <template>
   <div class="classroomList_main">
-    <div class="main_header">
-      <h4>班级列表</h4>
-      <el-button type="text" @click="addClassRoomPage" class="addClassRoom">创建班级</el-button>
-    </div>
+    <Breadcrumb :navData="navData" />
+    
     <div class="classroomList_concent">
       <el-card shadow="always">
         <el-table :data="classRoomList" style="width: 100%" v-loading="loading">
@@ -11,14 +9,11 @@
           </el-table-column>
           <el-table-column prop="classDeclaration" label="班级学习宣言" :formatter="formatterCellval">
           </el-table-column>
-          <!-- <el-table-column prop="classType" label="班级类型" :formatter="formatterCellval">
-          </el-table-column> -->
           <el-table-column prop="classInviteCode" label="班级邀请码" :formatter="formatterCellval">
           </el-table-column>
           <el-table-column label="编辑信息" prop="monthRemarks" width="120">
             <template slot-scope="scope">
               <el-button type="text" @click="editClassRoomPage(scope.row.class_id)">编辑</el-button>
-              <!-- <el-button type="danger" size="mini" @click="removeById(scope.row.sid)">删除</el-button> -->
             </template>
           </el-table-column>
         </el-table>
@@ -29,9 +24,16 @@
 
 <script>
 import { classList, changeClass, classInfo, commonConfiguration } from '@/api/index.js'
+import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
+  components: { Breadcrumb },
   data() {
     return {
+      navData: {
+        childTitle: '班级列表',
+        goTo: '创建班级',
+        path: '/classroomAdd'
+      },
       classRoomList:[],
       loading:false,
       classType: {}
@@ -73,10 +75,6 @@ export default {
         const {periodArr} = res.data.data;
         this.classType = periodArr;
       })
-    },
-    // 新建班级页
-    addClassRoomPage() {
-      this.$router.push('/classroomAdd')
     }
   },
 }

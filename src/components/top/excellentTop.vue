@@ -51,8 +51,5 @@ export default {
     overflow: overlay;
     padding: 0;
   }
-  .el-card__body::-webkit-scrollbar {
-    display: none;
-  }
 }
 </style>

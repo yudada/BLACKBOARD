@@ -12,7 +12,7 @@
     <div v-if="bookList.length">
       <el-checkbox-group v-model="wisdomBookId" class="check_list">
         <el-checkbox v-for="item in bookList" :key="item.id" :label="item.id">
-          <el-card shadow="never" :body-style="{ padding: 0 }">
+          <el-card :body-style="{ padding: 0 }">
             <div class="card_img">
               <img
                 v-if="item.bookImg !== null"
@@ -22,9 +22,8 @@
               <img v-else src="@/assets/book/七年级生物.jpg" />
             </div>
             <div class="card_info">
-              <a href="#"
-                ><strong>{{ item.bookName }}</strong>
-                {{ item.subName }}</a
+              <span
+                ><strong>{{ item.bookName }}</strong> {{ item.subName }}</span
               >
             </div>
           </el-card>
@@ -66,11 +65,11 @@ export default {
     async getBookList() {
       const { data: res } = await this.$http.get(`api/textbook/choose`)
       this.bookList = res.data
-      console.log(this.bookList);
+      console.log(this.bookList)
     },
     async getClassList() {
       const { data: res } = await this.$http.get(`api/classroom/select`)
-      console.log(res);
+      console.log(res)
       this.classList = res.data
       this.classId = this.classList[0].class_id
       console.log(this.classList)
@@ -100,39 +99,23 @@ export default {
 }
 .select_dialog {
   .card_img {
+    width: 100%;
+    padding-bottom: 138%;
+    height: 0;
+    overflow: hidden;
     img {
       width: 100%;
     }
   }
   .card_info {
+    height: 3rem;
     padding: 1rem;
-    .ava {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      margin: 2rem 0 1rem 0;
-      .ava_img {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        img {
-          width: 25%;
-          border-radius: 100%;
-          margin-right: 1rem;
-        }
-        .info {
-          p {
-            margin: 0;
-          }
-        }
-      }
-      .ava_info {
-        display: flex;
-        justify-content: space-between;
-        i {
-          margin: 0.5rem;
-        }
-      }
+    display: flex;
+    align-items: center;
+    span {
+      white-space: normal;
+      width: 90%;
+      color: #551a8b;
     }
   }
   .dialog-footer {
@@ -165,11 +148,11 @@ export default {
 <style lang="scss">
 .check_list {
   .el-checkbox {
-    margin: 20px;
+    margin: 18px;
     .el-checkbox__input {
       position: absolute;
       right: 15px;
-      bottom: 18px;
+      bottom: 33px;
       .el-checkbox__inner {
         border: 2px solid #dcdfe6;
         border-radius: 50%;
@@ -182,14 +165,29 @@ export default {
         font-weight: 600;
       }
     }
+    .el-checkbox__label {
+      width: 100%;
+      padding-left: 0;
+    }
   }
 }
 
-@media (max-width: 1280px) {
-  .check_list {
-    .el-checkbox__input {
-      top: 5px !important;
-      right: 5px !important;
+@media (max-width: 800px) {
+  .select_dialog {
+    .el-checkbox-group {
+      .el-checkbox {
+        width: 25% !important;
+      }
+    }
+  }
+}
+
+@media (max-width: 375px) {
+  .select_dialog {
+    .el-checkbox-group {
+      .el-checkbox {
+        width: 100% !important;
+      }
     }
   }
 }

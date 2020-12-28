@@ -128,9 +128,12 @@ export default {
 }
 .avater_student {
   width: 100%;
+  padding-bottom: 100%;
+  height: 0;
+  overflow: hidden;
+  border-radius: 50%;
   img {
     width: 100%;
-    border-radius: 50%;
   }
 }
 @media (max-width: 768px) {

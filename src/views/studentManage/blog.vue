@@ -1,13 +1,6 @@
 <template>
   <div class="blog_main">
-    <div class="main_header">
-      <h4>学生风彩</h4>
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item><a href="#">班级管理</a></el-breadcrumb-item>
-        <el-breadcrumb-item>学生风彩</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
+    <Breadcrumb :navData="navData" />
 
     <div class="blog_concent">
       <el-row :gutter="20" >
@@ -46,10 +39,15 @@
 
 <script>
 import studentDetail from './components/studentDetail.vue';
+import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
-  components: { studentDetail },
+  components: { studentDetail, Breadcrumb },
   data() {
     return {
+      navData: {
+        title: '学生管理',
+        childTitle: '学生风彩'
+      },
       cardList: [],
       defaultPic: 'this.src="'+require('@/assets/def_avater.jpg')+'"'
     }
