@@ -5,8 +5,8 @@
         <span>课件列表</span>
       </div>
       <el-table :data="courseData" style="width: 100%">
-        <el-table-column prop="title" label="标题"></el-table-column>
-        <!-- <el-table-column prop="content" label="内容"></el-table-column> -->
+        <el-table-column type="index" label="序号" />
+        <el-table-column prop="title" label="标题" />
         <el-table-column prop="is_share" label="状态">
           <template slot-scope="scope">
             <span v-if="scope.row.is_share === 1">共享</span>

@@ -87,7 +87,7 @@ export default {
       if (res.statusCode !== 200) return this.$message.error('获取详细信息失败！')
       this.questionList = res.data;
       this.queOptions = Object.entries(res.data.queOptions);
-      this.queAnswer = decodeURIComponent(atob(res.data.queAnswer));
+      this.queAnswer = decodeURIComponent(window.escape(atob(res.data.queAnswer)));
     },
   },
   computed: {

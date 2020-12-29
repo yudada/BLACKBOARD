@@ -88,22 +88,15 @@
           </el-form-item>
           <!--  -->
           <el-form-item label="试卷题型结构" prop="exaQStructure">
-            <el-button class="btn_select" size="mini" @click="selectType"
-              >选择题型</el-button
-            >
+            <el-button class="btn_select" size="mini" @click="selectType" >选择题型</el-button>
             <br />
             <span>已选: </span>
             <div v-for="(item, index) in papersForm.exaQStructure" :key="index" class="select-que">
               <span v-if="item.num">{{ item.type }} {{ item.num }} 道 ,</span>
-              <span v-else>{{ item.type }} 0 道 </span>
-              <span v-if="item.score">
-                每道题 {{ item.score }} 分, 共
-                {{ item.score * item.num }} 分。</span
-              >
+              <span v-if="item.score">每道题 {{ item.score }} 分, 共 {{ item.score * item.num }} 分。</span>
               <div v-if="item.num">
-                <el-button class="btn_select" size="mini" @click="addQue"
-                  >添加题目</el-button
-                ><span> 已选：{{ papersForm.exaQSid.length }} 道题</span>
+                <el-button class="btn_select" size="mini" @click="addQue(item)" >添加题目</el-button>
+                <span> 已选：{{typeList[index+1].num}} 道题</span>
               </div>
             </div>
           </el-form-item>
@@ -130,7 +123,7 @@
         </el-form>
       </el-card>
     </div>
-    <!-- 添加题型对话框 -->
+    <!-- 添加题目对话框 -->
     <el-dialog
       title="添加题目"
       :visible.sync="queDialogVisible"
@@ -139,7 +132,7 @@
       :append-to-body="true"
       :before-close="handleClose"
     >
-      <Exercise @func="getContentId" :queId="papersForm.exaQSid" />
+      <Exercise @func="getContentId" :queId="papersForm.exaQSid" :selectLimit="selectLimit" />
     </el-dialog>
     <!-- 添加题型对话框 -->
     <el-dialog
@@ -232,6 +225,17 @@ export default {
       typeDialogVisible: false,
       queDialogVisible: false,
       bookList: [],
+      selectLimit: {
+        num: '',
+        type: ''
+      },
+      typeList: [
+        {title: '判断题', type: 1, num: 0 },
+        {title: '单选题', type: 2, num: 0 },
+        {title: '多选题', type: 3, num: 0 },
+        {title: '填空题', type: 4, num: 0 },
+        {title: '主观题', type: 5, num: 0 },
+      ]
     }
   },
   created() {
@@ -250,7 +254,13 @@ export default {
     },
   },
   methods: {
-    addQue() {
+    addQue(data) {
+      this.selectLimit.num = data.num
+      this.typeList.map(item => {
+        if(item.title === data.type) {
+          this.selectLimit.type = item.type
+        }
+      })
       this.queDialogVisible = true
     },
     selectType() {
@@ -262,7 +272,9 @@ export default {
     },
     // 获取子组件内容
     getContentId(data) {
-      this.papersForm.exaQSid = data.contentId
+      this.typeList[this.selectLimit.type].num = data.contentId.length
+      this.papersForm.exaQSid = [...this.papersForm.exaQSid,...data.contentId]
+      this.papersForm.exaQSid = Array.from(new Set(this.papersForm.exaQSid))
       this.queDialogVisible = false
     },
     getQueType(data) {

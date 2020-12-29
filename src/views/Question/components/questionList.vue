@@ -22,6 +22,7 @@
           </el-col>
         </el-row>
         <el-table :data="questionList" style="width: 100%" v-loading="loading">
+          <el-table-column type="index" label="序号" />
           <el-table-column v-if="type === 3" prop="queYear" label="年份">
           </el-table-column>
           <el-table-column prop="queTitle" label="题目" width="300">
@@ -148,7 +149,7 @@ export default {
       this.getQueList();
     },
     editById(id) {
-      this.$router.push({ path: "/que-edit", query: { id: id } });
+      this.$router.push({ path: "/establish", query: { id: id } });
     },
     // 分页
     handleSizeChange(val) {

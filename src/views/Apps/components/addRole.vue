@@ -32,6 +32,7 @@
                   ref="treeRef"
                   node-key="id"
                   show-checkbox
+                  :default-expand-all="true"
                   @check="checkNode"
                 >
                 </el-tree>
@@ -61,7 +62,7 @@ export default {
     return {
       navData: {
         childTitle: '添加角色',
-        goTo: '返回列表'
+        goTo: '返回列表',
       },
       roleForm: {
         roleName: '',
@@ -92,7 +93,7 @@ export default {
         const { data } = res
         console.log(data)
         if (data.statusCode !== 200) return this.$message.error(data.msg)
-        this.rightslist = data.data;
+        this.rightslist = data.data
 
         // 获取所有节点
         const allNode = []
@@ -104,7 +105,7 @@ export default {
             allNode.push(chileItem.id)
           })
         }
-        this.allNode = allNode;
+        this.allNode = allNode
       })
     },
     checkedAll() {
@@ -136,7 +137,7 @@ export default {
       })
     },
     checkNode(data, keysData) {
-      if(this.allNode.length !== keysData.checkedKeys.length) {
+      if (this.allNode.length !== keysData.checkedKeys.length) {
         this.checked = false
       } else {
         this.checked = true
@@ -154,4 +155,10 @@ export default {
 .back_btn:hover {
   color: #fff;
 }
+</style>
+
+<style lang="scss">
+  .el-tree-node.is-expanded>.el-tree-node__children {
+    display: flex;
+  }
 </style>

@@ -20,7 +20,7 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="职称" prop="teaPosition">
+              <el-form-item label="职称" prop="teaPositionId">
                 <el-select clearable v-model="teacherForm.teaPositionId" placeholder="请选择老师职称">
                   <el-option
                     v-for="item in teaPositionList"
@@ -30,7 +30,7 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="角色" prop="role_id">
+              <el-form-item label="角色权限" prop="role_id">
                 <el-select clearable v-model="teacherForm.role_id" placeholder="请选择角色">
                   <el-option
                     v-for="item in roleList"
@@ -115,7 +115,7 @@ export default {
       },
       teacherForm: {
         schoolName: '',
-        sex: '男',
+        sex: '',
         class_id: '',
         teaPositionId: '',
         teaSubject: '',
@@ -147,8 +147,7 @@ export default {
         ],
         role_id: [
           { required: true, message: '请输入选择角色', trigger: 'blur' }
-        ],
-        
+        ]
       }
     }
   },

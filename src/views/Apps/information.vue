@@ -32,10 +32,10 @@
                 />
                 <el-button v-else size="small" type="text">点击上传</el-button>
               </el-upload>
-              <el-form-item label="学校名称(School Name)" prop="schoolName">
+              <el-form-item label="学校名称" prop="schoolName">
                 <el-input v-model="schoolRuleForm.schoolName"></el-input>
               </el-form-item>
-              <el-form-item label="地址(Address)" prop="schoolAddress">
+              <el-form-item label="地址" prop="schoolAddress">
                 <el-input v-model="schoolRuleForm.schoolAddress"></el-input>
               </el-form-item>
               <el-form-item label="学校介绍"></el-form-item>
@@ -168,8 +168,6 @@ export default {
   }
   .box-card {
     .uoloadSty {
-      display: flex;
-      justify-content: center;
       .el-upload--picture-card {
         width: 148px;
         height: 148px;

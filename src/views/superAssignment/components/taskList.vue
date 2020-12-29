@@ -8,15 +8,13 @@
           </el-input>
         </el-col> -->
         <el-table :data="exercisesList" style="width: 100%" v-loading="loading">
-          <el-table-column prop="exeTitle" label="作业名称" width="350">
-          </el-table-column>
-          <el-table-column prop="bookName" label="科目"> </el-table-column>
-          <el-table-column prop="className" label="班级"> </el-table-column>
-          <el-table-column prop="exeStartTime" label="开始时间">
-          </el-table-column>
-          <el-table-column prop="exeEndTime" label="结束时间">
-          </el-table-column>
-          <el-table-column prop="exeStatus" label="状态"> </el-table-column>
+          <el-table-column type="index"  label="序号" />
+          <el-table-column prop="exeTitle" label="作业名称" width="350" />
+          <el-table-column prop="bookName" label="科目" />
+          <el-table-column prop="className" label="班级" />
+          <el-table-column prop="exeStartTime" label="开始时间" />
+          <el-table-column prop="exeEndTime" label="结束时间" />
+          <el-table-column prop="exeStatus" label="状态" />
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button type="text" @click="taskPage(scope.row.id)">查看</el-button>

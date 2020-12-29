@@ -6,25 +6,23 @@
       <el-row>
         <el-col :span="24">
           <el-card>
-            <el-table :data="exercisesList" style="width: 100%;" v-loading="loading">
-              <el-table-column prop="exeTitle" label="作业名称" width="350">
+            <el-table :data="wrongList" style="width: 100%;" v-loading="loading">
+              <el-table-column type=index>
+              </el-table-column>
+              <el-table-column prop="queTitle" label="题目" width="350">
               </el-table-column>
               <el-table-column prop="bookName" label="科目">
               </el-table-column>
-              <el-table-column prop="className" label="班级">
+              <el-table-column prop="queType" label="题型" :formatter="formatterFilter">
               </el-table-column>
-              <el-table-column prop="exeStartTime" label="开始时间">
+              <el-table-column prop="wrong_num" label="错题人数">
               </el-table-column>
-              <el-table-column prop="exeEndTime" label="结束时间">
-              </el-table-column>
-              <el-table-column prop="exeStatus" label="状态">
-              </el-table-column>
-              <el-table-column label="操作">
+              <!-- <el-table-column label="操作">
                 <template slot-scope="scope">
-                  <el-button type="text" @click="taskPage(scope.row.id)">查看</el-button>
-                  <el-button type="danger" size="mini" @click="removeById(scope.row.id)">删除</el-button>
+                  <el-button type="text" @click="taskPage(scope.row.content_id)">查看</el-button>
+                  <el-button type="danger" size="mini" @click="removeById(scope.row.content_id)">删除</el-button>
                 </template>
-              </el-table-column>
+              </el-table-column> -->
             </el-table>
             <el-pagination
             @size-change="handleSizeChange"
@@ -44,6 +42,7 @@
 
 <script>
 import Breadcrumb from '@/components/breadcrumb.vue'
+import { wrongAnswer } from '@/api/superAssignment'
 export default {
   components: { Breadcrumb },
   data() {
@@ -56,8 +55,15 @@ export default {
       currentPage: 1,
       pagesize: 20,
       total: 1,
-      exercisesList: [],
-      loading: true
+      wrongList: [],
+      loading: true,
+      queTypeList: [
+        { value: 1, label: '判断' },
+        { value: 2, label: '单选' },
+        { value: 3, label: '多选' },
+        { value: 4, label: '填空' },
+        { value: 5, label: '主观' },
+      ]
     }
   },
   created() {
@@ -68,18 +74,21 @@ export default {
       this.$router.push({path:'/taskDetial',query: {id: id}})
     },
     async getExercisesList() {
-      const { data: res } = await this.$http.get(`api/exercises/lists`, { params: {
-        limit: this.pagesize,
-        page: this.currentPage
-      }})
-      if (res.statusCode !== 200) return this.$message.error('获取作业列表失败！')
-      console.log(res.data);
-      this.exercisesList = res.data.data
-
-      this.currentPage = res.data.current_page
-      this.pagesize = parseFloat(res.data.per_page)
-      this.total = res.data.total
-      this.loading = false
+      wrongAnswer().then(res => {
+        this.loading = false
+        const { current_page, per_page, total, data } = res.data;
+        this.wrongList = data
+        this.currentPage = current_page
+        this.pagesize = per_page
+        this.total = total
+      })
+    },
+    formatterFilter(row, column, cellValue, index) {
+      let data
+       this.queTypeList.forEach(item=>{
+        if(item.value === cellValue) return data = item.label
+      })
+      return data
     },
     handleSizeChange(newSize) {
       this.pagesize = newSize;

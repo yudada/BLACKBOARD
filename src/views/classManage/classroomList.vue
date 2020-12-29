@@ -5,12 +5,10 @@
     <div class="classroomList_concent">
       <el-card shadow="always">
         <el-table :data="classRoomList" style="width: 100%" v-loading="loading">
-          <el-table-column prop="className" label="班级名称">
-          </el-table-column>
-          <el-table-column prop="classDeclaration" label="班级学习宣言" :formatter="formatterCellval">
-          </el-table-column>
-          <el-table-column prop="classInviteCode" label="班级邀请码" :formatter="formatterCellval">
-          </el-table-column>
+          <el-table-column type="index" label="序号" />
+          <el-table-column prop="className" label="班级名称" />
+          <el-table-column prop="classDeclaration" label="班级学习宣言" :formatter="formatterCellval" />
+          <el-table-column prop="classInviteCode" label="班级邀请码" :formatter="formatterCellval" />
           <el-table-column label="编辑信息" prop="monthRemarks" width="120">
             <template slot-scope="scope">
               <el-button type="text" @click="editClassRoomPage(scope.row.class_id)">编辑</el-button>

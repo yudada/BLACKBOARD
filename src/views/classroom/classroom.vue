@@ -16,7 +16,9 @@
                   :src="teacher.photo"
                   :onerror="defaultPic"
                 />
-                <img v-else src="@/assets/def_avater.jpg" />
+                <img v-else-if="teacher.sex === '男'" src="@/assets/images/male.png" />
+                <img v-else-if="teacher.sex === '女'" src="@/assets/images/female.jpg" />
+                <img v-else-if="!teacher.sex" src="@/assets/images/def.png" />
               </div>
               <div class="adviser_info">
                 <h3>{{ teacher.teaName }} 老师</h3>
@@ -86,7 +88,7 @@ export default {
         { id: 0, name: '创建课件', path: 'create-courseware' },
         { id: 1, name: '课件资源', path: 'bookResource' },
       ],
-      defaultPic: 'this.src="' + require('@/assets/def_avater.jpg') + '"',
+      defaultPic: 'this.src="' + require('@/assets/images/def.png') + '"',
     }
   },
   created() {
@@ -104,6 +106,7 @@ export default {
       const { data: res } = await this.$http.post(`api/teacher/info`)
       this.teacher = res.data
       this.$store.commit('setTeacherInfo', this.teacher)
+      console.log(this.teacher);
     },
     // 退出教室
     async outClassRoom() {

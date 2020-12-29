@@ -214,10 +214,6 @@ const routes = [
         path: '/history',
         component: () => import('../views/Question/history.vue')
       },
-      {
-        path: '/que-edit',
-        component: () => import('../views/Question/queEdit.vue')
-      },
       // 学科工具
       {
         path: '/drawing',

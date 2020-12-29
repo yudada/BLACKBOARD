@@ -23,29 +23,21 @@
         <el-col :span="24">
           <el-card shadow="always">
             <el-table :data="studentList" style="width: 100%" v-loading="loading">
-              <el-table-column prop="className" label="班级">
-              </el-table-column>
-              <el-table-column prop="stuNum" label="学号">
-              </el-table-column>
-              <el-table-column prop="stuName" label="姓名">
-              </el-table-column>
-              <el-table-column prop="sex" label="性别" :formatter="formatterCellval">
-              </el-table-column>
-              <el-table-column prop="exercise" label="作业行为" :formatter="formatterCellval">
-              </el-table-column>
-              <el-table-column prop="reading" label="阅读行为" :formatter="formatterCellval">
-              </el-table-column>
-              <el-table-column prop="comprehensive" label="综合行为" :formatter="formatterCellval">
-              </el-table-column>
-              <el-table-column prop="weekRemarks" label="本周评语" :formatter="formatterCellval">
-              </el-table-column>
-              <el-table-column prop="monthRemarks" label="本月评语" :formatter="formatterCellval">
-              </el-table-column>
-              <el-table-column label="学习报告" :formatter="formatterCellval">
+              <el-table-column type="index"  label="序号" />
+              <el-table-column prop="className" label="班级" />
+              <el-table-column prop="stuNum" label="学号" />
+              <el-table-column prop="stuName" label="姓名" />
+              <el-table-column prop="sex" label="性别" :formatter="formatterCellval" />
+              <el-table-column prop="exercise" label="作业行为" :formatter="formatterCellval" />
+              <el-table-column prop="reading" label="阅读行为" :formatter="formatterCellval" />
+              <el-table-column prop="comprehensive" label="综合行为" :formatter="formatterCellval" />
+              <el-table-column prop="weekRemarks" label="本周评语" :formatter="formatterCellval" />
+              <el-table-column prop="monthRemarks" label="本月评语" :formatter="formatterCellval" />
+              <!-- <el-table-column label="学习报告" :formatter="formatterCellval">
                 <template>
                   <el-button type="text">查看</el-button>
                 </template>
-              </el-table-column>
+              </el-table-column> -->
               <el-table-column label="编辑信息" prop="monthRemarks" width="120">
                 <template slot-scope="scope">
                   <el-button type="primary" icon="el-icon-view" size="mini" circle @click="editStudentPage(scope.row.sid)"></el-button>
@@ -161,7 +153,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-
-</style>

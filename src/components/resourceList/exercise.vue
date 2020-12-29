@@ -1,6 +1,6 @@
 <template>
   <div style="padding: 20px">
-    <el-row :gutter="20">
+    <el-row :gutter="20" v-if="!selectLimit">
       <el-col :span="6">
         <el-input placeholder="题目搜索" v-model="queTitle">
           <el-button
@@ -48,15 +48,17 @@
       :data="exerciseList"
       style="width: 100%"
       v-loading="loading"
-      @selection-change="handleSelectionChange"
+      @select="handleSelect"
+      @select-all="handleSelectAll"
+      :row-key="(row) => row.id"
     >
       <el-table-column
         type="selection"
         label="全选"
+        :reserve-selection="true"
         width="55"
-      ></el-table-column>
-      <el-table-column prop="queTitle" label="题目" width="300">
-      </el-table-column>
+      />
+      <el-table-column prop="queTitle" label="题目" width="300" />
       <el-table-column label="提纲">
         <template slot-scope="scope">
           <span v-if="scope.row.queSubjectType === 1">练习题</span>
@@ -73,9 +75,8 @@
           <span v-if="scope.row.queType === 5">主观</span>
         </template>
       </el-table-column>
-      <el-table-column prop="quePracticeSubject" label="练题对象">
-      </el-table-column>
-      <el-table-column prop="queKnowledge" label="知识点"> </el-table-column>
+      <el-table-column prop="quePracticeSubject" label="练题对象" />
+      <el-table-column prop="queKnowledge" label="知识点" />
     </el-table>
     <el-pagination
       :hide-on-single-page="false"
@@ -96,7 +97,7 @@
 </template>
 <script>
 export default {
-  props: ['hidenBtn', 'queId'],
+  props: ['hidenBtn', 'queId', 'selectLimit'],
   data() {
     return {
       // 分页
@@ -125,12 +126,21 @@ export default {
     }
   },
   created() {
-    this.getQuePracticeSubjec()
-    this.getExerciseList()
+    this.getQuePracticeSubjec();
     if(this.queId && this.queId.length) {
-      this.queId.map(item=>{
-        this.handlcSelect.push(parseFloat(item))
-      })
+       this.handlcSelect = this.queId.map(item=>parseFloat(item));
+    }
+    if(this.selectLimit) {
+      this.queType = this.selectLimit.type
+      this.getExerciseList()
+    } else {
+      this.getExerciseList()
+    }
+  },
+  watch: {
+    'selectLimit.type': function(newData, oldData) {
+      this.queType = newData
+      this.getExerciseList()
     }
   },
   methods: {
@@ -168,7 +178,6 @@ export default {
       this.pageSize = res.data.per_page
       this.currentPage = res.data.current_page
       this.loading = false
-
       this.$nextTick(() => {
         this.setChecked()
       })
@@ -176,23 +185,12 @@ export default {
     },
     // 发送内容
     sendContentID() {
-      this.$emit('func', this.sendMsg)
-      console.log(this.sendMsg);
-    },
-    toggleSelection(rows) {
-      if (rows) {
-        rows.forEach((row) => {
-          this.$refs.multipleTable.toggleRowSelection(row)
-        })
-      } else {
-        this.$refs.multipleTable.clearSelection()
+      if(this.selectLimit) {
+        const maxQue = this.selectLimit.num
+        const selectNum = this.sendMsg.contentId.length
+        if(selectNum !== maxQue) return this.$message.error('设置'+maxQue+'题，已选'+selectNum+'题，请保持一致！')
       }
-    },
-    handleSelectionChange(val) {
-      val.forEach((item) => {
-        this.sendMsg.contentId.push(item.id)
-      })
-      this.sendMsg.contentId = Array.from(new Set(this.sendMsg.contentId));
+      this.$emit('func', this.sendMsg)
     },
     setChecked() {
       this.exerciseList.forEach((item) => {
@@ -204,6 +202,12 @@ export default {
         }
       })
     },
+    handleSelect(selection, row) {
+      this.sendMsg.contentId = selection.map(item=>item.id)
+    },
+    handleSelectAll(selection) {
+      this.sendMsg.contentId = selection.map(item=>item.id)
+    }
   },
 }
 </script>

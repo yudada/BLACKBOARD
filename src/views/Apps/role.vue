@@ -1,13 +1,6 @@
 <template>
   <div class="role_main">
-    <div class="main_header">
-      <h4>角色管理</h4>
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item><a href="#">系统设置</a></el-breadcrumb-item>
-        <el-breadcrumb-item>角色管理</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
+    <Breadcrumb :navData="navData" />
 
     <div class="role_concent">
       <el-row>
@@ -36,9 +29,15 @@
 
 <script>
 import { roleList, deleteRole } from '@/api/Apps/role.js'
+import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
+  components: { Breadcrumb },
   data() {
     return {
+      navData: {
+        title: '系统设置',
+        childTitle: '角色管理'
+      },
       roleTable: [],
       total: 0,
       currentPage: 1,
@@ -47,7 +46,6 @@ export default {
     }
   },
   created() {
-    this.formatterCellval()
     this.getRoleList();
   },
   methods: {
@@ -62,7 +60,6 @@ export default {
     // 获取角色列表
     async getRoleList() {
       await roleList().then(res => {
-        console.log(res);
         const { data } = res.data;
         this.loading = false;
         this.roleTable = data
@@ -93,15 +90,8 @@ export default {
       
     },
     formatterCellval(row, column, cellValue, index) {
-      if (!Boolean(cellValue)) {
-          return "— —";
-      } else {
-          return cellValue;
-      }
+      return cellValue
     }
   }
 }
 </script>
-
-<style lang="scss" scoped>
-</style>

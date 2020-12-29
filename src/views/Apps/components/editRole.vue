@@ -16,7 +16,7 @@
                   :data="rightslist"
                   :props="props"
                   ref="treeRef"
-                  :default-checked-keys="defKeys"
+                  :default-expand-all="true"
                   node-key="id"
                   show-checkbox>
                 </el-tree>
@@ -128,4 +128,10 @@ export default {
 .back_btn:hover {
   color: #fff;
 }
+</style>
+
+<style lang="scss">
+  .el-tree-node.is-expanded>.el-tree-node__children {
+    display: flex;
+  }
 </style>
