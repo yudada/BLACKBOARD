@@ -126,28 +126,25 @@
         title="请选择内容:"
         :visible.sync="contentDialogVisible"
         width="80%"
-        top="5vh"
+        top="6vh"
         :append-to-body="true"
         :close-on-click-modal="false"
-        :destroy-on-close="true"
+        custom-class="content-diolog"
       >
         <el-radio-group v-model="publishForm.exeType" @change="restContent">
-          <el-radio :label="1">立体模型控索</el-radio>
-          <el-radio :label="2">智慧课本阅读</el-radio>
-          <el-radio :label="3">精选题库练习</el-radio>
-          <el-radio :label="4">实验操作</el-radio>
+          <el-radio v-for="item in taskTypeList" :key="item.value" :label="item.value">{{item.label}}</el-radio>
         </el-radio-group>
         <div v-if="publishForm.exeType == 1">
-          <models @func="getContentId"></models>
+          <models @func="getContentId" />
         </div>
         <div v-else-if="publishForm.exeType == 2">
-          <read @func="getContentId" :bookId="bookId"></read>
+          <read @func="getContentId" :bookId="bookId" />
         </div>
         <div v-else-if="publishForm.exeType == 3">
-          <exercise @func="getContentId"></exercise>
+          <exercise @func="getContentId" />
         </div>
         <div v-else>
-          <experiment @func="getContentId"></experiment>
+          <experiment @func="getContentId" />
         </div>
       </el-dialog>
     </div>
@@ -352,5 +349,12 @@ export default {
       margin-right: 0;
     }
   }
+}
+</style>
+
+<style lang="scss">
+.content-diolog {
+  max-height: 88vh;
+  overflow: overlay;
 }
 </style>

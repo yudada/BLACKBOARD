@@ -59,7 +59,7 @@
         width="55"
       />
       <el-table-column prop="queTitle" label="题目" width="300" />
-      <el-table-column label="提纲">
+      <el-table-column label="题纲">
         <template slot-scope="scope">
           <span v-if="scope.row.queSubjectType === 1">练习题</span>
           <span v-if="scope.row.queSubjectType === 2">自检题</span>
@@ -107,6 +107,7 @@ export default {
       //
       sendMsg: {
         contentId: [],
+        type: '',
         contentDialogVisible: false,
       },
       exerciseList: [],
@@ -140,6 +141,11 @@ export default {
   watch: {
     'selectLimit.type': function(newData, oldData) {
       this.queType = newData
+      this.getExerciseList()
+    },
+    'selectLimit.select': function(newData, oldData) {
+      this.handlcSelect = newData
+      this.loading = true
       this.getExerciseList()
     }
   },
@@ -188,19 +194,24 @@ export default {
       if(this.selectLimit) {
         const maxQue = this.selectLimit.num
         const selectNum = this.sendMsg.contentId.length
+        this.sendMsg.type = this.selectLimit.type
         if(selectNum !== maxQue) return this.$message.error('设置'+maxQue+'题，已选'+selectNum+'题，请保持一致！')
       }
       this.$emit('func', this.sendMsg)
     },
     setChecked() {
+      let num = 0
       this.exerciseList.forEach((item) => {
         let obj = this.handlcSelect.find((ele) => {
           return ele === item.id
         })
         if (obj) {
+          num++
           this.$refs.multipleTable.toggleRowSelection(item, true)
         }
       })
+      console.log(num);
+      if(num === 0) this.$refs.multipleTable.clearSelection()
     },
     handleSelect(selection, row) {
       this.sendMsg.contentId = selection.map(item=>item.id)

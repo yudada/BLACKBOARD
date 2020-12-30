@@ -67,8 +67,7 @@
                 </el-form-item>
               <el-form-item class="footer_form">
                 <div class="footer_btn">
-                  <el-button @click="onSubmit" class="add_btn">立即添加</el-button>
-                  <el-button @click="resetFrom">重置</el-button>
+                  <el-button @click="onSubmit" class="cn_btn">{{btnText}}</el-button>
                 </div>
               </el-form-item>
             </el-form>
@@ -80,9 +79,10 @@
 </template>
 
 <script>
+import { teacherBasics, teacherInfo, editTeacher, addTeacher } from '@/api/Apps/account.js'
 import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
-  components: {Breadcrumb},
+  components: { Breadcrumb },
   data() {
     // 验证邮箱的规则
     var checkEmail = (rule, value, cb) => {
@@ -153,36 +153,61 @@ export default {
   },
   created() {
     this.getTeacherInfo();
+    if(this.$route.query.id) {
+      this.navData.childTitle = '编辑信息'
+      this.getTeacherInfoById();
+    }
+  },
+  computed:{
+    tId:function () {
+      return this.$route.query.id
+    },
+    btnText: function() {
+      return this.$route.query.id ? '保存编辑' : '立即添加'
+    }
   },
   methods: {
-    // 返回按钮
-    goBack() {
-      this.$router.push("/account");
+    // 编辑信息基础
+    getTeacherInfoById() {
+      teacherInfo(this.tId).then(res => {
+        const {data} = res
+        const {info} = res.data;
+        this.teacherForm.schoolName = data.schoolName;
+        this.teacherForm.teaName = info.teaName;
+        this.teacherForm.teaPositionId = info.teaPositionId;
+        this.teacherForm.teaSubject = info.teaSubject;
+        this.teacherForm.class_id = info.class_id;
+        this.teacherForm.role_id = info.role_id;
+        this.teacherForm.userMobile = parseInt(info.mobile)
+      })
     },
     // 教师基础信息
     async getTeacherInfo() {
-      const { data: res } = await this.$http.post(`api/teacher/create`)
-      if(res.statusCode !== 200) return this.$message.error(res.msg)
-      console.log(res.data);
-      const { schoolName, classArr = [], subjectArr = [],positionArr = [], roleArr = [] } = res.data;
-      this.teacherForm.schoolName = schoolName;
-      this.classList = classArr;
-      this.teaPositionList = positionArr;
-      this.subjectList = subjectArr;
-      this.roleList = roleArr;
-      console.log(this.teaPositionList);
+      teacherBasics().then(res=>{
+        const { schoolName, classArr = [], subjectArr = [],positionArr = [], roleArr = [] } = res.data;
+        this.teacherForm.schoolName = schoolName;
+        this.classList = classArr;
+        this.teaPositionList = positionArr;
+        this.subjectList = subjectArr;
+        this.roleList = roleArr;
+      })
     },
     // 添加老师
     onSubmit() {
-      this.$refs.teacherFormRef.validate(async valid => {
+      this.$refs.teacherFormRef.validate(valid => {
         if(!valid) return this.$message.error('请填写必填项！')
-
         this.teacherForm.userMobile = this.teacherForm.userMobile.toString()
         console.log(this.teacherForm);
-        const {data:res} = await this.$http.post(`api/teacher/store`, this.teacherForm)
-        if(res.statusCode !== 200) return this.$message.error(res.msg)
-        this.$message.success(res.msg)
-        this.resetFrom();
+        if(!this.tId) {
+          addTeacher(this.teacherForm).then(res => {
+            this.$message.success(res.msg)
+            this.resetFrom();
+          })
+        } else {  
+          editTeacher(this.tId, this.teacherForm).then(res => {
+            this.$message.success(res.msg)
+          })
+        }
       })
     },
     resetFrom() {
@@ -193,12 +218,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.back_btn {
-  color: #fff;
-  font-size: 18px;
-}
-.back_btn:hover {
-  color: #fff;
+.el-select {
+  width: 50%;
 }
 </style>
 
@@ -217,49 +238,13 @@ export default {
 .footer_form{
   display: flex;
   align-items: flex-end;
+  .el-form-item__content {
+    width: 100%;
+  }
   .footer_btn {
     width: 100%;
     display: flex;
-    .add_btn {
-      width: 100%;
-      color: #fff !important;
-      background: linear-gradient(to bottom right, #9853af, #623AA2) !important;
-      }
-    .add_btn {
-      width: 100%;
-      color: #fff !important;
-      background: linear-gradient(to bottom right, #9853af, #623AA2) !important;
-      }
-    .add_btn:hover {
-      color: #fff;
-      opacity: 0.9;
-    }
-    .add_btn:focus {
-      color: #fff;
-    }
-  }
-}
-@media (max-width: 768px) {
-  .addTeacher_concent{
-    .cn_btn {
-      width: 50% !important;
-    }
   }
 }
 
-@media (max-width: 375px) {
-  .addTeacher_concent{
-    .el-form {
-      .el-form-item {
-        width: 100%;
-        .el-input {
-          width: 100% !important;
-        }
-        .cn_btn {
-          width: 50%;
-        }
-      }
-    }
-  }
-}
 </style>

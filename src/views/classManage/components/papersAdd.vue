@@ -88,15 +88,25 @@
           </el-form-item>
           <!--  -->
           <el-form-item label="试卷题型结构" prop="exaQStructure">
-            <el-button class="btn_select" size="mini" @click="selectType" >选择题型</el-button>
+            <el-button class="btn_select" size="mini" @click="selectType">
+              选择题型
+            </el-button>
             <br />
             <span>已选: </span>
-            <div v-for="(item, index) in papersForm.exaQStructure" :key="index" class="select-que">
+            <div
+              v-for="(item,index) in papersForm.exaQStructure"
+              :key="item.type"
+              class="select-que"
+            >
               <span v-if="item.num">{{ item.type }} {{ item.num }} 道 ,</span>
-              <span v-if="item.score">每道题 {{ item.score }} 分, 共 {{ item.score * item.num }} 分。</span>
+              <span v-if="item.score"
+                >每道题 {{ item.score }} 分, 共
+                {{ item.score * item.num }} 分。</span
+              >
               <div v-if="item.num">
-                <el-button class="btn_select" size="mini" @click="addQue(item)" >添加题目</el-button>
-                <span> 已选：{{typeList[index+1].num}} 道题</span>
+                <el-button class="btn_select" size="mini" @click="addQue(item)">
+                  {{typeList[index].btnText}}
+                </el-button>
               </div>
             </div>
           </el-form-item>
@@ -115,9 +125,9 @@
           </el-form-item>
           <el-form-item label="发布">
             <span>
-              <el-button @click="onSubmit()" class="cn_btn">{{
-                btnText
-              }}</el-button>
+              <el-button @click="onSubmit()" class="cn_btn">
+                {{btnText}}
+                </el-button>
             </span>
           </el-form-item>
         </el-form>
@@ -131,8 +141,14 @@
       top="5vh"
       :append-to-body="true"
       :before-close="handleClose"
+      :destroy-on-close="false"
+      custom-class="addque-dialog"
     >
-      <Exercise @func="getContentId" :queId="papersForm.exaQSid" :selectLimit="selectLimit" />
+      <Exercise
+        @func="getContentId"
+        :queId="papersForm.exaQSid"
+        :selectLimit="selectLimit"
+      />
     </el-dialog>
     <!-- 添加题型对话框 -->
     <el-dialog
@@ -142,7 +158,11 @@
       :append-to-body="true"
       :before-close="handleClose"
     >
-      <Select-que @func="getQueType" :queType="papersForm.exaQStructure" />
+      <Select-que
+        :parperId="parperId"
+        @func="getQueType"
+        :queType="papersForm.exaQStructure"
+      />
     </el-dialog>
   </div>
 </template>
@@ -177,13 +197,7 @@ export default {
       papersForm: {
         exaTitle: '',
         bookid: '',
-        exaQStructure: [
-          { num: '', score: '', type: '判断题' },
-          { num: '', score: '', type: '单选题' },
-          { num: '', score: '', type: '多选题' },
-          { num: '', score: '', type: '填空题' },
-          { num: '', score: '', type: '主观题' },
-        ],
+        exaQStructure: [],
         exaJifenfangshi: '',
         exaRemarks: '',
         exaDatitime: '',
@@ -227,15 +241,16 @@ export default {
       bookList: [],
       selectLimit: {
         num: '',
-        type: ''
+        type: '',
+        select: []
       },
       typeList: [
-        {title: '判断题', type: 1, num: 0 },
-        {title: '单选题', type: 2, num: 0 },
-        {title: '多选题', type: 3, num: 0 },
-        {title: '填空题', type: 4, num: 0 },
-        {title: '主观题', type: 5, num: 0 },
-      ]
+        { title: '判断题', type: 1, num: 0, select: [], btnText: '添加题目' },
+        { title: '单选题', type: 2, num: 0, select: [], btnText: '添加题目' },
+        { title: '多选题', type: 3, num: 0, select: [], btnText: '添加题目' },
+        { title: '填空题', type: 4, num: 0, select: [], btnText: '添加题目' },
+        { title: '主观题', type: 5, num: 0, select: [], btnText: '添加题目' },
+      ],
     }
   },
   created() {
@@ -251,16 +266,18 @@ export default {
     },
     btnText: function () {
       return this.$route.query.id ? '保存修改' : '发布试卷'
-    },
+    }
   },
   methods: {
     addQue(data) {
       this.selectLimit.num = data.num
-      this.typeList.map(item => {
-        if(item.title === data.type) {
+      this.typeList.map((item) => {
+        if (item.title === data.type) {
           this.selectLimit.type = item.type
+          this.selectLimit.select = item.select
         }
       })
+      console.log(this.selectLimit);
       this.queDialogVisible = true
     },
     selectType() {
@@ -272,14 +289,18 @@ export default {
     },
     // 获取子组件内容
     getContentId(data) {
-      this.typeList[this.selectLimit.type].num = data.contentId.length
-      this.papersForm.exaQSid = [...this.papersForm.exaQSid,...data.contentId]
-      this.papersForm.exaQSid = Array.from(new Set(this.papersForm.exaQSid))
-      this.queDialogVisible = false
+      this.typeList.map((item) => {
+        if (item.type === data.type) {
+          item.btnText = '重选题目'
+          return item.select = data.contentId
+        }
+      })
+      this.handleClose()
     },
     getQueType(data) {
       this.typeDialogVisible = false
       this.papersForm.exaQStructure = data
+      console.log(this.papersForm.exaQStructure)
     },
     // 获取课本列表
     async getBookInfo() {
@@ -300,11 +321,20 @@ export default {
           if (item.type === 'subjective') item.type = '主观题'
         })
       })
+      this.typeList.map(item=>item.btnText = '重选题目')
     },
     // 发布-编辑
     onSubmit() {
+      const typeList = this.typeList
       this.papersForm.exaDatinum = parseFloat(this.papersForm.exaDatinum)
       this.papersForm.exaDatitime = parseFloat(this.papersForm.exaDatitime)
+      this.papersForm.exaQSid = [
+        ...typeList[0].select,
+        ...typeList[1].select,
+        ...typeList[2].select,
+        ...typeList[3].select,
+        ...typeList[4].select,
+      ]
       this.papersForm.exaQStructure.map((item) => {
         if (item.type === '判断题') item.type = 'judge'
         if (item.type === '单选题') item.type = 'single'
@@ -388,6 +418,17 @@ export default {
     .el-form-item {
       width: 50%;
     }
+  }
+}
+</style>
+
+<style lang="scss">
+.addque-dialog {
+  max-height: 88vh;
+  overflow: overlay;
+  .el-dialog__body {
+    padding: 0;
+    overflow: overlay;
   }
 }
 </style>

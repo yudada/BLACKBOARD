@@ -11,7 +11,7 @@
           label-width="80px"
           label-position="top"
         >
-          <el-form-item label="提纲" prop="queSubjectType">
+          <el-form-item label="题纲" prop="queSubjectType">
             <el-radio-group
               v-model="questionForm.queSubjectType"
               class="que_sbj"
@@ -170,7 +170,6 @@
       top="5vh"
       :append-to-body="true"
       :close-on-click-modal="false"
-      :destroy-on-close="true"
       :before-close="handleClose"
     >
       <add-quetion @func="fromSun" :bookId="book" :selecdId="questionForm.queKnowledge" />
@@ -204,7 +203,7 @@ export default {
       },
       questionFormRules: {
         queSubjectType: [
-          { required: true, message: '请选择提纲', trigger: 'blur' },
+          { required: true, message: '请选择题纲', trigger: 'blur' },
         ],
         queType: [{ required: true, message: '请选择题型', trigger: 'blur' }],
         queTitle: [{ required: true, message: '请填写题目', trigger: 'blur' }],

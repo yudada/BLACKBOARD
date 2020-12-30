@@ -44,38 +44,54 @@
           >
             <div v-if="item.realName">
               <tr>
-              <td><strong>家长姓名 : </strong>{{ item.realName }}--{{item.relation}}</td>
-            </tr>
-            <tr>
-              <td><strong>联系电话 : </strong>{{ item.mobile }}</td>
-            </tr>
+                <td>
+                  <strong>家长姓名 : </strong>{{ item.realName }}--{{
+                    item.relation
+                  }}
+                </td>
+              </tr>
+              <tr>
+                <td><strong>联系电话 : </strong>{{ item.mobile }}</td>
+              </tr>
             </div>
           </tbody>
         </table>
       </div>
       <div class="book_info">
-        <el-tabs v-model="activeName" @tab-click="handleClick" class="book_tab">
+        <el-tabs v-model="activeName" class="book_tab">
           <el-tab-pane label="智慧课本" name="first">
             <div class="book_card">
-              <div v-for="book in bookList" :key="book.id" class="book_detail">
+              <div
+                v-for="book in studentInfo.textbook"
+                :key="book.id"
+                class="book_detail"
+              >
                 <div class="subject_img">
-                  <img src="@/assets/logo.png" alt="" />
+                  <img v-if="book.bookImg" :src="book.bookImg" />
+                  <img v-else src="@/assets/book/七年级生物.jpg" />
                 </div>
                 <div class="subject_info">
-                  <el-button type="text">{{ book.subject }}</el-button>
-                  <el-button type="text">已读：{{ book.readed }}</el-button>
-                  <el-button type="text">笔记：{{ book.note }} 条</el-button>
+                  <el-button type="text">{{ book.bookName }}</el-button>
+                  <el-button type="text">已读：{{ book.percent }}</el-button>
+                  <el-button type="text">笔记：{{ book.noteNum }} 条</el-button>
                 </div>
               </div>
             </div>
           </el-tab-pane>
           <el-tab-pane label="阅读笔记" name="second">
-            <div v-for="item in readList" :key="item.id" class="read_info">
-              <p><i :class="iconsObj[item.id]"></i> {{ item.concent }}</p>
-              <span>{{ item.uptime }}</span>
+            <div
+              v-for="item in studentInfo.notes"
+              :key="item.id"
+              class="read_info"
+            >
+              <div class="content_note">
+                <i class="el-icon-edit-outline" />
+                <p>{{ item.note }}</p>
+              </div>
+              <span>{{ item.noteTime }}</span>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="点赞互动" name="third">点赞互动</el-tab-pane>
+          <!-- <el-tab-pane label="点赞互动" name="third">点赞互动</el-tab-pane> -->
         </el-tabs>
       </div>
       <!-- 编辑信息 -->
@@ -102,73 +118,15 @@ export default {
   data() {
     return {
       activeName: 'second',
-      bookList: [
-        { id: 1, subject: '地理', readed: '60%', note: 36 },
-        { id: 2, subject: '地理', readed: '60%', note: 36 },
-        { id: 3, subject: '地理', readed: '60%', note: 36 },
-        { id: 4, subject: '地理', readed: '60%', note: 36 },
-        { id: 5, subject: '地理', readed: '60%', note: 36 },
-        { id: 6, subject: '地理', readed: '60%', note: 36 },
-        { id: 7, subject: '地理', readed: '60%', note: 36 },
-      ],
-      readList: [
-        {
-          id: 1,
-          concent: 'John Doe posted a comment in Avengers Initiative project.',
-          uptime: '2020/08/08 12:08',
-        },
-        {
-          id: 2,
-          concent: 'John Doe posted a comment in Avengers Initiative project.',
-          uptime: '2020/08/08 12:08',
-        },
-        {
-          id: 3,
-          concent: 'John Doe posted a comment in Avengers Initiative project.',
-          uptime: '2020/08/08 12:08',
-        },
-        {
-          id: 4,
-          concent: 'John Doe posted a comment in Avengers Initiative project.',
-          uptime: '2020/08/08 12:08',
-        },
-        {
-          id: 5,
-          concent: 'John Doe posted a comment in Avengers Initiative project.',
-          uptime: '2020/08/08 12:08',
-        },
-        {
-          id: 6,
-          concent: 'John Doe posted a comment in Avengers Initiative project.',
-          uptime: '2020/08/08 12:08',
-        },
-        {
-          id: 7,
-          concent: 'John Doe posted a comment in Avengers Initiative project.',
-          uptime: '2020/08/08 12:08',
-        },
-      ],
-      iconsObj: {
-        1: 'el-icon-date',
-        2: 'el-icon-tickets',
-        3: 'el-icon-office-building',
-        4: 'el-icon-set-up',
-        5: 'el-icon-wallet',
-        6: 'el-icon-wallet',
-        7: 'el-icon-wallet',
-      },
-      editUIDialogVisible: false
+      editUIDialogVisible: false,
     }
   },
   methods: {
-    handleClick(tab, event) {
-      console.log(1)
-    },
     openDialog() {
-      this.editUIDialogVisible = true;
+      this.editUIDialogVisible = true
     },
     handleClose() {
-      this.editUIDialogVisible = false;
+      this.editUIDialogVisible = false
     },
     fromEdit(data) {
       this.editUIDialogVisible = data
@@ -179,57 +137,78 @@ export default {
 
 <style lang="scss" scoped>
 .student_info {
+  table {
+    border-collapse: separate;
+    border-spacing: 1rem;
+  }
   padding: 0.5rem;
   border: 1px solid rgba(167, 180, 201, 0.2);
   margin-bottom: 0.5rem;
+  .table_wh {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+    .table_w {
+      color: #636262;
+      font-size: 14px;
+      width: 40%;
+    }
+  }
 }
 .book_tab {
   padding: 0.5rem;
   border: 1px solid rgba(167, 180, 201, 0.2);
-}
-.book_card {
-  display: flex;
-  flex-wrap: wrap;
-  .book_detail {
-    margin: 1rem;
-    border: 1px solid rgba(167, 180, 201, 0.2);
-    border-radius: 1rem;
-    .subject_img {
-      padding: 1.5rem;
-      border-bottom: 1px solid rgba(167, 180, 201, 0.2);
-    }
-    .subject_info {
-      padding: 1.5rem;
+  .book_card {
+    display: flex;
+    flex-wrap: wrap;
+    .book_detail {
+      margin: 20px;
+      border: 1px solid rgba(167, 180, 201, 0.2);
+      border-radius: 10px;
+      padding: 0 !important;
+      width: calc(25% - 40px);
+      box-shadow: 0px 0px 10px rgba(69, 101, 173, 0.1);
+      .subject_img {
+        border-bottom: 1px solid rgba(167, 180, 201, 0.2);
+        border-radius: 10px 10px 0 0;
+        width: 100%;
+        padding-bottom: 140%;
+        height: 0;
+        overflow: hidden;
+        img {
+          width: 100%;
+        }
+      }
+      .subject_info {
+        padding: 20px;
+        .el-button {
+          padding: 0 !important;
+        }
+      }
     }
   }
-}
-.table_wh {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  width: 100%;
-  .table_w {
+  .read_info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     color: #636262;
     font-size: 14px;
-    width: 40%;
-  }
-}
-table {
-  border-collapse: separate;
-  border-spacing: 1rem;
-}
-.read_info {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  color: #636262;
-  font-size: 14px;
-  padding: 0 1rem;
-  i {
-    padding-right: 0.5rem;
-    color: #623aa2;
-    font-size: large;
+    padding: 0 1rem;
+    .content_note {
+      display: flex;
+      align-items: center;
+      flex: 4;
+      i {
+        padding-right: 0.5rem;
+        color: #623aa2;
+        font-size: large;
+      }
+    }
+    span {
+      flex: 1;
+    }
   }
 }
 @media (max-width: 1024px) {
@@ -251,7 +230,7 @@ table {
 </style>
 
 <style lang="scss">
-  .info_dialog {
+.info_dialog {
   max-height: 88vh;
   overflow: overlay;
 }

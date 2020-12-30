@@ -1,7 +1,7 @@
-import http from '../../utils/http'
+import request from '@/utils/requset'
 
 export function addRole(data) {
-    return http({
+    return request({
       url: `api/role/store`,
       method: 'post',
       params: data
@@ -9,14 +9,14 @@ export function addRole(data) {
   }
 
 export function deleteRole(id) {
-  return http({
+  return request({
     url: `api/role/${id}`,
     method: 'delete'
   })
 }
 
 export function rightsList(data) {
-  return http({
+  return request({
     url: `api/role/module`,
     method: 'get',
     params: data
@@ -24,21 +24,21 @@ export function rightsList(data) {
 }
 
 export function roleList() {
-  return http({
+  return request({
     url: `api/role/lists`,
     method: 'get'
   })
 }
 
 export function roleInfo(id) {
-  return http({
+  return request({
     url: `api/role/detail/${id}`,
     method: 'post'
   })
 }
 
 export function editRole(id,data) {
-  return http({
+  return request({
     url: `api/role/${id}`,
     method: 'post',
     params: data

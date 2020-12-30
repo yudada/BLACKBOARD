@@ -6,26 +6,35 @@
       <el-row>
         <el-col :span="24">
           <el-card>
-            <el-form ref="roleFormRef" :model="roleForm" :rules="roleFormRules" label-position="top">
+            <el-form
+              ref="roleFormRef"
+              :model="roleForm"
+              :rules="roleFormRules"
+              label-position="top"
+            >
               <el-form-item label="角色名称" prop="roleName">
-                <el-input placeholder="请输入角色名称" v-model="roleForm.roleName" class="set_w"></el-input>
+                <el-input
+                  placeholder="请输入角色名称"
+                  v-model="roleForm.roleName"
+                  class="set_w"
+                ></el-input>
               </el-form-item>
               <el-form-item label="选择权限" prop="module_ids	">
-                <el-checkbox v-model="checked" @change="checkedAll">全选</el-checkbox>
+                <el-checkbox v-model="checked" @change="checkedAll"
+                  >全选</el-checkbox
+                >
                 <el-tree
                   :data="rightslist"
                   :props="props"
                   ref="treeRef"
                   :default-expand-all="true"
                   node-key="id"
-                  show-checkbox>
+                  show-checkbox
+                >
                 </el-tree>
               </el-form-item>
               <el-form-item>
-                <div>
-                  <el-button @click="onSubmit" class="cn_btn">立即保存</el-button>
-                  <el-button>取消</el-button>
-                </div>
+                <el-button @click="onSubmit" class="cn_btn">{{btnText}}</el-button>
               </el-form-item>
             </el-form>
           </el-card>
@@ -39,84 +48,87 @@
 import { rightsList, roleInfo, editRole } from '@/api/Apps/role.js'
 import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
-  components: {Breadcrumb},
+  components: { Breadcrumb },
   data() {
     return {
       navData: {
         childTitle: '编辑角色',
-        goTo: '返回列表'
+        goTo: '返回列表',
       },
       roleForm: {
         roleName: '',
-        module_ids: []
+        module_ids: [],
       },
       roleFormRules: {
         roleName: [
-          { required: true, message: '请输入角色名称', trigger: 'blur' }
-        ]
+          { required: true, message: '请输入角色名称', trigger: 'blur' },
+        ],
       },
       props: {
         label: 'moduleName',
-        children: 'child'
+        children: 'child',
       },
       rightslist: [],
       checked: false,
-      defKeys: []
+      defKeys: [],
     }
   },
   created() {
-    this.getRolrInfo();
-    this.getRightsList();
+    this.getRolrInfo()
+    this.getRightsList()
   },
   methods: {
     // 返回按钮
     goBack() {
-      this.$router.push("/role");
+      this.$router.push('/role')
     },
     getRolrInfo() {
-      roleInfo(this.roleId).then(res => {
-        console.log(res.data.data);
-        const { name,module_id=[] } = res.data.data;
-        this.roleForm.roleName = name;
-        this.defKeys = module_id;
+      roleInfo(this.roleId).then((res) => {
+        console.log(res.data.data)
+        const { name, module_id = [] } = res.data.data
+        this.roleForm.roleName = name
+        this.defKeys = module_id
       })
     },
     // 获取系统模块列表
     getRightsList() {
-      rightsList().then(res => {
-        this.rightslist = res.data.data;
+      rightsList().then((res) => {
+        this.rightslist = res.data.data
       })
     },
     checkedAll() {
       if (this.checked) {
-            //全选
-            this.$refs.treeRef.setCheckedNodes(this.rightslist);
-        }else{
-            //取消选中
-            this.$refs.treeRef.setCheckedKeys([]);
-        }
+        //全选
+        this.$refs.treeRef.setCheckedNodes(this.rightslist)
+      } else {
+        //取消选中
+        this.$refs.treeRef.setCheckedKeys([])
+      }
     },
     onSubmit() {
       const keys = [
         ...this.$refs.treeRef.getCheckedKeys(),
-        ...this.$refs.treeRef.getHalfCheckedKeys()
+        ...this.$refs.treeRef.getHalfCheckedKeys(),
       ]
-      this.roleForm.module_ids = keys;
-      this.$refs.roleFormRef.validate(async valid => {
-        if(!valid) return
-        console.log(this.roleForm);
+      this.roleForm.module_ids = keys
+      this.$refs.roleFormRef.validate(async (valid) => {
+        if (!valid) return
+        console.log(this.roleForm)
 
-        editRole(this.roleId,this.roleForm).then(res => {
-          console.log(res);
+        editRole(this.roleId, this.roleForm).then((res) => {
+          console.log(res)
         })
       })
-    }
+    },
   },
   computed: {
     roleId: function () {
-      return this.$route.query.id;
+      return this.$route.query.id
     },
-  }
+    btnText: function () {
+      return this.$route.query.id ? '保存编辑' : '立即添加'
+    },
+  },
 }
 </script>
 
@@ -131,7 +143,7 @@ export default {
 </style>
 
 <style lang="scss">
-  .el-tree-node.is-expanded>.el-tree-node__children {
-    display: flex;
-  }
+.el-tree-node.is-expanded > .el-tree-node__children {
+  display: flex;
+}
 </style>

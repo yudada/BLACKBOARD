@@ -35,10 +35,20 @@ export function nowStudents(class_id,data) {
 }
 
 // 作业统计
-export function workStatistics () {
+export function workStatistics (data) {
   return request({
     url: `api/exercises/statistics`,
     method: 'post',
+    params: data
+  })
+}
+
+// 作业统计-单个学生统计
+export function studentStatistic (data) {
+  return request({
+    url: `api/exercises/studentStatistic`,
+    method: 'post',
+    params: data
   })
 }
 

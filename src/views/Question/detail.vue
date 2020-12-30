@@ -10,7 +10,7 @@
               <el-form-item label="练习对象">
                 <span><strong>{{questionList.quePracticeSubject}}</strong></span>
               </el-form-item>
-              <el-form-item label="提纲">
+              <el-form-item label="题纲">
                 <div v-if="questionList.queSubjectType === 1">
                   <span><strong>练习题</strong></span>
                 </div>

@@ -1,55 +1,66 @@
 <template>
   <div>
-    <el-form
-      label-position="top"
-      class="que_form"
-    >
-      <el-form-item v-for="(item,index) in queTypeForm" :label="item.type" :key="index">
-        <el-select filterable clearable v-model="queTypeForm[index].num" :placeholder="'请选择'+ item.type + '数量'">
-          <el-option
-            v-for="item2 in 100"
-            :key="item2"
-            :label="'共'+ item2 + '题'"
-            :value="item2"
+    <el-form label-position="top" class="que_form">
+      <el-form-item
+        v-for="item in queTypeForm"
+        :label="item.type"
+        :key="item.type"
+      >
+        <template>
+          <el-select
+            filterable
+            clearable
+            v-model="item.num"
+            :placeholder="'请选择' + item.type + '数量'"
           >
-          </el-option>
-        </el-select>
-        <el-select filterable clearable v-model="queTypeForm[index].score" placeholder="请单道题分数">
-          <el-option
-            v-for="item2 in 50"
-            :key="item2"
-            :label="'每道题 ' + item2 + ' 分'"
-            :value="item2"
-            
+            <el-option
+              v-for="(item2, index) in 100"
+              :key="index"
+              :label="'共' + item2 + '题'"
+              :value="item2"
+            />
+          </el-select>
+          <el-select
+            filterable
+            clearable
+            v-model="item.score"
+            placeholder="请单道题分数"
           >
-          </el-option>
-        </el-select>
+            <el-option
+              v-for="(item3, index) in 50"
+              :key="index"
+              :label="'每道题 ' + item3 + ' 分'"
+              :value="item3"
+            />
+          </el-select>
+        </template>
       </el-form-item>
     </el-form>
     <span class="footer">
-      <el-button type="primary" class="cn_btn" @click="sendMsgToF">确 定</el-button>
+      <el-button class="cn_btn" @click="sendMsgToF">确 定</el-button>
     </span>
   </div>
 </template>
 
 <script>
+import _ from 'lodash'
 export default {
-  props: ['queType'],
+  props: ['queType', 'parperId'],
   data() {
     return {
       queTypeFormRules: {},
       queTypeForm: [
-        { num: '', score: '', type: '判断题'},
-        { num: '', score: '', type: '单选题'},
-        { num: '', score: '', type: '多选题'},
-        { num: '', score: '', type: '填空题'},
-        { num: '', score: '', type: '主观题'}
-      ]
+        { num: '', score: '', type: '判断题' },
+        { num: '', score: '', type: '单选题' },
+        { num: '', score: '', type: '多选题' },
+        { num: '', score: '', type: '填空题' },
+        { num: '', score: '', type: '主观题' },
+      ],
     }
   },
   created() {
-    if(this.queType.length) {
-      this.queTypeForm = this.queType;
+    if (this.parperId) {
+      this.queTypeForm = _.cloneDeep(this.queType)
     }
   },
   methods: {
@@ -71,7 +82,7 @@ export default {
 .que_form {
   display: flex;
   justify-content: center;
-  .el-select  {
+  .el-select {
     margin: 20px;
   }
 }

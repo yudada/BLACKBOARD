@@ -10,6 +10,7 @@
             :startTime="startTime"
             :endTime="endTime"
             :title="'答题统计'"
+            @func="fromSun"
           />
         </el-col>
         <el-col :span="12">
@@ -47,18 +48,26 @@ export default {
   },
   methods: {
     getWorkStatisticsList() {
-      workStatistics().then((res) => {
+      const params = {
+        endTime: this.endTime,
+        startTime: this.startTime
+      }
+      workStatistics(params).then((res) => {
+        console.log(res);
         const { accuracy_student, error_student, endTime, startTime } = res.data
         this.accuracyList = accuracy_student
         this.errorList = error_student
         this.startTime = startTime
         this.endTime = endTime
-        console.log(res)
+        this.$message.success(res.msg)
       })
     },
+    fromSun(data) {
+      console.log(data);
+      this.startTime = data.startTime
+      this.endTime = data.endTime
+      this.getWorkStatisticsList()
+    }
   },
 }
 </script>
-
-<style lang="scss" scoped>
-</style>

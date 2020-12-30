@@ -33,17 +33,15 @@
                   node-key="id"
                   show-checkbox
                   :default-expand-all="true"
+                  :default-checked-keys="defKeys"
                   @check="checkNode"
                 >
                 </el-tree>
               </el-form-item>
               <el-form-item>
-                <div>
-                  <el-button @click="onSubmit" class="cn_btn"
-                    >立即添加</el-button
-                  >
-                  <el-button>取消</el-button>
-                </div>
+                <el-button @click="onSubmit" class="cn_btn"
+                  >{{btnText}}</el-button
+                >
               </el-form-item>
             </el-form>
           </el-card>
@@ -54,7 +52,7 @@
 </template>
 
 <script>
-import { rightsList, addRole } from '@/api/Apps/role.js'
+import { rightsList, addRole, roleInfo, editRole } from '@/api/Apps/role.js'
 import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
   components: { Breadcrumb },
@@ -81,19 +79,37 @@ export default {
       allNode: [],
       checked: false,
       allIndeterminate: false,
+      defKeys: []
     }
   },
   created() {
     this.getRightsList()
+    if(this.$route.query.id) {
+      this.navData.childTitle = '编辑角色'
+      this.getRolrInfo()
+    }
+  },
+  computed: {
+    roleId: function () {
+      return this.$route.query.id;
+    },
+    btnText: function () {
+      return this.$route.query.id ? '保存编辑' : '立即添加'
+    },
   },
   methods: {
+    getRolrInfo() {
+      roleInfo(this.roleId).then(res => {
+        console.log(res.data);
+        const { name,module_id=[] } = res.data;
+        this.roleForm.roleName = name;
+        this.defKeys = module_id;
+      })
+    },
     // 获取系统模块列表
     getRightsList() {
       rightsList().then((res) => {
-        const { data } = res
-        console.log(data)
-        if (data.statusCode !== 200) return this.$message.error(data.msg)
-        this.rightslist = data.data
+        this.rightslist = res.data
 
         // 获取所有节点
         const allNode = []
@@ -127,13 +143,18 @@ export default {
       this.$refs.roleFormRef.validate(async (valid) => {
         if (!valid) return
         console.log(this.roleForm)
-        addRole(this.roleForm).then((res) => {
-          const { data } = res.data
-          if (data.statusCode !== 200) return this.$message.error(data.msg)
-          this.$message.success(data.msg)
+        if(!this.roleId) {
+          addRole(this.roleForm).then((res) => {
+          this.$message.success(res.msg)
           this.$refs.treeRef.setCheckedKeys([])
           this.$refs.roleFormRef.resetFields()
         })
+        } else {
+          editRole(this.roleId, this.roleForm).then((res) => {
+          this.$message.success(res.msg)
+        })
+        }
+        
       })
     },
     checkNode(data, keysData) {

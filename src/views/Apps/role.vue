@@ -11,8 +11,8 @@
               <el-button style="float: right; padding: 3px 0" type="text" @click="addRole">添加新角色</el-button>
             </div>
             <el-table :data="roleTable" stripe border v-loading="loading">
-              <el-table-column prop="name" label="角色名称" width="160"></el-table-column>
-              <el-table-column prop="module_name" label="权限" :show-overflow-tooltip="true" :formatter="formatterCellval"></el-table-column>
+              <el-table-column prop="name" label="角色名称" width="160" />
+              <el-table-column prop="module_name" label="权限" :show-overflow-tooltip="true" :formatter="formatterCellval" />
               <el-table-column label="操作" width="160">
                 <template slot-scope="scope">
                   <el-button type="text" @click="editRole(scope.row.id)">编辑</el-button>
@@ -55,12 +55,12 @@ export default {
     },
     // 编辑角色
     editRole(id) {
-      this.$router.push({path: '/role/editRole', query: {id: id}});
+      this.$router.push({path: '/role/addRole', query: {id: id}});
     },
     // 获取角色列表
     async getRoleList() {
       await roleList().then(res => {
-        const { data } = res.data;
+        const { data } = res;
         this.loading = false;
         this.roleTable = data
       })
@@ -80,12 +80,11 @@ export default {
       if (confirmResult !== "confirm") {
         return 
       }
-
+      this.loading = true;
       deleteRole(id).then(res => {
-        const {data} = res;
-        if(data.statusCode !== 200) return this.$message.error(data.msg)
-        this.$message.success(data.msg)
+        this.$message.success(res.msg)
         this.getRoleList();
+        this.loading = false;
       })
       
     },

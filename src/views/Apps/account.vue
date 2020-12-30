@@ -11,10 +11,10 @@
               <el-button style="float: right; padding: 3px 0" type="text" @click="addTeacher">添加新老师</el-button>
             </div>
             <el-table :data="roleTable" stripe border>
-              <el-table-column prop="teaName" label="姓名"></el-table-column>
-              <el-table-column prop="teaPosition" label="职位"></el-table-column>
-              <el-table-column prop="mobile" label="联系电话"></el-table-column>
-              <el-table-column prop="teaSubject" label="教学学科"></el-table-column>
+              <el-table-column prop="teaName" label="姓名" />
+              <el-table-column prop="teaPosition" label="职位" />
+              <el-table-column prop="mobile" label="联系电话" />
+              <el-table-column prop="teaSubject" label="教学学科" />
               <el-table-column label="操作">
                 <template slot-scope="scope">
                   <el-button type="text" @click="editTeacher(scope.row.tid)">编辑</el-button>
@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { accountList, teacherInfo } from '@/api/Apps/account.js'
+import { accountList } from '@/api/Apps/account.js'
 import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
   components: { Breadcrumb },
@@ -66,10 +66,8 @@ export default {
     getAccountList() {
       const data = { limit: this.pageSize, page: this.currentPage }
       accountList(data).then(res => {
-        const { current_page,data,total, per_page} = res.data.data;
-        console.log(data);
+        const { current_page,data,total, per_page} = res.data;
         this.roleTable = data;
-
         this.total = total;
         this.currentPage = current_page;
       })
@@ -80,7 +78,7 @@ export default {
     },
     // 跳转编辑老师页面
     editTeacher (tid) {
-      this.$router.push({path: '/account/editTeacher', query: {id: tid}})
+      this.$router.push({path: '/account/addTeacher', query: {id: tid}})
     },
     // 删除
     async removeTeacher(tid) {
@@ -111,14 +109,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-
-@media (max-width: 768px) {
-
-}
-
-@media (max-width: 375px) {
-
-}
-</style>

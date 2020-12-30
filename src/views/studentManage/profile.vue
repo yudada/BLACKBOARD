@@ -100,6 +100,7 @@ export default {
     },
     getStudentDetail() {
       detailStudent(this.sid).then((res) => {
+        console.log(res);
         const { data } = res
         this.studentInfo = data
         if (data.parentsInfo.length < 2) {
