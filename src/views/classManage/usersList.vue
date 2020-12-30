@@ -15,7 +15,15 @@
                 :src="adviserInfo.photo"
                 :onerror="defaultPic"
               />
-              <img v-else src="@/assets/def_avater.jpg" />
+              <img
+                v-else-if="adviserInfo.sex === '男'"
+                src="@/assets/images/male.png"
+              />
+              <img
+                v-else-if="adviserInfo.sex === '女'"
+                src="@/assets/images/female.jpg"
+              />
+              <img v-else-if="!adviserInfo.sex" src="@/assets/images/def.png" />
               <div class="adviser_info">
                 <h3>{{ adviserInfo.realName }} 老师</h3>
                 <div class="info_text">
@@ -41,7 +49,20 @@
                 class="teacher_card item"
               >
                 <div class="teacher_info">
-                  <img src="@/assets/def_avater.jpg" />
+                  <img
+                    v-if="teacher.photo"
+                    :src="teacher.photo"
+                    :onerror="defaultPic"
+                  />
+                  <img
+                    v-else-if="teacher.sex === '男'"
+                    src="@/assets/images/male.png"
+                  />
+                  <img
+                    v-else-if="teacher.sex === '女'"
+                    src="@/assets/images/female.jpg"
+                  />
+                  <img v-else-if="!teacher.sex" src="@/assets/images/def.png" />
                   <div class="info_text">
                     <span>{{ teacher.teaName }}</span>
                     <span>{{ teacher.teaSubject }}</span>
@@ -72,7 +93,7 @@ export default {
     return {
       navData: {
         title: '班级管理',
-        childTitle: '学生列表'
+        childTitle: '学生列表',
       },
       adviserInfo: {
         realName: '',
