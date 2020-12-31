@@ -6,8 +6,8 @@
       <el-row>
         <el-col :span="24">
           <el-card>
-            <el-table :data="wrongList" style="width: 100%;" v-loading="loading">
-              <el-table-column type=index>
+            <el-table :data="wrongList" style="width: 100%;" stripe border v-loading="loading">
+              <el-table-column type="index" label="序号">
               </el-table-column>
               <el-table-column prop="queTitle" label="题目" width="350">
               </el-table-column>

@@ -6,7 +6,7 @@
       <el-row>
         <el-col :span="24">
           <el-card shadow="always" :body-style="{ padding: 0 }">
-            <el-table :data="detialData" style="width: 100%">
+            <el-table :data="detialData" style="width: 100%" stripe border>
               <el-table-column prop="examTitle" label="考试名称">
               </el-table-column>
               <el-table-column prop="className" label="班级">
@@ -28,7 +28,7 @@
             <div slot="header">
               <span>学生得分详细</span>
             </div>
-            <el-table :data="studentData" style="width: 100%">
+            <el-table :data="studentData" style="width: 100%" stripe border>
               <el-table-column type="index" label="编号" width="180">
               </el-table-column>
               <el-table-column prop="stuName" label="姓名">

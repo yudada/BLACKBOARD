@@ -45,7 +45,7 @@
             <div slot="header">
               <div>兴趣组名</div>
             </div>
-            <el-table :data="tableData" border>
+            <el-table :data="tableData" stripe border>
               <el-table-column label="编号">
                 <template slot-scope="scope">
                   <span>{{ scope.row.num }}</span>

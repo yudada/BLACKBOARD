@@ -22,7 +22,7 @@
       <el-row>
         <el-col :span="24">
           <el-card shadow="always">
-            <el-table :data="studentList" style="width: 100%" v-loading="loading">
+            <el-table :data="studentList" style="width: 100%" v-loading="loading" stripe border>
               <el-table-column type="index"  label="序号" />
               <el-table-column prop="className" label="班级" />
               <el-table-column prop="stuNum" label="学号" />

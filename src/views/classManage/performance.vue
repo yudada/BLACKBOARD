@@ -6,7 +6,7 @@
       <el-row>
         <el-col :span="24">
           <el-card shadow="always">
-            <el-table :data="performanceData" style="width: 100%" v-loading="loading">
+            <el-table :data="performanceData" style="width: 100%" stripe border v-loading="loading">
               <el-table-column prop="examTitle" label="考试名称" :formatter="formatterCellval">
               </el-table-column>
               <el-table-column prop="className" label="班级" :formatter="formatterCellval">

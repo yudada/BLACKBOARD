@@ -7,6 +7,8 @@
         style="width: 100%"
         row-key="id"
         default-expand-all
+        stripe
+        border
         :tree-props="{children: 'child', hasChildren: 'hasChildren'}">
         <el-table-column width="55">
           <template #header>

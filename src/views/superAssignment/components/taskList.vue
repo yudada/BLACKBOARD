@@ -7,7 +7,7 @@
             <el-button slot="append" icon="el-icon-search" @click="getExercisesList"></el-button>
           </el-input>
         </el-col> -->
-        <el-table :data="exercisesList" style="width: 100%" v-loading="loading">
+        <el-table :data="exercisesList" style="width: 100%" stripe border v-loading="loading">
           <el-table-column type="index"  label="序号" />
           <el-table-column prop="exeTitle" label="作业名称" width="350" />
           <el-table-column prop="bookName" label="科目" />
@@ -18,7 +18,7 @@
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button type="text" @click="taskPage(scope.row.id)">查看</el-button>
-              <el-button type="text" @click="removeById(scope.row.id)" class="delete_btn">删除</el-button>
+              <!-- <el-button type="text" @click="removeById(scope.row.id)" class="delete_btn">删除</el-button> -->
             </template>
           </el-table-column>
         </el-table>

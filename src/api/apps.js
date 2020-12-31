@@ -16,3 +16,12 @@ export function editSchoolDetail(data) {
     params: data
   })
 }
+
+// 操作日志列表
+export function operationLog(data) {
+  return request({
+   url: `api/operation/lists`,
+   method: 'post',
+   params: data
+ })
+}

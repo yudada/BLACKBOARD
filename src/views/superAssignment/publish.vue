@@ -299,7 +299,7 @@ export default {
     // 获取子组件内容
     getContentId(data) {
       this.publishForm.contentId = data.contentId
-      this.contentDialogVisible = data.contentDialogVisible
+      this.contentDialogVisible = false
       console.log(this.publishForm.contentId.length)
     },
     formatDate() {

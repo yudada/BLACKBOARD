@@ -5,7 +5,7 @@
         <div slot="header">
           <div>教师课件</div>
         </div>
-        <el-table :data="teacherTableData" style="width: 100%">
+        <el-table :data="teacherTableData" stripe border style="width: 100%">
           <el-table-column prop="id" label="编号" width="80"> </el-table-column>
           <el-table-column prop="title" label="课件名称"> </el-table-column>
           <el-table-column prop="teaName" label="分享老师"> </el-table-column>

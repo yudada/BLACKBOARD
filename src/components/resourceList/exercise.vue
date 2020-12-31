@@ -7,7 +7,7 @@
             slot="append"
             icon="el-icon-search"
             @click="getExerciseList"
-          ></el-button>
+          />
         </el-input>
       </el-col>
       <el-col :span="4">
@@ -22,8 +22,7 @@
             :key="item.value"
             :label="item.label"
             :value="item.value"
-          >
-          </el-option>
+          />
         </el-select>
       </el-col>
       <el-col :span="4">
@@ -38,7 +37,29 @@
             :key="index"
             :label="item"
             :value="item"
+          />
+        </el-select>
+      </el-col>
+      <el-col :span="8">
+        <el-select
+          v-model="selectQue"
+          placeholder="已选题目"
+          @change="handleQue"
+          multiple
+          collapse-tags
+          class="handle-select"
+        >
+          <el-option
+            v-for="item in selectQue"
+            :key="item.id"
+            :label="item.queTitle"
+            :value="item"
           >
+            <span class="que-select" v-if="item.queType === 1">判断题 {{ item.queTitle }}</span>
+            <span class="que-select" v-if="item.queType === 2">单选题 {{ item.queTitle }}</span>
+            <span class="que-select" v-if="item.queType === 3">多选题 {{ item.queTitle }}</span>
+            <span class="que-select" v-if="item.queType === 4">填空题 {{ item.queTitle }}</span>
+            <span class="que-select" v-if="item.queType === 5">主观题 {{ item.queTitle }}</span>
           </el-option>
         </el-select>
       </el-col>
@@ -51,6 +72,8 @@
       @select="handleSelect"
       @select-all="handleSelectAll"
       :row-key="(row) => row.id"
+      stripe
+      border
     >
       <el-table-column
         type="selection"
@@ -91,11 +114,12 @@
     </el-pagination>
 
     <span class="footer" v-show="!hidenBtn">
-      <el-button type="primary" @click="sendContentID">确 定</el-button>
+      <el-button class="cn_btn" @click="sendContentID">确 定</el-button>
     </span>
   </div>
 </template>
 <script>
+import _ from 'lodash'
 export default {
   props: ['hidenBtn', 'queId', 'selectLimit'],
   data() {
@@ -104,11 +128,9 @@ export default {
       currentPage: 1,
       pageSize: 20,
       total: 0,
-      //
       sendMsg: {
         contentId: [],
         type: '',
-        contentDialogVisible: false,
       },
       exerciseList: [],
       loading: true,
@@ -123,40 +145,40 @@ export default {
       ],
       quePracticeSubject: '',
       quePracticeSubjectList: [],
-      handlcSelect: []
+      popQue: '',
+      selectQue: [],
     }
   },
   created() {
-    this.getQuePracticeSubjec();
-    if(this.queId && this.queId.length) {
-       this.handlcSelect = this.queId.map(item=>parseFloat(item));
+    this.getQuePracticeSubjec()
+    if (this.queId && this.queId.length) {
     }
-    if(this.selectLimit) {
+    if (this.selectLimit) {
       this.queType = this.selectLimit.type
+      this.sendMsg.contentId = this.selectLimit.select
       this.getExerciseList()
     } else {
       this.getExerciseList()
     }
   },
   watch: {
-    'selectLimit.type': function(newData, oldData) {
+    'selectLimit.type': function (newData, oldData) {
       this.queType = newData
       this.getExerciseList()
     },
-    'selectLimit.select': function(newData, oldData) {
-      this.handlcSelect = newData
+    'selectLimit.select': function (newData, oldData) {
+      this.sendMsg.contentId = newData
+      this.$refs.multipleTable.clearSelection()
       this.loading = true
       this.getExerciseList()
-    }
+    },
   },
   methods: {
     handleSizeChange(val) {
-      this.handlcSelect = this.sendMsg.contentId 
       this.pageSize = val
       this.getExerciseList()
     },
     handleCurrentChange(val) {
-      this.handlcSelect = this.sendMsg.contentId
       this.currentPage = val
       this.getExerciseList()
     },
@@ -187,38 +209,40 @@ export default {
       this.$nextTick(() => {
         this.setChecked()
       })
-
     },
     // 发送内容
     sendContentID() {
-      if(this.selectLimit) {
+      if (this.selectLimit) {
         const maxQue = this.selectLimit.num
         const selectNum = this.sendMsg.contentId.length
         this.sendMsg.type = this.selectLimit.type
-        if(selectNum !== maxQue) return this.$message.error('设置'+maxQue+'题，已选'+selectNum+'题，请保持一致！')
+        if (selectNum !== maxQue)
+          return this.$message.error(
+            '设置' + maxQue + '题，已选' + selectNum + '题，请保持一致！'
+          )
       }
       this.$emit('func', this.sendMsg)
     },
     setChecked() {
-      let num = 0
-      this.exerciseList.forEach((item) => {
-        let obj = this.handlcSelect.find((ele) => {
-          return ele === item.id
-        })
-        if (obj) {
-          num++
-          this.$refs.multipleTable.toggleRowSelection(item, true)
+      this.exerciseList.forEach((row) => {
+        if (this.sendMsg.contentId.indexOf(row.id) >= 0) {
+          this.$refs.multipleTable.toggleRowSelection(row, true)
         }
       })
-      console.log(num);
-      if(num === 0) this.$refs.multipleTable.clearSelection()
     },
-    handleSelect(selection, row) {
-      this.sendMsg.contentId = selection.map(item=>item.id)
+    handleSelect(selection) {
+      this.selectQue = selection
+      this.sendMsg.contentId = _.cloneDeep(selection.map((item) => item.id))
     },
     handleSelectAll(selection) {
-      this.sendMsg.contentId = selection.map(item=>item.id)
-    }
+      this.selectQue = selection
+      this.sendMsg.contentId = selection.map((item) => item.id)
+    },
+    handleQue() {
+      this.$refs.multipleTable.clearSelection()
+      this.sendMsg.contentId = this.selectQue.map((item) => item.id)
+      this.getExerciseList()
+    },
   },
 }
 </script>
@@ -268,5 +292,20 @@ export default {
       }
     }
   }
+}
+.handle-select {
+  width: 100%;
+  .el-select__tags {
+    overflow: hidden;
+    .el-tag--info {
+      max-width: 80%;
+      overflow: hidden;
+    }
+  }
+}
+.que-select {
+  float: left;
+  width: 90%;
+  overflow: hidden;
 }
 </style>

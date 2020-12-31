@@ -4,7 +4,7 @@
       <div slot="header">
         <span>课件列表</span>
       </div>
-      <el-table :data="courseData" style="width: 100%">
+      <el-table :data="courseData" style="width: 100%" stripe border>
         <el-table-column type="index" label="序号" />
         <el-table-column prop="title" label="标题" />
         <el-table-column prop="is_share" label="状态">

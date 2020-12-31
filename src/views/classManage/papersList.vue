@@ -3,43 +3,47 @@
     <Breadcrumb :navData="navData" />
     <div class="papersList_concent">
       <el-card shadow="always">
-        <el-table :data="papersList" style="width: 100%" v-loading="loading">
-          <el-table-column prop="exaTitle" label="试卷标题"> </el-table-column>
+        <el-table
+          :data="papersList"
+          style="width: 100%"
+          stripe
+          border
+          v-loading="loading"
+        >
+          <el-table-column type="index" label="序号" />
+          <el-table-column prop="exaTitle" label="试卷标题" />
           <el-table-column
             prop="bookName"
             label="考试科目"
             :formatter="formatterCellval"
-          >
-          </el-table-column>
+          />
           <el-table-column
             prop="exaJifenfangshi"
             label="取分规则"
-            :formatter="formatterCellval"
-          >
-          </el-table-column>
+            :formatter="formatterCellval3"
+          />
           <el-table-column
             prop="exaDatitime"
             label="答题时间(分钟)"
             :formatter="formatterCellval"
-          >
-          </el-table-column>
+          />
           <el-table-column
             prop="status"
             label="试卷状态"
-            :formatter="formatterCellval"
-          >
-          </el-table-column>
+            :formatter="formatterCellval2"
+          />
           <el-table-column label="编辑信息" prop="monthRemarks">
             <template slot-scope="scope">
-              <el-button type="text" @click="editPapersPage(scope.row.id)"
-                >编辑</el-button
-              >
+              <el-button type="text" @click="editPapersPage(scope.row.id)">
+                编辑
+              </el-button>
               <el-button
                 class="delete_btn"
                 type="text"
                 @click="deletePapers(scope.row.id)"
-                >删除</el-button
               >
+                删除
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -68,7 +72,7 @@ export default {
       navData: {
         childTitle: '试卷列表',
         goTo: '发布试卷',
-        path: '/papers-add'
+        path: '/papers-add',
       },
       papersList: [],
       queryInfo: {
@@ -93,13 +97,29 @@ export default {
         return cellValue
       }
     },
+    formatterCellval2(row, column, cellValue, index) {
+      if (!Boolean(cellValue)) {
+        return '— —'
+      } else {
+        if(cellValue === 1) return cellValue = '立即发布'
+        if(cellValue === 2) return cellValue = '暂时存稿'
+      }
+    },
+    formatterCellval3(row, column, cellValue, index) {
+      if (!Boolean(cellValue)) {
+        return '— —'
+      } else {
+        if(cellValue === 1) return cellValue = '最高分'
+        if(cellValue === 2) return cellValue = '平均分'
+      }
+    },
     // 查看页
     detailPapersPage(id) {
       this.$router.push({ path: '/home/parpers-detial', query: { id: id } })
     },
     // 编辑页
     editPapersPage(id) {
-      this.$router.push({ path: '/papers-add', query: {id: id}})
+      this.$router.push({ path: '/papers-add', query: { id: id } })
     },
     // 删除试卷
     async deletePapers(id) {
@@ -114,12 +134,12 @@ export default {
       ).catch((err) => err)
 
       if (confirmResult !== 'confirm') {
-        return 
+        return
       }
       parperDelete(id).then((res) => {
         console.log(res)
-        if(res.statusCode !== 200) return this.$message.error(res.msg)
-        this.$message.success("删除成功！")
+        if (res.statusCode !== 200) return this.$message.error(res.msg)
+        this.$message.success('删除成功！')
         this.getpapersList()
       })
     },

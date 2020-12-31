@@ -102,7 +102,7 @@
             <div slot="header">
               <span>Crypt Marketing Values</span>
             </div>
-            <el-table :data="cryptData" border style="width: 100%">
+            <el-table :data="cryptData" border style="width: 100%" stripe>
               <el-table-column type="index" label="NO"></el-table-column>
               <el-table-column prop="icon" label="ICON"></el-table-column>
               <el-table-column prop="currency" label="CURRENCY"></el-table-column>

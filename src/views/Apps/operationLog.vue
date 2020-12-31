@@ -7,22 +7,28 @@
         <el-col :span="24">
           <el-card>
             <div slot="header" class="clearfix">
-              <span>账号列表</span>
+              <span></span>
               <!-- <el-input placeholder="请选择日期" suffix-icon="el-icon-search" v-model="query" clearable width="180"></el-input> -->
             </div>
             <el-table :data="roleTable" stripe border>
-              <el-table-column prop="name" label="姓名"></el-table-column>
-              <el-table-column prop="department" label="部门-职位"></el-table-column>
-              <el-table-column prop="tel" label="联系电话"></el-table-column>
-              <el-table-column prop="grade" label="	当前负责年段"></el-table-column>
-              <el-table-column prop="subject" label="教学学科"></el-table-column>
-              <el-table-column prop="status" label="状态"></el-table-column>
-              <el-table-column label="操作">
-                <template>
-                  <el-button type="text">编辑</el-button>
-                </template>
-              </el-table-column>
+              <el-table-column type="index" label="序号" />
+              <el-table-column prop="userName" label="账号" />
+              <el-table-column prop="realName" label="姓名" />
+              <el-table-column prop="content" label="操作内容" />
+              <el-table-column prop="ip" label="IP地址" />
+              <el-table-column prop="created_at" label="	操作时间" />
             </el-table>
+            <el-pagination
+              :hide-on-single-page="false"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="currentPage"
+              :page-sizes="[20, 40, 100, 9999]"
+              :page-size="20"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="total"
+            >
+            </el-pagination>
           </el-card>
         </el-col>
       </el-row>
@@ -31,6 +37,7 @@
 </template>
 
 <script>
+import { operationLog } from '@/api/apps'
 import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
   components: { Breadcrumb },
@@ -38,39 +45,47 @@ export default {
     return {
       navData: {
         title: '系统设置',
-        childTitle: '操作日志'
+        childTitle: '操作日志',
       },
       roleTable: [],
-      query: ''
+      query: '',
+      // 分页
+      currentPage: 1,
+      pageSize: 20,
+      total: 0,
     }
   },
   created() {
-    this.initData();
+    this.getOperationLog()
   },
   methods: {
-    initData() {
-      const roleTable = [];
-
-      for (let i = 0; i<10; i++) {
-        const roleObj= {
-          name: `林冬梅${i}`,
-          department: `教师处--老师${i}`,
-          tel: `13899999999`,
-          grade: `一年3班班主任`,
-          subject: `语文`,
-          status: `正常`
-        };
-        roleTable.push(roleObj);
+    handleSizeChange(val) {
+      this.pageSize = val
+      this.getOperationLog()
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.getOperationLog()
+    },
+    getOperationLog() {
+      const params = {
+        limit: this.pageSize
       }
-      this.roleTable = roleTable;
-    }
+      operationLog(params).then((res) => {
+        console.log(res)
+        const { current_page, data=[], per_page, total } = res.data;
+        this.total = total;
+        this.currentPage = current_page;
+        this.roleTable = data;
+        this.pageSize = parseFloat(per_page);
+      })
+    },
   },
 }
 </script>
 
 <style lang="scss" scoped>
-
-.clearfix{
+.clearfix {
   width: 100%;
   .el-input {
     width: 20%;
@@ -79,17 +94,15 @@ export default {
 .clearfix:before,
 .clearfix:after {
   display: table;
-  content: "";
+  content: '';
 }
 .clearfix:after {
-  clear: both
+  clear: both;
 }
 
 @media (max-width: 768px) {
-
 }
 
 @media (max-width: 375px) {
-
 }
 </style>

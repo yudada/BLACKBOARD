@@ -50,11 +50,11 @@ export default {
     return {
       queTypeFormRules: {},
       queTypeForm: [
-        { num: '', score: '', type: '判断题' },
-        { num: '', score: '', type: '单选题' },
-        { num: '', score: '', type: '多选题' },
-        { num: '', score: '', type: '填空题' },
-        { num: '', score: '', type: '主观题' },
+        { num: '', score: '', type: '判断题', select: [] },
+        { num: '', score: '', type: '单选题', select: [] },
+        { num: '', score: '', type: '多选题', select: [] },
+        { num: '', score: '', type: '填空题', select: [] },
+        { num: '', score: '', type: '主观题', select: [] },
       ],
     }
   },

@@ -24,7 +24,7 @@
             <span>榜样的力量</span>
           </div>
           <div class="card_table">
-            <el-table :data="topTabledate" style="width: 100%">
+            <el-table :data="topTabledate" style="width: 100%" stripe border>
               <el-table-column prop="name" label="姓名">
                 <template slot-scope="scope">
                   <el-avatar

@@ -6,7 +6,7 @@
       <el-row>
         <el-col :span="24">
           <el-card>
-              <el-table :data="detialTableData" style="width: 100%" v-loading="loading">
+              <el-table :data="detialTableData" style="width: 100%" v-loading="loading" stripe border>
                 <el-table-column prop="stuName" label="学生姓名" width="120"></el-table-column>
                 <el-table-column prop="exeStartTime" label="开始时间"></el-table-column>
                 <el-table-column prop="exeEndTime" label="结束时间"></el-table-column>

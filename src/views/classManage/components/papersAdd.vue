@@ -94,7 +94,7 @@
             <br />
             <span>已选: </span>
             <div
-              v-for="(item,index) in papersForm.exaQStructure"
+              v-for="(item, index) in papersForm.exaQStructure"
               :key="item.type"
               class="select-que"
             >
@@ -105,7 +105,7 @@
               >
               <div v-if="item.num">
                 <el-button class="btn_select" size="mini" @click="addQue(item)">
-                  {{typeList[index].btnText}}
+                  {{ typeList[index].btnText }}
                 </el-button>
               </div>
             </div>
@@ -126,8 +126,8 @@
           <el-form-item label="发布">
             <span>
               <el-button @click="onSubmit()" class="cn_btn">
-                {{btnText}}
-                </el-button>
+                {{ btnText }}
+              </el-button>
             </span>
           </el-form-item>
         </el-form>
@@ -242,7 +242,7 @@ export default {
       selectLimit: {
         num: '',
         type: '',
-        select: []
+        select: [],
       },
       typeList: [
         { title: '判断题', type: 1, num: 0, select: [], btnText: '添加题目' },
@@ -266,7 +266,7 @@ export default {
     },
     btnText: function () {
       return this.$route.query.id ? '保存修改' : '发布试卷'
-    }
+    },
   },
   methods: {
     addQue(data) {
@@ -277,7 +277,6 @@ export default {
           this.selectLimit.select = item.select
         }
       })
-      console.log(this.selectLimit);
       this.queDialogVisible = true
     },
     selectType() {
@@ -292,7 +291,7 @@ export default {
       this.typeList.map((item) => {
         if (item.type === data.type) {
           item.btnText = '重选题目'
-          return item.select = data.contentId
+          return (item.select = data.contentId)
         }
       })
       this.handleClose()
@@ -300,7 +299,6 @@ export default {
     getQueType(data) {
       this.typeDialogVisible = false
       this.papersForm.exaQStructure = data
-      console.log(this.papersForm.exaQStructure)
     },
     // 获取课本列表
     async getBookInfo() {
@@ -319,9 +317,14 @@ export default {
           if (item.type === 'multiple') item.type = '多选题'
           if (item.type === 'filling') item.type = '填空题'
           if (item.type === 'subjective') item.type = '主观题'
+          this.typeList.map((item2) => {
+            if (item.type === item2.title) {
+              item2.select = item.select
+            }
+          })
         })
       })
-      this.typeList.map(item=>item.btnText = '重选题目')
+      this.typeList.map((item) => (item.btnText = '重选题目'))
     },
     // 发布-编辑
     onSubmit() {
@@ -335,6 +338,14 @@ export default {
         ...typeList[3].select,
         ...typeList[4].select,
       ]
+      this.papersForm.exaQStructure.map((item) => {
+        typeList.map((item2) => {
+          if (item2.title === item.type) {
+            item.select = item2.select
+          }
+        })
+      })
+      console.log(this.papersForm)
       this.papersForm.exaQStructure.map((item) => {
         if (item.type === '判断题') item.type = 'judge'
         if (item.type === '单选题') item.type = 'single'
@@ -357,7 +368,7 @@ export default {
               { num: '', score: '', type: '填空题' },
               { num: '', score: '', type: '主观题' },
             ]
-            this.cancelSubmitl()
+            // this.cancelSubmitl()
           })
         } else {
           // 编辑

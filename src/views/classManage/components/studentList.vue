@@ -12,7 +12,7 @@
         @click="getStudentList"
       />
     </el-input>
-    <el-card :body-style="{ padding: 0 }">
+    <el-card>
       <div slot="header">
         <span>全班</span>
       </div>
@@ -22,7 +22,10 @@
         tooltip-effect="dark"
         style="width: 100%"
         v-loading="loading"
+        stripe
+        border
       >
+        <el-table-column type="index" label="序号" />
         <el-table-column width="70">
           <template slot-scope="scope">
             <div class="avater_student">
@@ -35,21 +38,18 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="姓名" prop="stuName"> </el-table-column>
-        <el-table-column label="阅读" prop="time" :formatter="formatterCellval">
-        </el-table-column>
+        <el-table-column label="姓名" prop="stuName" />
+        <el-table-column label="阅读" prop="time" :formatter="formatterCellval" />
         <el-table-column
           label="练习"
           prop="exercise"
           :formatter="formatterCellval"
-        >
-        </el-table-column>
+        />
         <el-table-column
           label="本周奖评"
           prop="appraise"
           :formatter="formatterCellval"
-        >
-        </el-table-column>
+        />
       </el-table>
       <el-pagination
         style="padding: 10px 20px"

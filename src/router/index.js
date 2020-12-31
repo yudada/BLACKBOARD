@@ -185,14 +185,6 @@ const routes = [
         path: '/role/addRole',
         component: () => import('../views/Apps/components/addRole.vue')
       },
-      {
-        path: '/role/editRole',
-        component: () => import('../views/Apps/components/editRole.vue')
-      },
-      {
-        path: '/account/editTeacher',
-        component: () => import('../views/Apps/components/editTeacher.vue')
-      },
       // 题库资源
       {
         path: '/establish',

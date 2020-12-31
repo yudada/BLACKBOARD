@@ -98,7 +98,7 @@
             <div slot="header">
               <div>学员列表</div>
             </div>
-            <el-table :data="studentData" stripe style="width: 100%">
+            <el-table :data="studentData" stripe border style="width: 100%">
               <el-table-column prop="id" label="ID"></el-table-column>
               <el-table-column prop="user" label="USER"></el-table-column>
               <el-table-column prop="feedback" label="FEED BACK"></el-table-column>

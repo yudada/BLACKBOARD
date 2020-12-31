@@ -2,7 +2,6 @@ import axios from 'axios';
 import router from '@/router/index'
 import { Message, MessageBox } from 'element-ui';
 
-// 导入 NProgress 包对应的JS和CSS
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
@@ -28,11 +27,9 @@ const service = axios.create({
 
 service.defaults.headers.post['Content-type'] = 'multipart/form-data';
 
-// 通过axios拦截器来添加token验证
 service.interceptors.request.use(
     config => {
         NProgress.start()
-        // 在请求头中添加Authorization，赋予token值
         config.headers.Authorization = window.sessionStorage.getItem('token')
         return config
     },
