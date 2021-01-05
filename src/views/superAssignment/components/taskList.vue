@@ -8,7 +8,7 @@
           </el-input>
         </el-col> -->
         <el-table :data="exercisesList" style="width: 100%" stripe border v-loading="loading">
-          <el-table-column type="index"  label="序号" />
+          <el-table-column type="index"  label="序号" width="50px" align="center" />
           <el-table-column prop="exeTitle" label="作业名称" width="350" />
           <el-table-column prop="bookName" label="科目" />
           <el-table-column prop="className" label="班级" />

@@ -186,10 +186,10 @@ export default {
       classList: [],
       bookList: [],
       taskTypeList: [
-        { value: 1, label: '立体模型控索' },
+        { value: 1, label: 'VR模型控索' },
         { value: 2, label: '智慧课本阅读' },
         { value: 3, label: '精选题库练习' },
-        { value: 4, label: '实验操作' },
+        { value: 4, label: '仿真实验' },
       ],
       // 创建作业验证规则
       publishFormRules: {

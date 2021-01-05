@@ -1,4 +1,3 @@
-import http from '../utils/http'
 import request from '@/utils/requset'
 
 // 班级学生
@@ -47,7 +46,7 @@ export function classScreen(data) {
 
 // 创建课件
 export function addCourseWareStore(data) {
-  return http({
+  return request({
     url: `api/interactive/courseWareStore`,
     method: 'post',
     params: data
@@ -56,7 +55,7 @@ export function addCourseWareStore(data) {
 
 // 课件列表
 export function courseWareList(data) {
-  return http({
+  return request({
     url: `api/interactive/courseWareList`,
     method: 'post',
     params: data
@@ -65,7 +64,7 @@ export function courseWareList(data) {
 
 // 编辑课件
 export function courseWareEdit(id, data) {
-  return http({
+  return request({
     url: `api/interactive/courseWareEdit/${id}`,
     method: 'post',
     params: data
@@ -74,7 +73,7 @@ export function courseWareEdit(id, data) {
 
 // 课件详情
 export function courseWareDetail(id) {
-  return http({
+  return request({
     url: `api/interactive/courseWareDetail/${id}`,
     method: 'get'
   })
@@ -82,7 +81,7 @@ export function courseWareDetail(id) {
 
 // 删除课件
 export function deleteCourseWare(id) {
-  return http({
+  return request({
     url: `api/interactive/courseWare/${id}`,
     method: 'delete'
   })

@@ -20,7 +20,7 @@ export default {
     return {
       navData: {
         title: '超级作业',
-        childTitle: '立体模型'
+        childTitle: 'VR模型'
       }      
     }
   },

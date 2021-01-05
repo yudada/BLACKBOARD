@@ -59,7 +59,6 @@ export default {
         this.errorList = error_student
         this.startTime = startTime
         this.endTime = endTime
-        this.$message.success(res.msg)
       })
     },
     fromSun(data) {
@@ -67,6 +66,9 @@ export default {
       this.startTime = data.startTime
       this.endTime = data.endTime
       this.getWorkStatisticsList()
+      // this.$nextTick(() => {
+      //   this.$message.success('')
+      // })
     }
   },
 }

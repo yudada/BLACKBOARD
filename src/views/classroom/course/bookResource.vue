@@ -7,12 +7,12 @@
             <el-row class="model_search">
               <el-col :span="6">
                 <el-input placeholder="模型搜索" v-model="modName">
-                <el-button
-                  slot="append"
-                  icon="el-icon-search"
-                  @click="getModelsByName"
-                />
-              </el-input>
+                  <el-button
+                    slot="append"
+                    icon="el-icon-search"
+                    @click="getModelsByName"
+                  />
+                </el-input>
               </el-col>
             </el-row>
             <div class="resource_box">
@@ -47,17 +47,14 @@
             :append-to-body="true"
             custom-class="modle_dialog"
           >
-            <iframe
-              :src="dialogContent.modLinkAddress"
-              class="content_box"
-            ></iframe>
+            <iframe :src="dialogContent.modLinkAddress" class="content_box" />
           </el-dialog>
         </el-tab-pane>
         <el-tab-pane label="精选题库" name="second">
-          <exercise :hidenBtn="hidenBtn"></exercise>
+          <exercise :hidenBtn="hidenBtn" />
         </el-tab-pane>
         <el-tab-pane label="实验列表" name="third">
-          <experiment :hidenBtn="hidenBtn"></experiment>
+          <experiment :hidenBtn="hidenBtn" />
         </el-tab-pane>
       </el-tabs>
     </el-card>
@@ -84,7 +81,7 @@ export default {
       dialogContent: {},
       activeName: 'first',
       hidenBtn: true,
-      modName: ''
+      modName: '',
     }
   },
   created() {
@@ -96,7 +93,7 @@ export default {
       const { data: res } = await this.$http.post(`api/models/lists`, {
         limit: this.pageSize,
         page: this.currentPage,
-        modName: this.modName
+        modName: this.modName,
       })
       if (res.statusCode !== 200) return this.$message.error(res.msg)
       this.modelsList = res.data.data
@@ -118,12 +115,12 @@ export default {
       this.dialogContent = item
     },
     getModelsByName() {
-      if(this.modName) {
-        this.getModels();
+      if (this.modName) {
+        this.getModels()
       } else {
         return
       }
-    }
+    },
   },
 }
 </script>
@@ -156,7 +153,7 @@ export default {
   height: 100%;
   border: none;
 }
-.model_search{
+.model_search {
   display: flex;
   justify-content: flex-end;
   margin: 0;

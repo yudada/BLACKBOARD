@@ -10,7 +10,7 @@
           border
           v-loading="loading"
         >
-          <el-table-column type="index" label="序号" />
+          <el-table-column type="index" label="序号" width="50px" align="center" />
           <el-table-column prop="exaTitle" label="试卷标题" />
           <el-table-column
             prop="bookName"

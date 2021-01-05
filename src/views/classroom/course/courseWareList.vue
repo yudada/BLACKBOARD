@@ -3,9 +3,20 @@
     <el-card>
       <div slot="header">
         <span>课件列表</span>
+        <el-button
+          style="float: right; padding: 3px 0"
+          type="text"
+          @click="addCourse"
+          >添加课件</el-button
+        >
       </div>
       <el-table :data="courseData" style="width: 100%" stripe border>
-        <el-table-column type="index" label="序号" />
+        <el-table-column
+          type="index"
+          label="序号"
+          width="50px"
+          align="center"
+        />
         <el-table-column prop="title" label="标题" />
         <el-table-column prop="is_share" label="状态">
           <template slot-scope="scope">
@@ -71,14 +82,12 @@ export default {
         page: this.currentPage,
       }
       courseWareList(pageInfo).then((res) => {
-        console.log(res.data)
-        const { data } = res.data
-        console.log(data)
-        this.courseData = data.data
+        const { current_page, data, per_page, total } = res.data
 
-        this.total = data.total
-        this.currentPage = data.current_page
-        this.pageSize = parseFloat(data.per_page)
+        this.courseData = data
+        this.total = total
+        this.currentPage = current_page
+        this.pageSize = parseFloat(per_page)
       })
     },
     goExercise() {
@@ -87,7 +96,7 @@ export default {
       })
     },
     editCourse(id) {
-      this.$router.push({ path: '/edit-courseware', query: { id: id } })
+      this.$router.push({ path: '/create-courseware', query: { id: id } })
     },
     async deleteCourse(id) {
       const confirmResult = await this.$confirm(
@@ -101,19 +110,18 @@ export default {
       ).catch((err) => err)
 
       if (confirmResult !== 'confirm') {
-        return 
+        return
       }
-
       deleteCourseWare(id).then((res) => {
-        console.log(res)
-        if (res.data.statusCode !== 200)
-          return this.$message.error(res.data.msg)
-        this.$message.success(res.data.msg)
+        this.$message.success(res.msg)
         this.getcourseWareList()
       })
     },
     openDetail(id) {
-        this.$router.push({ path: "/course-detail", query: { id: id } });
+      this.$router.push({ path: '/course-detail', query: { id: id } })
+    },
+    addCourse() {
+      this.$router.push('/create-courseware')
     },
     // 分页
     handleSizeChange(val) {

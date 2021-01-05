@@ -22,7 +22,7 @@
           </el-col>
         </el-row>
         <el-table :data="questionList" style="width: 100%" v-loading="loading" stripe border>
-          <el-table-column type="index" label="序号" />
+          <el-table-column type="index" label="序号" width="50px" align="center" />
           <el-table-column v-if="type === 3" prop="queYear" label="年份">
           </el-table-column>
           <el-table-column prop="queTitle" label="题目" width="300">

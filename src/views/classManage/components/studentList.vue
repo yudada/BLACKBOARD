@@ -25,7 +25,7 @@
         stripe
         border
       >
-        <el-table-column type="index" label="序号" />
+        <el-table-column type="index" label="序号" width="50px" align="center" />
         <el-table-column width="70">
           <template slot-scope="scope">
             <div class="avater_student">

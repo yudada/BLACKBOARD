@@ -59,7 +59,6 @@ service.interceptors.response.use(
                     toLogin();
                 })
             } else if(res.statusCode === 404) {
-                window.sessionStorage.clear();
                 to404();
             }
             console.log(response, 2);
@@ -69,7 +68,7 @@ service.interceptors.response.use(
         }
     },
     error => {
-        console.log('err' + error, 1)
+        console.log('err' + error, 3)
         Message({
             message: error.message,
             type: 'error',

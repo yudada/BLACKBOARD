@@ -5,7 +5,7 @@
     <div class="classroomList_concent">
       <el-card shadow="always">
         <el-table :data="classRoomList" style="width: 100%" stripe border v-loading="loading">
-          <el-table-column type="index" label="序号" />
+          <el-table-column type="index" label="序号" width="50px" align="center" />
           <el-table-column prop="className" label="班级名称" />
           <el-table-column prop="classDeclaration" label="班级学习宣言" :formatter="formatterCellval" />
           <el-table-column prop="classInviteCode" label="班级邀请码" :formatter="formatterCellval" />

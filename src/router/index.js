@@ -91,14 +91,14 @@ const routes = [
       {
         path: '/classroom',
         component: () => import('../views/classroom/classroom.vue'),
-        redirect: '/studentSeat',
+        redirect: '/student-seat',
         children: [
           {
-            path: '/studentSeat',
+            path: '/student-seat',
             component: () => import('../views/classroom/toolList/studentSeat.vue')
           },
           {
-            path: '/bookResource',
+            path: '/book-resource',
             component: () => import('../views/classroom/course/bookResource.vue')
           },
           {
@@ -106,16 +106,8 @@ const routes = [
             component: () => import('../views/classroom/course/exercise.vue')
           },
           {
-            path: '/homeWork',
-            component: () => import('../views/classroom/toolList/homeWork.vue')
-          },
-          {
             path: '/create-courseware',
             component: () => import('../views/classroom/course/createCourseware.vue')
-          },
-          {
-            path: '/edit-courseware',
-            component: () => import('../views/classroom/course/editCourseware.vue')
           },
           {
             path: '/course-wareList',

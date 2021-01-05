@@ -1,4 +1,5 @@
 import http from '../utils/http'
+import request from '@/utils/requset'
  
 // 登录
 export function login(data) {

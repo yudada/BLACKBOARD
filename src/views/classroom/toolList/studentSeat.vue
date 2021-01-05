@@ -13,7 +13,10 @@
           >
             <div class="student_content">
               <div style="position: relative">
-                <div class="student_avatar" @click="switchStudentScreen(student)">
+                <div
+                  class="student_avatar"
+                  @click="switchStudentScreen(student)"
+                >
                   <div class="avater">
                     <img
                       v-if="student.photo"
@@ -37,14 +40,16 @@
                     type="success"
                     size="medium"
                     @click="addScoreMark(student.sid)"
-                    >{{ student.addScore }}</el-tag
                   >
+                    {{ student.addScore }}
+                  </el-tag>
                   <el-tag
                     type="danger"
                     size="medium"
                     @click="minusScoreMark(student.sid)"
-                    >{{ student.minusScore }}</el-tag
                   >
+                    {{ student.minusScore }}
+                  </el-tag>
                 </div>
                 <el-checkbox
                   v-show="checkedBoxDialog === true"
@@ -68,32 +73,23 @@
         </div>
       </div>
     </el-card>
-
     <!-- 打分模块 -->
     <div class="classroom_mark">
       <div class="mark_btn">
         <el-dropdown placement="top" v-show="checkedBoxDialog">
           <el-button>工具</el-button>
-          <el-dropdown-menu slot="dropdown" router>
-            <!-- <el-dropdown-item
-                v-for="(tool, index) in subToolList"
-                :key="index"
-                @click.native="open(tool)"
-                >{{ tool.name }}</el-dropdown-item
-              > -->
-            <el-dropdown-item @click.native="switchClassScreen"
-              >全班控屏</el-dropdown-item
-            >
-            <el-dropdown-item @click.native="switchMultiplayerScreen"
-              >控屏</el-dropdown-item
-            >
-            <el-dropdown-item @click.native="openRewardsDialog"
-              >评分</el-dropdown-item
-            >
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item @click.native="switchClassScreen">
+              全班控屏
+            </el-dropdown-item>
+            <el-dropdown-item @click.native="switchMultiplayerScreen">
+              控屏
+            </el-dropdown-item>
+            <el-dropdown-item @click.native="openRewardsDialog">
+              评分
+            </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <!-- <el-button @click="switchScreen">控屏</el-button> -->
-        <!-- <el-button @click="openRewardsDialog">评分</el-button> -->
         <el-button @click="switchCheckedBoxDialog">多选</el-button>
         <el-button @click="handleHandUP">举手</el-button>
       </div>
@@ -159,17 +155,9 @@
       <div class="content_dialog">
         <div class="topbox_dialog">
           <div class="op_content" v-show="changeName === true">
-            <el-button
-              type="text"
-              icon="el-icon-minus"
-              @click="numMinus"
-            ></el-button>
+            <el-button type="text" icon="el-icon-minus" @click="numMinus" />
             <el-input v-model="selectNum"></el-input>
-            <el-button
-              type="text"
-              icon="el-icon-plus"
-              @click="numPlus"
-            ></el-button>
+            <el-button type="text" icon="el-icon-plus" @click="numPlus" />
           </div>
           <div class="name_topbox">
             <div v-if="sclectStuName === true">
@@ -192,8 +180,9 @@
             type="warning"
             @click="openRewardsDialog"
             v-show="!hidenMark"
-            >评分</el-button
           >
+            评分
+          </el-button>
         </div>
       </div>
     </el-dialog>
@@ -337,9 +326,9 @@ export default {
       this.rewardsDialog = true
     },
     // 加分
-    handleTagPlusDebounce: _.debounce(function(item){
+    handleTagPlusDebounce: _.debounce(function (item) {
       this.handleTagPlus(item)
-    },300),
+    }, 300),
     handleTagPlus(item) {
       this.scoreData.sid_arr = this.markList
       this.scoreData.config_score_id = item.id
@@ -358,9 +347,9 @@ export default {
       })
     },
     // 减分
-    handleTagMinusDebounce: _.debounce(function(item){
+    handleTagMinusDebounce: _.debounce(function (item) {
       this.handleTagMinus(item)
-    },300),
+    }, 300),
     handleTagMinus(item) {
       this.scoreData.sid_arr = this.markList
       this.scoreData.config_score_id = item.id
@@ -379,9 +368,9 @@ export default {
       })
     },
     // 全班
-    handleTagAllDebounce: _.debounce(function(item){
+    handleTagAllDebounce: _.debounce(function (item) {
       this.handleTagAll(item)
-    },300),
+    }, 300),
     handleTagAll(item) {
       let allStudent = []
       this.studentList.map((item) => {

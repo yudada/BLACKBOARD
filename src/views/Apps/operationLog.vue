@@ -11,12 +11,12 @@
               <!-- <el-input placeholder="请选择日期" suffix-icon="el-icon-search" v-model="query" clearable width="180"></el-input> -->
             </div>
             <el-table :data="roleTable" stripe border>
-              <el-table-column type="index" label="序号" />
-              <el-table-column prop="userName" label="账号" />
-              <el-table-column prop="realName" label="姓名" />
-              <el-table-column prop="content" label="操作内容" />
-              <el-table-column prop="ip" label="IP地址" />
-              <el-table-column prop="created_at" label="	操作时间" />
+              <el-table-column type="index" label="序号" width="50px" align="center" />
+              <el-table-column prop="userName" label="账号" width="100px" />
+              <el-table-column prop="realName" label="姓名" width="100px" />
+              <el-table-column prop="content" label="操作内容"/>
+              <el-table-column prop="ip" label="IP地址" width="150px" />
+              <el-table-column prop="created_at" label="操作时间" width="180px" />
             </el-table>
             <el-pagination
               :hide-on-single-page="false"

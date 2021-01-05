@@ -105,11 +105,11 @@
             router
             unique-opened
           >
-            <NavMenu :navMenus="menuData"></NavMenu>
+            <NavMenu :navMenus="menuData" />
           </el-menu>
         </div>
       </el-aside>
-      <el-main>
+      <el-main :class="{edu: path}">
         <!-- 路由占位符 -->
         <transition name="fade-transform" mode="out-in">
           <router-view></router-view>
@@ -162,31 +162,31 @@ export default {
                 id: 1,
                 name: 'index2',
                 icon: 'icon-jiangbei',
-                alias: '一年级',
+                alias: '一年级(案例)',
               },
             },
-            {
-              entity: {
-                id: 2,
-                name: 'index3',
-                icon: 'icon-jiangbei',
-                alias: '二年级',
-              },
-            },
-            {
-              entity: {
-                id: 3,
-                name: 'index4',
-                icon: 'icon-jiangbei',
-                alias: '三年级',
-              },
-            },
+            // {
+            //   entity: {
+            //     id: 2,
+            //     name: 'index3',
+            //     icon: 'icon-jiangbei',
+            //     alias: '二年级',
+            //   },
+            // },
+            // {
+            //   entity: {
+            //     id: 3,
+            //     name: 'index4',
+            //     icon: 'icon-jiangbei',
+            //     alias: '三年级',
+            //   },
+            // },
             {
               entity: {
                 id: 4,
                 name: 'index5',
                 icon: 'icon-shetuanhuodong',
-                alias: '兴趣社团',
+                alias: '兴趣社团(案例)',
               },
             },
           ],
@@ -232,7 +232,7 @@ export default {
                 id: 1,
                 name: 'prepareTask',
                 icon: 'icon-xunke',
-                alias: '立体模型',
+                alias: 'VR模型',
               },
             },
             {
@@ -256,7 +256,7 @@ export default {
                 id: 4,
                 name: 'exercitation',
                 icon: 'icon-shixi-A',
-                alias: '实验操作',
+                alias: '仿真实验',
               },
             },
             {
@@ -505,11 +505,32 @@ export default {
       classInfo: {},
       school: {},
       userInfo: {},
-      defaultPic: 'this.src="'+require('../assets/def_avater.jpg')+'"'
+      defaultPic: 'this.src="'+require('../assets/def_avater.jpg')+'"',
+      pathArr: [
+        {path: '/student-seat'},
+        {path: '/book-resource'},
+        {path: '/exercise'},
+        {path: '/create-courseware'},
+        {path: '/course-wareList'},
+        {path: '/course-detail'},
+        {path: '/models-detail'}
+      ]
     }
   },
   computed: {
     ...mapState(['isCollapse', 'isFooter']),
+    path: function() {
+      const path = this.$route.path 
+      let result = false
+      this.pathArr.map(item=>{
+        if(item.path === path) {
+          console.log(item.path, path);
+          result = true
+          return
+        }
+      })
+      return result
+    }
   },
   created() {
     this.getClassInfo()
@@ -525,9 +546,7 @@ export default {
     },
     goHome() {
       this.isMobile()
-      this.$router.push('/home').catch((err) => {
-        console.log(1)
-      })
+      this.$router.push('/home').catch((err) => {})
     },
     logout() {
       window.sessionStorage.clear()
@@ -548,6 +567,7 @@ export default {
     async getClassList() {
       await classList(1).then((res) => {
         const { data } = res.data
+        console.log(data);
         this.classList = data
       })
       this.firstLogin()
@@ -683,8 +703,7 @@ i:hover {
 }
 .el-main {
   height: 100%;
-  width: calc(100%-200px);
-  padding: 0 30px !important;
+  padding: 0 30px;
   padding-bottom: 10px;
   overflow: hidden;
 }
@@ -779,5 +798,8 @@ i:hover {
     border: 5px solid #eee;
     border-radius: 100%;
   }
+}
+.edu {
+  padding: 0 !important;
 }
 </style>

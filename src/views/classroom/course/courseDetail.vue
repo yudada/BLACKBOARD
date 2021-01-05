@@ -45,7 +45,7 @@ export default {
   methods: {
     getCourseWareDetail() {
       courseWareDetail(this.id).then((res) => {
-        const { data } = res.data
+        const { data } = res
         this.courseData = data
         console.log(this.courseData)
       })

@@ -1,6 +1,5 @@
 <template>
   <div class="navMenu">
-
     <template v-for="navMenu in navMenus">
         <!-- 最后一级菜单 -->
       <el-menu-item v-if="!navMenu.childs&&navMenu.entity" :key="navMenu.entity.id" :index="'/' + navMenu.entity.name"  @click="isMobile">
@@ -18,7 +17,6 @@
         <NavMenu :navMenus="navMenu.childs" />
       </el-submenu>
     </template>
-
   </div>
 </template>
 
@@ -39,9 +37,10 @@ import { mapState, mapMutations } from 'vuex'
         )
         if (flag === null) {
           this.$store.commit('setCollapse', false)
+          this.$store.commit('setFooter', true)
         } else {
           this.$store.commit('setCollapse', true)
-          // this.setFooter(false)
+          this.$store.commit('setFooter', false)
         }
       }
     }
