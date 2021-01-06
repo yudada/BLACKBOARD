@@ -1,6 +1,6 @@
 <template>
   <div class="select_dialog">
-    <el-select v-model="classId" placeholder="请选择班级" @change="getBookList">
+    <!-- <el-select v-model="classId" placeholder="请选择班级" @change="getBookList">
       <el-option
         v-for="item in classList"
         :key="item.class_id"
@@ -8,7 +8,7 @@
         :value="item.class_id"
       >
       </el-option>
-    </el-select>
+    </el-select> -->
     <div v-if="bookList.length">
       <el-checkbox-group v-model="wisdomBookId" class="check_list">
         <el-checkbox v-for="item in bookList" :key="item.id" :label="item.id">
@@ -59,35 +59,33 @@ export default {
     },
   },
   created() {
-    this.getClassList()
+    this.getBookList()
   },
   methods: {
     async getBookList() {
       const { data: res } = await this.$http.get(`api/textbook/choose`)
       this.bookList = res.data
-      console.log(this.bookList)
     },
-    async getClassList() {
-      const { data: res } = await this.$http.get(`api/classroom/select`)
-      console.log(res)
-      this.classList = res.data
-      this.classId = this.classList[0].class_id
-      console.log(this.classList)
+    // async getClassList() {
+    //   const { data: res } = await this.$http.get(`api/classroom/select`)
+    //   console.log(res)
+    //   this.classList = res.data
+    //   this.classId = this.classList[0].class_id
 
-      this.getBookList()
-    },
-    closeDialog() {
-      this.$emit('closeDialog', false)
-    },
+    //   this.getBookList()
+    // },
     async addWisdomBook() {
+      if(this.bookList.length === 0) return this.closeDialog()
       console.log(this.classId, this.wisdomBookId)
       const { data: res } = await this.$http.post(`api/textbook/store`, {
-        class_id: this.classId,
         textbook_ids: this.wisdomBookId,
       })
       if (res.statusCode !== 200) return this.$message.error(res.msg)
       this.$message.success(res.msg)
       this.closeDialog()
+    },
+    closeDialog() {
+      this.$emit('closeDialog', false)
     },
   },
 }

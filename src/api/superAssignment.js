@@ -17,3 +17,30 @@ export function wrongStudents(data) {
     params: data
   })
 }
+
+// 发布作业
+export function addExercises(data) {
+  return request({
+    url: `api/exercises/store`,
+    method: 'post',
+    params: data
+  })
+}
+
+// 作业详情
+export function exercisesDetail(id,data) {
+  return request({
+    url: `api/exercises/show/${id}`,
+    method: 'post',
+    params: data
+  })
+}
+
+// 编辑作业
+export function editExercises(id,data) {
+  return request({
+    url: `api/exercises/edit/${id}`,
+    method: 'post',
+    params: data
+  })
+}

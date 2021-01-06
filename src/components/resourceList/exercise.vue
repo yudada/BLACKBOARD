@@ -121,7 +121,7 @@
 <script>
 import _ from 'lodash'
 export default {
-  props: ['hidenBtn', 'queId', 'selectLimit'],
+  props: ['hidenBtn', 'queId', 'selectLimit','contentId'],
   data() {
     return {
       // 分页
@@ -158,6 +158,10 @@ export default {
       this.sendMsg.contentId = this.selectLimit.select
       this.getExerciseList()
     } else {
+      this.getExerciseList()
+    }
+    if(this.contentId) {
+      this.sendMsg.contentId = this.contentId
       this.getExerciseList()
     }
   },

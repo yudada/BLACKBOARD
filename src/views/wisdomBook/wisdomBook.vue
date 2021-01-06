@@ -5,7 +5,7 @@
     <div class="wisdomBook_concent">
       <el-row :gutter="20">
         <el-col
-          :span="5"
+          :span="4"
           v-for="(item, index) in subjectList"
           :key="index"
           class="addpadding iapd_w"
@@ -27,7 +27,7 @@
             </div>
           </el-card>
         </el-col>
-        <el-col :span="5">
+        <el-col :span="4">
           <el-card
             shadow="always"
             :body-style="{ padding: 0 }"
@@ -178,7 +178,7 @@ export default {
 
 <style lang="scss">
   .select-dialog {
-    height: 84vh;
+    max-height: 84vh;
     overflow: overlay;
   }
 </style>

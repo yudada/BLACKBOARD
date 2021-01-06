@@ -38,7 +38,7 @@
 </template>
 <script>
 export default {
-  props: ['hidenBtn'],
+  props: ['hidenBtn','contentId'],
   name: 'models',
   data() {
     return {
@@ -58,6 +58,10 @@ export default {
   },
   created() {
     this.getExperimentsList();
+    if(this.contentId) {
+      this.sendMsg.contentId = this.contentId
+      console.log(this.sendMsg.contentId);
+    }
   },
   methods: {
     handleSizeChange(val) {
@@ -115,8 +119,9 @@ export default {
   display: flex;
   flex-wrap: wrap;
   .el-checkbox {
-    width: 20%;
+    width: 25%;
     margin: 1rem;
+    overflow: auto;
     .checknox_content {
       display: flex;
       flex-direction: column;

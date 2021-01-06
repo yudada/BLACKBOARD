@@ -41,6 +41,7 @@
 <script>
 export default {
   name: 'models',
+  props: ['contentId'],
   data() {
     return {
       // 分页
@@ -62,6 +63,10 @@ export default {
   created() {
     this.sendMsg.contentId = [];
     this.getModelsList();
+    if(this.contentId) {
+      this.sendMsg.contentId = this.contentId
+      console.log(this.sendMsg.contentId);
+    }
   },
   methods: {
     handleSizeChange(val) {

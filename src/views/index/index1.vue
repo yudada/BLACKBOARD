@@ -47,10 +47,10 @@ export default {
         { name: '胡于琳', class: '一年3班', addText: '2019年度', top: '5' },
       ],
       cardList: [
-        { num: '', title: '老师', imgsrc: 'jiaoshi' },
-        { num: '', title: '课件', imgsrc: 'kejian' },
-        { num: '', title: '学生', imgsrc: 'xuesheng' },
-        { num: '', title: '家长', imgsrc: 'jiazhang' },
+        { num: 0, title: '老师', imgsrc: 'jiaoshi' },
+        { num: 0, title: '课件', imgsrc: 'kejian' },
+        { num: 0, title: '学生', imgsrc: 'xuesheng' },
+        { num: 0, title: '家长', imgsrc: 'jiazhang' },
       ],
       teacherTableData: [],
       option: {

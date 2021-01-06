@@ -40,7 +40,7 @@ export function classScreen(data) {
   return request({
     url: `api/interactive/classScreen`,
     method: 'post',
-    params: data
+    params: {screenStatus: data}
   })
 }
 

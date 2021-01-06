@@ -31,8 +31,8 @@
             drag
             :action="upURL"
             multiple
-            :auto-upload="false"
-            :on-change="handleChange"
+            :auto-upload="true"
+            :on-success="handleSuccess"
             :on-remove="handleRemove"
           >
             <i class="el-icon-upload"></i>
@@ -133,10 +133,12 @@ export default {
     // 获取课件信息
     getCourseWareDetail() {
       courseWareDetail(this.courseId).then((res) => {
-        const { data } = res
-        this.addCoursewareForm.title = data.title
-        this.addCoursewareForm.content = data.content
-        this.addCoursewareForm.is_share = data.is_share
+        const { content, is_share, path, status, title } = res.data
+        this.addCoursewareForm.title = title
+        this.addCoursewareForm.content = content
+        this.addCoursewareForm.is_share = is_share
+        this.addCoursewareForm.path = path
+        console.log(this.addCoursewareForm);
       })
     },
     // 获取老师信息
@@ -167,6 +169,7 @@ export default {
         if (!valid) return
         console.log(this.addCoursewareForm)
         if (!this.courseId) {
+          console.log('新建');
           addCourseWareStore(this.addCoursewareForm).then((res) => {
             this.$message.success(res.msg)
             this.$refs.addCoursewareFormRef.resetFields()
@@ -174,6 +177,7 @@ export default {
             this.getClassInfo()
           })
         } else {
+          console.log('保存');
           courseWareEdit(this.courseId, this.addCoursewareForm).then((res) => {
             this.$message.success(res.data.msg)
           })
@@ -186,8 +190,9 @@ export default {
     handleRemove(file, fileList) {
       console.log(file, fileList)
     },
-    handleChange(file, fileList) {
-      console.log(file, fileList)
+    handleSuccess(file, fileList) {
+      const { data } = file
+      this.addCoursewareForm.path = data.path
     },
   },
 }

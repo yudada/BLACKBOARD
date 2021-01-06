@@ -23,7 +23,7 @@ export function classList(type) {
     return http({
       url: `api/classroom/myList`,
       method: 'get',
-      params: { params: {type: type} }
+      params: {type: type} 
     })
   }
 

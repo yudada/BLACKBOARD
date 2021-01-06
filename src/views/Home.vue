@@ -524,7 +524,6 @@ export default {
       let result = false
       this.pathArr.map(item=>{
         if(item.path === path) {
-          console.log(item.path, path);
           result = true
           return
         }
@@ -567,7 +566,6 @@ export default {
     async getClassList() {
       await classList(1).then((res) => {
         const { data } = res.data
-        console.log(data);
         this.classList = data
       })
       this.firstLogin()

@@ -17,7 +17,7 @@
                   placeholder="例：周三课后练习题"
                   v-model="publishForm.exeTitle"
                   class="set_w"
-                ></el-input>
+                />
               </el-form-item>
               <div class="select_time">
                 <el-form-item
@@ -110,10 +110,9 @@
               </el-form-item>
               <el-form-item>
                 <div style="display: flex">
-                  <el-button @click="onSubmit" class="cn_btn"
-                    >立即发布</el-button
-                  >
-                  <el-button @click="canceSubmitl">取消</el-button>
+                  <el-button @click="onSubmit" class="cn_btn">
+                    {{ btnText }}
+                  </el-button>
                 </div>
               </el-form-item>
             </el-form>
@@ -132,19 +131,24 @@
         custom-class="content-diolog"
       >
         <el-radio-group v-model="publishForm.exeType" @change="restContent">
-          <el-radio v-for="item in taskTypeList" :key="item.value" :label="item.value">{{item.label}}</el-radio>
+          <el-radio
+            v-for="item in taskTypeList"
+            :key="item.value"
+            :label="item.value"
+            >{{ item.label }}</el-radio
+          >
         </el-radio-group>
         <div v-if="publishForm.exeType == 1">
-          <models @func="getContentId" />
+          <models @func="getContentId" :contentId="publishForm.contentId" />
         </div>
         <div v-else-if="publishForm.exeType == 2">
-          <read @func="getContentId" :bookId="bookId" />
+          <read @func="getContentId" :contentId="publishForm.contentId" :bookId="bookId" />
         </div>
         <div v-else-if="publishForm.exeType == 3">
-          <exercise @func="getContentId" />
+          <exercise @func="getContentId" :contentId="publishForm.contentId" />
         </div>
         <div v-else>
-          <experiment @func="getContentId" />
+          <experiment @func="getContentId" :contentId="publishForm.contentId" />
         </div>
       </el-dialog>
     </div>
@@ -158,19 +162,24 @@ import models from '@/components/resourceList/models'
 import Read from '@/components/resourceList/read.vue'
 import Breadcrumb from '@/components/breadcrumb.vue'
 import { mapState } from 'vuex'
+import {
+  addExercises,
+  exercisesDetail,
+  editExercises,
+} from '@/api/superAssignment'
 export default {
   components: {
     experiment,
     models,
     Read,
     Exercise,
-    Breadcrumb
+    Breadcrumb,
   },
   data() {
     return {
       navData: {
         title: '超级作业',
-        childTitle: '发布作业'
+        childTitle: '发布作业',
       },
       // 创建作业表单
       publishForm: {
@@ -237,15 +246,54 @@ export default {
   created() {
     this.getClassInfo()
     this.getBookInfo()
-    this.formatDate()
+    this.$nextTick(() => {
+      this.navData = {
+        childTitle: '编辑作业',
+        goTo: '返回列表'
+      }
+      this.getExercisesDetail()
+    })
     if (this.classInfo) {
       this.publishForm.class_id = this.classInfo.class_id
+      this.formatDate()
+      this.formatDate2()
     }
   },
   computed: {
     ...mapState(['classInfo']),
+    exeId: function () {
+      return this.$route.query.id
+    },
+    btnText: function () {
+      return this.$route.query.id ? '保存修改' : '立即发布'
+    },
   },
   methods: {
+    // 获取编辑作业信息
+    getExercisesDetail() {
+      if (!this.exeId) return
+      exercisesDetail(this.exeId).then((res) => {
+        console.log(res)
+        const {
+          class_id,
+          contentId = [],
+          exeTitle,
+          exeStartTime,
+          exeEndTime,
+          textbook_id,
+          exeType,
+          status,
+        } = res.data
+        this.publishForm.class_id = class_id
+        this.publishForm.contentId = contentId
+        this.publishForm.exeTitle = exeTitle
+        this.publishForm.exeStartTime = exeStartTime
+        this.publishForm.exeEndTime = exeEndTime
+        this.publishForm.textbook_id = textbook_id
+        this.publishForm.exeType = exeType
+        this.publishForm.status = status
+      })
+    },
     // 获取班级列表
     async getClassInfo() {
       const { data: res } = await this.$http.get('api/classroom/myList')
@@ -266,18 +314,20 @@ export default {
     async onSubmit() {
       this.$refs.publishFormRef.validate(async (valid) => {
         if (!valid) return this.$message.error('请填写必要的表单项！')
-
         this.publishForm.exeStartTime = this.publishForm.exeStartTime.toString()
         this.publishForm.exeEndTime = this.publishForm.exeEndTime.toString()
         console.log(this.publishForm)
-        const { data: res } = await this.$http.post(
-          '/api/exercises/store',
-          this.publishForm
-        )
-        console.log(res)
-        if (res.statusCode !== 200) return this.$message.error('发布作业失败!')
-        this.$message.success('发布作业成功!')
-        this.canceSubmitl()
+        if (!this.exeId) {
+          addExercises(this.publishForm).then((res) => {
+            console.log(res)
+            this.$message.success(res.msg)
+            this.canceSubmitl()
+          })
+        } else {
+          editExercises(this.exeId, this.publishForm).then((res) => {
+            this.$message.success(res.msg)
+          })
+        }
       })
     },
     // 重置表单
@@ -304,17 +354,18 @@ export default {
     },
     formatDate() {
       const dt = new Date()
-
       const y = dt.getFullYear()
       const m = (dt.getMonth() + 1 + '').padStart(2, '0')
       const d = (dt.getDate() + '').padStart(2, '0')
-
-      const hh = (dt.getHours() + '').padStart(2, '0')
-      const mm = (dt.getMinutes() + '').padStart(2, '0')
-      const ss = (dt.getSeconds() + '').padStart(2, '0')
-
-      return  this.publishForm.exeStartTime = `${y}-${m}-${d} 07:00:00` 
+      return (this.publishForm.exeStartTime = `${y}-${m}-${d} 07:00:00`)
     },
+    formatDate2() {
+      const dt = new Date()
+      const y = dt.getFullYear()
+      const m = (dt.getMonth() + 1 + '').padStart(2, '0')
+      const d = (dt.getDate() + '').padStart(2, '0')
+      return (this.publishForm.exeEndTime = `${y}-${m}-${d} 23:59:59`)
+    }
   },
 }
 </script>
