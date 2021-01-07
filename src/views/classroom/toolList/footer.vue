@@ -37,14 +37,14 @@
       <!-- <el-button @click="openCheckedBox"> 多选 </el-button> -->
       <el-dropdown placement="top">
         <el-button @click="openCheckedBox"> 多选 </el-button>
-        <el-dropdown-menu slot="dropdown">
+        <!-- <el-dropdown-menu slot="dropdown">
           <el-dropdown-item>
             全选
           </el-dropdown-item>
           <el-dropdown-item>
             取消
           </el-dropdown-item>
-        </el-dropdown-menu>
+        </el-dropdown-menu> -->
       </el-dropdown>
       <el-button @click="openHandUPDialog"> 举手 </el-button>
       <div v-show="isSeat">
