@@ -94,3 +94,45 @@ export function parperDelete (id) {
     method: 'delete'
   })
 }
+
+// 班级邀请码
+export function classCode () {
+  return request({
+    url: `api/classroom/create`,
+    method: 'post'
+  })
+}
+
+// 班级类型
+export function classSubject () {
+  return request({
+    url: `api/common/constant`,
+    method: 'get'
+  })
+}
+
+// 创建班级
+export function addClassroom (data) {
+  return request({
+    url: `api/classroom/store`,
+    method: 'post',
+    params: data
+  })
+}
+
+// 班级信息
+export function classEditInfo (id) {
+  return request({
+    url: `api/classroom/${id}`,
+    method: 'get'
+  })
+}
+
+// 修改班级信息
+export function editClassRoom (id, data) {
+  return request({
+    url: `api/classroom/${id}`,
+    method: 'patch',
+    params: data
+  })
+}
