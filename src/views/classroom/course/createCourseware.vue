@@ -34,6 +34,7 @@
             :auto-upload="true"
             :on-success="handleSuccess"
             :on-remove="handleRemove"
+            :file-list="fileList"
           >
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">
@@ -93,6 +94,7 @@ export default {
         { value: 1, title: '共享' },
         { value: 2, title: '私人' },
       ],
+      fileList: [],
       // myConfig: {
       //   // 编辑器不自动被内容撑高
       //   autoHeightEnabled: true,

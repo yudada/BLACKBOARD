@@ -1,18 +1,16 @@
 <template>
   <div class="footer">
     <div class="btn-list">
-      <el-button
-        icon="el-icon-switch-button"
-        @click="outClassRoom"
-        class="out"
-      />
+      <el-button icon="el-icon-switch-button" @click="outClassRoom" class="out">
+        退出教室
+      </el-button>
       <el-button icon="el-icon-s-grid" @click="goPage('student-seat')">
         学生座位
       </el-button>
       <el-dropdown placement="top">
         <el-button>
           <i class="el-icon-arrow-up" />
-           我的课件
+          我的课件
         </el-button>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item
@@ -36,7 +34,18 @@
         </el-dropdown-menu>
       </el-dropdown>
       <el-button @click="openRewardsDialog"> 评分 </el-button>
-      <el-button @click="openCheckedBox"> 多选 </el-button>
+      <!-- <el-button @click="openCheckedBox"> 多选 </el-button> -->
+      <el-dropdown placement="top">
+        <el-button @click="openCheckedBox"> 多选 </el-button>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item>
+            全选
+          </el-dropdown-item>
+          <el-dropdown-item>
+            取消
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
       <el-button @click="openHandUPDialog"> 举手 </el-button>
       <div v-show="isSeat">
         <el-dropdown placement="top">
@@ -82,7 +91,7 @@ export default {
   },
   created() {},
   computed: {
-    ...mapState(['rewardsDialog', 'markList','checkedBox']),
+    ...mapState(['rewardsDialog', 'markList', 'checkedBox']),
     isSeat: function () {
       return this.$route.path === '/student-seat' ? true : false
     },
@@ -111,7 +120,7 @@ export default {
       this.setRewardsDialog(true)
     },
     openCheckedBox() {
-      if(this.checkedBox) {
+      if (this.checkedBox) {
         this.setCheckedBox(false)
       } else {
         this.setCheckedBox(true)

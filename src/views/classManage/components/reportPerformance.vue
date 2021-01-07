@@ -12,14 +12,22 @@
               :rules="reportPerformanceFormRules"
               label-position="top"
             >
-              <el-form-item label="考试名称" prop="examTitle" class="width_form">
+              <el-form-item
+                label="考试名称"
+                prop="examTitle"
+                class="width_form"
+              >
                 <el-input
                   clearable
                   placeholder="例：2020年数学期中测试"
                   v-model="reportPerformanceForm.examTitle"
                 />
               </el-form-item>
-              <el-form-item label="科目默认满分" prop="fullPoints" class="width_form">
+              <el-form-item
+                label="科目默认满分"
+                prop="fullPoints"
+                class="width_form"
+              >
                 <el-input
                   :max="300"
                   :min="0"
@@ -29,7 +37,11 @@
                   v-model="reportPerformanceForm.fullPoints"
                 />
               </el-form-item>
-              <el-form-item label="科目名称" prop="examSubject" class="width_form">
+              <el-form-item
+                label="科目名称"
+                prop="examSubject"
+                class="width_form"
+              >
                 <el-input
                   placeholder="例：数学"
                   v-model="reportPerformanceForm.examSubject"
@@ -67,6 +79,7 @@
                     <el-col :span="6">
                       <el-input
                         size="small"
+                        type="number"
                         :max="300"
                         clearable
                         placeholder="请输入成绩"
@@ -78,9 +91,9 @@
               </el-form-item>
               <el-form-item>
                 <div>
-                  <el-button @click="onSubmit" class="cn_btn"
-                    >立即发布</el-button
-                  >
+                  <el-button @click="onSubmit" class="cn_btn">
+                    立即发布
+                  </el-button>
                   <el-button>取消</el-button>
                 </div>
               </el-form-item>
@@ -94,13 +107,15 @@
 
 <script>
 import Breadcrumb from '@/components/breadcrumb.vue'
+import { classroomList, addAchieve } from '@/api/classManage'
+import { studentName } from '@/api/classRoom'
 export default {
   components: { Breadcrumb },
   data() {
     return {
       navData: {
         childTitle: '发布成绩',
-        goTo: '返回列表'
+        goTo: '返回列表',
       },
       classList: [],
       reportPerformanceForm: {
@@ -131,7 +146,7 @@ export default {
           { required: true, message: '请选择考试班级！', trigger: 'blur' },
         ],
         score_arr: [
-          { required: true, message: '请填写学生成绩！', trigger: 'blur' },
+          { required: true, message: '请填写学生成绩！', trigger: 'change' },
         ],
       },
     }
@@ -140,27 +155,27 @@ export default {
     this.getClassInfo()
   },
   methods: {
-    // 获取班级信息
-    async getClassInfo() {
-      const { data: res } = await this.$http.get('api/classroom/myList')
-      if (res.statusCode !== 200)
-        return this.$message.error('获取班级列表失败！')
-      this.classList = res.data
+    // 获取班级列表
+    getClassInfo() {
+      classroomList().then((res) => {
+        this.classList = res.data
+      })
     },
     // 获取学生信息
     async getStudentInfo(id) {
-      this.studentList = []
-      const { data: res } = await this.$http.post('api/student/getName', {
-        class_id: id,
+      let studentList = []
+      let info = {
+        classId: id,
+      }
+      studentName(info).then((res) => {
+        res.data.map((item) => {
+          studentList.push(Object.assign({}, item, { score: '' }))
+        })
+        this.studentList = studentList
+        if (studentList.length > 0)
+          return this.$message.success('获取学生信息成功！')
+        this.$message.info('暂无学生！')
       })
-      if (res.statusCode !== 200) return this.$message.error(res.msg)
-      res.data.map((item) => {
-        this.studentList.push(Object.assign({}, item, { score: '' }))
-      })
-      console.log(this.studentList)
-      if (this.studentList.length > 0)
-        return this.$message.success('获取学生信息成功！')
-      this.$message.info('暂无学生！')
     },
     // 发布成绩
     onSubmit() {
@@ -175,18 +190,11 @@ export default {
       console.log(this.reportPerformanceForm)
       this.$refs.reportPerformanceFormRef.validate(async (valid) => {
         if (!valid) return this.$message.error('请完整填写必要项！')
-
-        const { data: res } = await this.$http.post(
-          `api/classroom/addAchieve`,
-          this.reportPerformanceForm
-        )
-        console.log(res)
-        if (res.statusCode !== 200) return this.$message.error(res.msg)
-        this.$message.success('发布成功！')
-
-        this.$refs.reportPerformanceFormRef.resetFields()
-        this.studentList = []
-
+        await addAchieve(this.reportPerformanceForm).then((res) => {
+          this.$message.success('发布成功！')
+          this.$refs.reportPerformanceFormRef.resetFields()
+          this.studentList = []
+        })
         this.$router.push('/performance')
       })
     },

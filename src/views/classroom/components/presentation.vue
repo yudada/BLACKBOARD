@@ -53,13 +53,7 @@
 <script>
 import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
 import _ from 'lodash'
-import {
-  studentName,
-  scoreTagList,
-  score,
-  studentScreen,
-  classScreen,
-} from '@/api/classRoom.js'
+import { score } from '@/api/classRoom.js'
 export default {
   data() {
     return {
@@ -97,11 +91,7 @@ export default {
       this.scoreData.sid_arr = this.markList
       this.scoreData.config_score_id = item.id
       if (this.scoreData.sid_arr.length < 1) {
-        let allStudent = []
-        this.studentList.map((item) => {
-          allStudent.push(item.sid)
-        })
-        this.scoreData.sid_arr = allStudent
+        return this.$message.error('请选择学生！')
       }
       score(this.scoreData).then((res) => {
         if (res.statusCode !== 200) return this.$message.error(res.msg)
@@ -116,11 +106,7 @@ export default {
       this.scoreData.sid_arr = this.markList
       this.scoreData.config_score_id = item.id
       if (this.scoreData.sid_arr.length < 1) {
-        let allStudent = []
-        this.studentList.map((item) => {
-          allStudent.push(item.sid)
-        })
-        this.scoreData.sid_arr = allStudent
+        return this.$message.error('请选择学生！')
       }
       console.log(this.scoreData)
       score(this.scoreData).then((res) => {

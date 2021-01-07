@@ -21,42 +21,36 @@
                 <el-form-item label="学校">
                   <el-input
                     clearable
-                    :placeholder="classInfo.schoolName"
+                    v-model="ruleIntroductionForm.schoolName"
                     disabled
-                  ></el-input>
+                  />
                 </el-form-item>
                 <el-form-item label="班级">
                   <el-input
                     clearable
-                    :placeholder="classInfo.className"
+                    v-model="ruleIntroductionForm.className"
                     disabled
-                  ></el-input>
+                  />
                 </el-form-item>
                 <el-form-item label="姓名" prop="stuName">
-                  <el-input
-                    clearable
-                    v-model="ruleIntroductionForm.stuName"
-                  ></el-input>
+                  <el-input clearable v-model="ruleIntroductionForm.stuName" />
                 </el-form-item>
                 <el-form-item label="学号" prop="stuNum">
-                  <el-input
-                    clearable
-                    v-model="ruleIntroductionForm.stuNum"
-                  ></el-input>
+                  <el-input clearable v-model="ruleIntroductionForm.stuNum" />
                 </el-form-item>
                 <el-form-item label="性别">
                   <el-select
                     v-model="ruleIntroductionForm.sex"
                     placeholder="请选择性别"
                   >
-                    <el-option label="男" value="男"></el-option>
-                    <el-option label="女" value="女"></el-option>
+                    <el-option label="男" value="男" />
+                    <el-option label="女" value="女" />
                   </el-select>
                 </el-form-item>
                 <el-form-item class="form_btn fast">
-                  <el-button class="cn_btn" @click="submitIntroductionForm()"
-                    >快速添加</el-button
-                  >
+                  <el-button class="cn_btn" @click="submitIntroductionForm()">
+                    快速添加
+                  </el-button>
                 </el-form-item>
               </el-form>
             </div>
@@ -67,26 +61,42 @@
           <el-card>
             <div slot="header" class="clearfix">
               <span>基础信息</span>
+              <div class="header-up">
+                <el-button type="text">
+                  <a :href="upURL + 'api/test/export'" style="color: #ad5df3">
+                    模板下载
+                  </a>
+                </el-button>
+                <el-button type="text" @click="openDialog">学生导入</el-button>
+              </div>
             </div>
-            <add-student-form :classInfo="classInfo" />
+            <Add-student-form />
           </el-card>
         </el-col>
       </el-row>
+      <Up-student-info ref="son" />
     </div>
   </div>
 </template>
 
 <script>
-import { newStudent } from '@/api/studentManage.js'
-import addStudentForm from './components/addStudentForm.vue'
+import {
+  newStudent,
+  studentClass,
+  addStudentFast,
+  studentImport,
+  studentExport,
+} from '@/api/studentManage.js'
+import AddStudentForm from './components/addStudentForm.vue'
 import Breadcrumb from '@/components/breadcrumb.vue'
+import UpStudentInfo from './components/upStudentInfo.vue'
 export default {
-  components: { addStudentForm, Breadcrumb },
+  components: { AddStudentForm, Breadcrumb, UpStudentInfo },
   data() {
     return {
       navData: {
         title: '学生管理',
-        childTitle: '添加新同学'
+        childTitle: '添加新同学',
       },
       // 快速创建信息
       ruleIntroductionForm: {
@@ -96,8 +106,6 @@ export default {
         stuNum: '',
         sex: '男',
       },
-      // 班级信息
-      classInfo: {},
       // 快速创建验证规则
       introductionRules: {
         stuName: [
@@ -124,37 +132,38 @@ export default {
   created() {
     this.getClassInfo()
   },
+  computed: {
+    upURL: function () {
+      const isDev = process.env.NODE_ENV === 'development'
+      return isDev ? 'http://192.168.8.123/' : 'https://api.vrbook.vip/'
+    },
+  },
   methods: {
     // 获取班级信息
     async getClassInfo() {
-      const { data: res } = await this.$http.post(`api/student/create`)
-      if (res.statusCode !== 200)
-        return this.$message.error('获取班级信息失败！')
-      this.classInfo = res.data
+      studentClass().then((res) => {
+        const { className, schoolName } = res.data
+        this.ruleIntroductionForm.className = className
+        this.ruleIntroductionForm.schoolName = schoolName
+      })
     },
     // 快速创建
     submitIntroductionForm() {
       this.$refs.ruleIntroductionFormRef.validate(async (valid) => {
         if (!valid) return
-        this.ruleIntroductionForm.schoolName = this.classInfo.schoolName
-        this.ruleIntroductionForm.className = this.classInfo.className
-
-        const { data: res } = await this.$http.post(
-          `api/student/store`,
-          this.ruleIntroductionForm
-        )
-        if (res.statusCode !== 200) {
-          return this.$message.error(res.msg)
-        }
-        this.$message.success(res.msg)
-
-        this.resetIntroductionForm()
+        addStudentFast(this.ruleIntroductionForm).then((res) => {
+          this.$message.success(res.msg)
+          this.resetIntroductionForm()
+        })
       })
     },
     // 重置快速创建
     resetIntroductionForm() {
       this.$refs.ruleIntroductionFormRef.resetFields()
     },
+    openDialog() {
+      this.$refs.son.dialogVisible = true
+    }
   },
 }
 </script>
@@ -167,6 +176,16 @@ export default {
   width: 100%;
   display: flex;
 }
+.header-up {
+  float: right;
+  display: flex;
+}
+.clearfix{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 @media (max-width: 1280px) {
   .iapd_w {
     width: 100% !important;

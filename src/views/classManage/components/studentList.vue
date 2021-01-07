@@ -90,7 +90,6 @@ export default {
     // 获取学生列表
     async getStudentList() {
       this.queryInfo.limit = this.pageSize;
-      console.log(this.queryInfo);
       nowStudents(this.classInfo.class_id,this.queryInfo).then(res => {
         const { data } = res;
         console.log(data);

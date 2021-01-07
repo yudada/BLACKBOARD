@@ -25,7 +25,7 @@ const service = axios.create({
     // baseURL: 'https://api.vrbook.vip'
 });
 
-service.defaults.headers.post['Content-type'] = 'multipart/form-data';
+service.defaults.headers.post['Content-type'] = 'application/x-www-form-urlencoded';
 
 service.interceptors.request.use(
     config => {

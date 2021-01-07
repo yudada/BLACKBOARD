@@ -136,3 +136,37 @@ export function editClassRoom (id, data) {
     params: data
   })
 }
+
+// 成绩报告详情
+export function achievementDetail (id) {
+  return request({
+    url: `api/classroom/achievement/${id}`,
+    method: 'post'
+  })
+}
+
+// 班级列表
+export function classroomList () {
+  return request({
+    url: `api/classroom/myList`,
+    method: 'get'
+  })
+}
+
+// 发布成绩
+export function addAchieve (data) {
+  return request({
+    url: `api/classroom/addAchieve`,
+    method: 'post',
+    params: data
+  })
+}
+
+// 成绩报告
+export function achievementReport  (data) {
+  return request({
+    url: `api/classroom/achievement`,
+    method: 'post',
+    params: data
+  })
+}

@@ -96,7 +96,6 @@
 <script>
 import { newStudent } from '@/api/studentManage'
 export default {
-  props: ['classInfo'],
   data() {
     var checkUserName = (rule, value, callback) => {
       if (value) {

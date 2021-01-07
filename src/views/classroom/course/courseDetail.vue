@@ -14,7 +14,9 @@
         <el-form-item label="课件名称" prop="title">
           <span>{{ courseData.title }}</span>
         </el-form-item>
-        <el-form-item label="课件内容"></el-form-item>
+        <!-- <el-form-item label="附件">
+        </el-form-item> -->
+        <el-form-item label="课件内容" />
         <!-- 富文本编辑器组件 -->
         <p v-html="courseData.content"></p>
         <el-form-item label="状态">

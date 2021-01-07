@@ -64,18 +64,14 @@ export default {
     }
   },
   computed: {
-    ...mapState([
-      'studentList',
-      'studentIndexs',
-      'handUPDialog'
-    ]),
+    ...mapState(['studentList', 'studentIndexs', 'handUPDialog']),
     btnText() {
       return this.intervalId ? '结束' : `开始`
     },
   },
   created() {},
   methods: {
-    ...mapMutations(['setMarkList','setHandUPDialog', 'setRewardsDialog']),
+    ...mapMutations(['setMarkList', 'setHandUPDialog', 'setRewardsDialog']),
     closeHandUpDialog() {
       this.setHandUPDialog(false)
     },
@@ -147,7 +143,7 @@ export default {
     },
     openRewardsDialog() {
       this.setRewardsDialog(true)
-    }
+    },
   },
 }
 </script>
