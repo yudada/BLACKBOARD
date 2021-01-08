@@ -99,11 +99,11 @@ const routes = [
           },
           {
             path: '/book-resource',
-            component: () => import('../views/classroom/course/bookResource.vue')
+            component: () => import('../views/classroom/classExercise/bookResource.vue')
           },
           {
             path: '/exercise',
-            component: () => import('../views/classroom/course/exercise.vue')
+            component: () => import('../views/classroom/classExercise/exercise.vue')
           },
           {
             path: '/create-courseware',
@@ -118,8 +118,8 @@ const routes = [
             component: () => import('../views/classroom/course//courseDetail.vue')
           },
           {
-            path: '/models-detail',
-            component: () => import('../views/classroom/course/modelsDetail.vue')
+            path: '/exercise-list',
+            component: () => import('../views/classroom/classExercise/exerciseList.vue')
           }
         ]
       },

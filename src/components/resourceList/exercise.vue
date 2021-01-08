@@ -80,6 +80,7 @@
         label="全选"
         :reserve-selection="true"
         width="55"
+        v-if="!hidenBtn"
       />
       <el-table-column prop="queTitle" label="题目" width="300" />
       <el-table-column label="题纲">
@@ -112,16 +113,15 @@
       :total="total"
     >
     </el-pagination>
-
     <span class="footer" v-show="!hidenBtn">
-      <el-button class="cn_btn" @click="sendContentID">确 定</el-button>
+      <el-button class="cn_btn" @click="sendContentID">{{btnText}}</el-button>
     </span>
   </div>
 </template>
 <script>
 import _ from 'lodash'
 export default {
-  props: ['hidenBtn', 'queId', 'selectLimit','contentId'],
+  props: ['hidenBtn', 'queId', 'selectLimit','contentId','classWork'],
   data() {
     return {
       // 分页
@@ -177,6 +177,11 @@ export default {
       this.getExerciseList()
     },
   },
+  computed: {
+    btnText: function() {
+      return this.classWork ? '立即发布' : '确 定'
+    }
+  },
   methods: {
     handleSizeChange(val) {
       this.pageSize = val
@@ -205,7 +210,7 @@ export default {
       })
       if (res.statusCode !== 200) return this.$message.error(res.msg)
       this.exerciseList = res.data.data
-
+      console.log(res.data);
       this.total = res.data.total
       this.pageSize = res.data.per_page
       this.currentPage = res.data.current_page

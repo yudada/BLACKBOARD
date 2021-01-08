@@ -2,7 +2,7 @@
   <div style="padding: 20px">
     <el-row class="expName_box">
       <el-col :span="18">
-        <el-checkbox v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+        <el-checkbox v-if="!hidenBtn" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
       </el-col>
       <el-col :span="6">
         <el-input placeholder="实验搜索" v-model="expName">
@@ -32,13 +32,13 @@
     </el-pagination>
 
     <span class="footer" v-show="!hidenBtn">
-      <el-button type="primary" @click="sendContentID">确 定</el-button>
+      <el-button class="cn_btn" @click="sendContentID">{{btnText}}</el-button>
     </span>
   </div>
 </template>
 <script>
 export default {
-  props: ['hidenBtn','contentId'],
+  props: ['hidenBtn','contentId','classWork'],
   name: 'models',
   data() {
     return {
@@ -61,6 +61,11 @@ export default {
     if(this.contentId) {
       this.sendMsg.contentId = this.contentId
       console.log(this.sendMsg.contentId);
+    }
+  },
+  computed: {
+    btnText: function() {
+      return this.classWork ? '立即发布' : '确 定'
     }
   },
   methods: {

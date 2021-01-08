@@ -1,5 +1,13 @@
 import request from '@/utils/requset'
 
+// 教师信息
+export function teacherInfo() {
+  return request({
+    url: `api/teacher/info`,
+    method: 'post'
+  })
+}
+
 // 班级学生
 export function studentName(data) {
     return request({
@@ -84,5 +92,14 @@ export function deleteCourseWare(id) {
   return request({
     url: `api/interactive/courseWare/${id}`,
     method: 'delete'
+  })
+}
+
+// 课堂练习-发布
+export function classExerciseAdd(data) {
+  return request({
+    url: `api/exercises/classExercise`,
+    method: 'post',
+    params: data
   })
 }

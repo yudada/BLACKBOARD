@@ -1,8 +1,8 @@
 <template>
   <div class="footer">
     <div class="btn-list">
-      <el-button icon="el-icon-switch-button" @click="outClassRoom" class="out">
-        退出教室
+      <el-button @click="outClassRoom" class="out">
+        <i class="el-icon-switch-button"></i> 退出教室
       </el-button>
       <el-button icon="el-icon-s-grid" @click="goPage('student-seat')">
         学生座位
@@ -16,7 +16,7 @@
           <el-dropdown-item
             v-for="(tool, index) in subToolList"
             :key="index"
-            @click.native="openTool(tool)"
+            @click.native="goPage(tool.path)"
           >
             {{ tool.name }}
           </el-dropdown-item>
@@ -34,17 +34,12 @@
         </el-dropdown-menu>
       </el-dropdown>
       <el-button @click="openRewardsDialog"> 评分 </el-button>
-      <!-- <el-button @click="openCheckedBox"> 多选 </el-button> -->
-      <el-dropdown placement="top">
+      <el-dropdown placement="top" trigger="click">
         <el-button @click="openCheckedBox"> 多选 </el-button>
-        <!-- <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>
-            全选
-          </el-dropdown-item>
-          <el-dropdown-item>
-            取消
-          </el-dropdown-item>
-        </el-dropdown-menu> -->
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item @click.native="opAllStudent(true)"> 全选 </el-dropdown-item>
+          <el-dropdown-item @click.native="opAllStudent(false)"> 取消 </el-dropdown-item>
+        </el-dropdown-menu>
       </el-dropdown>
       <el-button @click="openHandUPDialog"> 举手 </el-button>
       <div v-show="isSeat">
@@ -57,12 +52,12 @@
             <el-dropdown-item @click.native="switchScreen('allUnlock')">
               全解锁
             </el-dropdown-item>
-            <el-dropdown-item @click.native="switchStudentScreen('lock')">
+            <!-- <el-dropdown-item @click.native="switchStudentScreen('lock')">
               批量锁屏
             </el-dropdown-item>
             <el-dropdown-item @click.native="switchStudentScreen('unlock')">
               批量解锁
-            </el-dropdown-item>
+            </el-dropdown-item> -->
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -91,7 +86,7 @@ export default {
   },
   created() {},
   computed: {
-    ...mapState(['rewardsDialog', 'markList', 'checkedBox']),
+    ...mapState(['rewardsDialog', 'markList', 'checkedBox', 'studentList']),
     isSeat: function () {
       return this.$route.path === '/student-seat' ? true : false
     },
@@ -102,12 +97,8 @@ export default {
       'setHandUPDialog',
       'setCheckedBox',
       'setReload',
+      'setMarkList',
     ]),
-    openTool(tool) {
-      this.$router.push('/' + tool.path).catch((err) => {
-        console.log('err')
-      })
-    },
     goPage(path) {
       this.$router.push('/' + path).catch((err) => {
         console.log('err')
@@ -121,10 +112,27 @@ export default {
     },
     openCheckedBox() {
       if (this.checkedBox) {
+        this.setMarkList([])
+        this.studentList.map(item=>item.isChecked = false)
         this.setCheckedBox(false)
       } else {
         this.setCheckedBox(true)
       }
+        // this.setCheckedBox(true)
+    },
+    // 全选
+    opAllStudent(data) {
+      let markList = []
+      markList = this.studentList.map(item=>item.sid)
+      if(data) {
+        this.studentList.map(item=>item.isChecked = true)
+        this.setMarkList(markList)
+      } else {
+        this.setCheckedBox(false)
+        this.studentList.map(item=>item.isChecked = false)
+        this.setMarkList([])
+      }
+      console.log(this.markList);
     },
     // 全班控屏
     switchScreen(text) {
@@ -152,7 +160,6 @@ export default {
         screenStatus: screenStatus,
         sid_arr: this.markList,
       }
-      console.log(params)
       studentScreen(params).then((res) => {
         this.setCheckedBox(false)
         this.setReload()
@@ -207,6 +214,9 @@ export default {
     }
     .out {
       background: linear-gradient(to bottom right, #aea9af, #817e85);
+      i {
+        color: red;
+      }
     }
   }
 }

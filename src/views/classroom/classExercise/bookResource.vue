@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="book-res">
     <el-card>
       <el-tabs v-model="activeName" type="card" :stretch="true">
-        <el-tab-pane label="模型资源" name="first">
+        <el-tab-pane label="模型资源" name="one">
           <div>
             <el-row class="model_search">
               <el-col :span="6">
@@ -50,11 +50,23 @@
             <iframe :src="dialogContent.modLinkAddress" class="content_box" />
           </el-dialog>
         </el-tab-pane>
-        <el-tab-pane label="精选题库" name="second">
-          <exercise :hidenBtn="hidenBtn" />
+        <el-tab-pane label="精选题库" name="two">
+          <Exercise :hidenBtn="hidenBtn" />
         </el-tab-pane>
-        <el-tab-pane label="实验列表" name="third">
-          <experiment :hidenBtn="hidenBtn" />
+        <el-tab-pane label="实验列表" name="three">
+          <Experiment :hidenBtn="hidenBtn" />
+        </el-tab-pane>
+        <el-tab-pane label="课本" name="four">
+          <el-select clearable v-model="bookId" placeholder="请选择课本">
+            <el-option
+              v-for="item in bookList"
+              :key="item.id"
+              :label="item.bookName"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+          <Read v-if="bookId" :hidenBtn="hidenBtn" :bookId="bookId" />
         </el-tab-pane>
       </el-tabs>
     </el-card>
@@ -62,13 +74,16 @@
 </template>
 
 <script>
-import experiment from '@/components/resourceList/experiment'
-import exercise from '@/components/resourceList/exercise'
+import Experiment from '@/components/resourceList/experiment'
+import Exercise from '@/components/resourceList/exercise'
+import Read from '@/components/resourceList/read.vue'
+import { wisdomBookList } from '@/api/wisdomBook'
 export default {
   name: 'bookResource',
   components: {
-    experiment,
-    exercise,
+    Experiment,
+    Exercise,
+    Read,
   },
   data() {
     return {
@@ -79,13 +94,16 @@ export default {
       pageSize: 40,
       total: 0,
       dialogContent: {},
-      activeName: 'first',
+      activeName: 'one',
       hidenBtn: true,
       modName: '',
+      bookId: '',
+      bookList: [],
     }
   },
   created() {
     this.getModels()
+    this.getWisdomBookList()
   },
   methods: {
     // 模型
@@ -101,6 +119,14 @@ export default {
       this.total = res.data.total
       this.pageSize = res.data.per_page
       this.currentPage = res.data.current_page
+    },
+    getWisdomBookList() {
+      wisdomBookList().then((res) => {
+        console.log(res)
+        const { data } = res
+        this.bookList = data
+        this.bookId = data[0].id
+      })
     },
     handleSizeChange(val) {
       this.pageSize = val
@@ -167,6 +193,12 @@ export default {
     height: 100%;
     padding: 0 !important;
     background: rgba(255, 255, 255, 1);
+  }
+}
+.book-res {
+  .el-tabs--card > .el-tabs__header .el-tabs__item.is-active {
+    background: linear-gradient(to bottom right, #9853af, #623aa2);
+    color: #fff;
   }
 }
 </style>

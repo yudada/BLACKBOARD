@@ -14,10 +14,7 @@
           >
             <div class="student_content">
               <div style="position: relative">
-                <div
-                  class="student_avatar"
-                  @click="switchStudentScreen(student)"
-                >
+                <div class="student_avatar">
                   <!-- 头像 -->
                   <el-tooltip
                     effect="dark"
@@ -25,7 +22,7 @@
                     placement="top"
                     :open-delay="1000"
                   >
-                    <div class="avater">
+                    <div class="avater" @click="switchStudentScreen(student)">
                       <img
                         v-if="student.photo"
                         :src="student.photo"
@@ -33,17 +30,23 @@
                         :onerror="defaultPic"
                       />
                       <img v-else src="@/assets/def_avater.jpg" alt="" />
+                      <!-- 控屏状态 -->
+                      <div
+                        class="status_screen"
+                        v-if="student.screenStatus === 1"
+                      >
+                        <div
+                          class="content_screen"
+                          @click="switchStudentScreen(student)"
+                        >
+                          <img src="@/assets/images/screenLock.png" alt="" />
+                          <p>点击可解锁</p>
+                        </div>
+                      </div>
                     </div>
                   </el-tooltip>
                   <span v-if="student.stuName">{{ student.stuName }}</span>
                   <span v-else>未知</span>
-                  <!-- 控屏状态 -->
-                  <div class="status_screen" v-if="student.screenStatus === 1">
-                    <div class="content_screen">
-                      <img src="@/assets/images/screenLock.png" alt="" />
-                      <p>点击可解锁</p>
-                    </div>
-                  </div>
                 </div>
                 <!-- 评分 -->
                 <div class="student_score">
@@ -125,6 +128,9 @@ export default {
       })
       this.setMarkList(markList)
     },
+    handleCheckAllChange() {
+      this.studentList.map(item=>item.isChecked = true)
+    },
     // 学生控屏
     switchStudentScreen(student) {
       this.params.sid_arr = []
@@ -195,41 +201,42 @@ export default {
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        position: relative;
         .avater {
           width: 100%;
           padding-bottom: 100%;
-          border-radius: 50%;
           overflow: hidden;
           height: 0;
           cursor: pointer;
-        }
-        .status_screen {
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          background: rgb(0, 0, 0, 0.5);
-          cursor: pointer;
-          .content_screen {
+          position: relative;
+          img {
+            width: 100%;
+            border-radius: 50%;
+          }
+          .status_screen {
+            position: absolute;
             width: 100%;
             height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            img {
-              width: 35%;
-              margin-top: 1em;
-            }
-            p {
-              color: #fff;
-              font-size: 0.5em;
-              font-weight: bold;
+            background: rgb(0, 0, 0, 0.5);
+            top: 0;
+            cursor: pointer;
+            .content_screen {
+              width: 100%;
+              height: 100%;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              img {
+                width: 35%;
+                margin-top: 1em;
+              }
+              p {
+                color: #fff;
+                font-size: 0.5em;
+                font-weight: bold;
+              }
             }
           }
-        }
-        img {
-          width: 100%;
         }
         span {
           color: #636262;

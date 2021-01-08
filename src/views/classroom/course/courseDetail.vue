@@ -10,15 +10,24 @@
           >返回</el-button
         >
       </div>
-      <el-form :data="courseData">
+      <el-form :data="courseData" label-position="left" label-width="100px">
         <el-form-item label="课件名称" prop="title">
           <span>{{ courseData.title }}</span>
         </el-form-item>
-        <!-- <el-form-item label="附件">
-        </el-form-item> -->
-        <el-form-item label="课件内容" />
-        <!-- 富文本编辑器组件 -->
-        <p v-html="courseData.content"></p>
+        <el-form-item label="附件" prop="path">
+          <a
+            v-for="(item, index) in courseData.path"
+            :key="item"
+            :href="item"
+            target="_blank"
+            style="color: #ad5df3"
+          >
+            {{ courseData.fileName[index] }} ,
+          </a>
+        </el-form-item>
+        <el-form-item label="课件内容">
+          <p v-html="courseData.content"></p>
+        </el-form-item>
         <el-form-item label="状态">
           <span v-if="courseData.is_share === 1">共享</span>
           <span v-if="courseData.is_share === 2">私有</span>
@@ -54,7 +63,7 @@ export default {
     },
     goBack() {
       this.$router.go(-1)
-    }
+    },
   },
 }
 </script>

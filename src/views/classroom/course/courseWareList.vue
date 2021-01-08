@@ -18,26 +18,49 @@
           align="center"
         />
         <el-table-column prop="title" label="标题" />
-        <el-table-column prop="is_share" label="状态">
+        <el-table-column prop="path" label="附件">
+          <template slot-scope="scope">
+            <a
+              v-for="(item, index) in scope.row.path"
+              :key="item"
+              :href="item"
+              target="_blank"
+              style="color: #ad5df3"
+            >
+              {{ scope.row.fileName[index] }} 
+            </a>
+            <!-- <el-button
+              size="small"
+              type="text"
+              v-for="(item, index) in scope.row.path"
+              :key="item"
+              @click="openPath(item)"
+              >
+              {{ scope.row.fileName[index] }}
+            </el-button> -->
+          </template>
+        </el-table-column>
+        <el-table-column prop="is_share" label="状态" width="100px">
           <template slot-scope="scope">
             <span v-if="scope.row.is_share === 1">共享</span>
             <span v-if="scope.row.is_share === 2">私有</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="150px">
           <template slot-scope="scope">
-            <el-button type="text" @click="openDetail(scope.row.id)"
-              >查看</el-button
-            >
-            <el-button type="text" @click="editCourse(scope.row.id)"
-              >编辑</el-button
-            >
+            <el-button type="text" @click="openDetail(scope.row.id)">
+              查看
+            </el-button>
+            <el-button type="text" @click="editCourse(scope.row.id)">
+              编辑
+            </el-button>
             <el-button
               type="text"
               @click="deleteCourse(scope.row.id)"
               class="delete_btn"
-              >删除</el-button
             >
+              删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -52,12 +75,6 @@
       >
       </el-pagination>
     </el-card>
-    <!-- 打分模块 -->
-    <div class="classroom_mark">
-      <div class="mark_btn">
-        <el-button @click="goExercise">课后练习</el-button>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -70,6 +87,7 @@ export default {
       total: 0,
       currentPage: 1,
       pageSize: 20,
+      baseUel: 'https://view.officeapps.live.com/op/view.aspx?src='
     }
   },
   created() {
@@ -83,16 +101,11 @@ export default {
       }
       courseWareList(pageInfo).then((res) => {
         const { current_page, data, per_page, total } = res.data
-
+        console.log(res)
         this.courseData = data
         this.total = total
         this.currentPage = current_page
         this.pageSize = parseFloat(per_page)
-      })
-    },
-    goExercise() {
-      this.$router.push('/exercise').catch((err) => {
-        console.log('err')
       })
     },
     editCourse(id) {
@@ -132,6 +145,12 @@ export default {
       this.currentPage = val
       this.getcourseWareList()
     },
+    previewAccessory(path) {
+      console.log(path)
+    },
+    openPath(item) {
+      console.log(item);
+    }
   },
 }
 </script>

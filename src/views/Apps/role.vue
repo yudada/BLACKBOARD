@@ -12,7 +12,12 @@
             </div>
             <el-table :data="roleTable" stripe border v-loading="loading">
               <el-table-column prop="name" label="角色名称" width="160" />
-              <el-table-column prop="module_name" label="权限" :show-overflow-tooltip="true" :formatter="formatterCellval" />
+              <el-table-column prop="module_name" label="权限" :show-overflow-tooltip="true">
+                <template slot-scope="scope">
+                  <span v-for="(item,index) in scope.row.module_name" :key="item + index">{{item}}   </span>
+                  <span v-if="scope.row.module_name.length === 0">—— ——</span>
+                </template>
+              </el-table-column>
               <el-table-column label="操作" width="160">
                 <template slot-scope="scope">
                   <el-button type="text" @click="editRole(scope.row.id)">编辑</el-button>
@@ -63,6 +68,7 @@ export default {
         const { data } = res;
         this.loading = false;
         this.roleTable = data
+        console.log(data);
       })
     },
     // 删除角色
@@ -87,9 +93,6 @@ export default {
         this.loading = false;
       })
       
-    },
-    formatterCellval(row, column, cellValue, index) {
-      return cellValue
     }
   }
 }

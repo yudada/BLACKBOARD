@@ -8,6 +8,7 @@
       width="40%"
       :append-to-body="true"
       :close-on-click-modal="false"
+      :close-on-press-escape="false"
       :before-close="handleClose"
       custom-class="selectbox_dialog"
     >
@@ -15,7 +16,7 @@
         <div class="topbox_dialog">
           <div class="op_content" v-show="changeName">
             <el-button type="text" icon="el-icon-minus" @click="numMinus" />
-            <el-input v-model="selectNum" />
+            <el-input type="number" v-model="selectNum" @change="handleChangeSelectNum" />
             <el-button type="text" icon="el-icon-plus" @click="numPlus" />
           </div>
           <div class="name_topbox">
@@ -24,7 +25,7 @@
             </div>
             <div v-else class="stuName_box">
               <div v-for="item in sidArr" :key="item.sid">
-                <span v-if="sidArr.length > 1">{{ item }},</span>
+                <span v-if="sidArr.length > 1">{{ item }} ， </span>
                 <span v-else>{{ item }}</span>
               </div>
             </div>
@@ -69,16 +70,28 @@ export default {
       return this.intervalId ? '结束' : `开始`
     },
   },
+  watch: {
+    handUPDialog: function(newValue, oldValue) {
+      if(newValue) {
+        this.changeName = true
+      }
+    }
+  },
   created() {},
   methods: {
     ...mapMutations(['setMarkList', 'setHandUPDialog', 'setRewardsDialog']),
     closeHandUpDialog() {
       this.setHandUPDialog(false)
     },
-    // 举手弹框
-    handleHandUP() {
-      this.changeName = true
-      this.setHandUPDialog(true)
+    handleChangeSelectNum(value) {
+      // if()
+      console.log(typeof value);
+      console.log(value);
+      if(!value) {
+        this.selectNum = 1
+      } else if(parseFloat(value) > this.studentList.length) {
+        this.selectNum = this.studentList.length
+      }
     },
     numPlus() {
       if (this.studentList.length > this.selectNum) {

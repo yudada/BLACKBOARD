@@ -3,7 +3,7 @@ import request from '@/utils/requset'
  
 // 登录
 export function login(data) {
-  return http({
+  return request({
     url: `api/auth/login`,
     method: 'post',
     params: data
@@ -12,7 +12,7 @@ export function login(data) {
 
 // 用户信息
 export function userInfo() {
-  return http({
+  return request({
     url: `api/user/info`,
     method: 'get'
   })

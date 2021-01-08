@@ -2,11 +2,16 @@
   <el-row>
     <el-col :span="24">
       <el-card>
-        <!-- <el-col :span="6">
-          <el-input placeholder="题目搜索" v-model="queTitle">
-            <el-button slot="append" icon="el-icon-search" @click="getExercisesList"></el-button>
-          </el-input>
-        </el-col> -->
+        <div slot="header" v-if="makeType">
+          <span>课堂练习列表</span>
+          <el-button
+            style="float: right; padding: 3px 0"
+            type="text"
+            @click="goBack"
+          >
+            返回
+          </el-button>
+        </div>
         <el-table
           :data="exercisesList"
           style="width: 100%"
@@ -69,8 +74,9 @@
 </template>
 
 <script>
+import { exercisesList, deleteExercises } from '@/api/superAssignment'
 export default {
-  props: ['type'],
+  props: ['type', 'makeType'],
   data() {
     return {
       query: '',
@@ -80,6 +86,11 @@ export default {
       exercisesList: [],
       loading: true,
       queTitle: '',
+      params: {
+        limit: '',
+        page: '',
+        type: '',
+      },
     }
   },
   created() {
@@ -90,22 +101,25 @@ export default {
       this.$router.push({ path: '/taskDetial', query: { id: id } })
     },
     async getExercisesList() {
-      const { data: res } = await this.$http.get(`api/exercises/lists`, {
-        params: {
+      this.params.limit = this.pagesize
+      this.params.page = this.currentPage
+      this.params.type = this.type
+      if (this.makeType) {
+        this.params = {
           limit: this.pagesize,
           page: this.currentPage,
-          type: this.type,
-        },
+          makeType: this.makeType,
+        }
+      }
+      exercisesList(this.params).then((res) => {
+        console.log(res)
+        const { current_page, data, per_page, total } = res.data
+        this.exercisesList = data
+        this.currentPage = current_page
+        this.pagesize = parseFloat(per_page)
+        this.total = total
+        this.loading = false
       })
-      if (res.statusCode !== 200)
-        return this.$message.error('获取作业列表失败！')
-      console.log(res.data)
-      this.exercisesList = res.data.data
-
-      this.currentPage = res.data.current_page
-      this.pagesize = parseFloat(res.data.per_page)
-      this.total = res.data.total
-      this.loading = false
     },
     handleSizeChange(newSize) {
       this.pagesize = newSize
@@ -132,10 +146,13 @@ export default {
       if (confirmResult !== 'confirm') {
         return
       }
-      const { data: res } = await this.$http.delete(`api/exercises/${id}`)
-      if (res.statusCode !== 200) return this.$message.error(res.msg)
-      this.$message.success('删除成功！')
-      this.getExercisesList()
+      deleteExercises(id).then((res) => {
+        this.$message.success('删除成功！')
+        this.getExercisesList()
+      })
+    },
+    goBack() {
+      this.$router.go(-1)
     },
   },
 }

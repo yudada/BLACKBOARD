@@ -139,7 +139,7 @@ export default {
   methods: {
     getUserInfo() {
       userInfo().then((res) => {
-        const { data } = res.data
+        const { data } = res
         this.schoolInfo = data.school
         this.userInfo = data.userInfo
         const {

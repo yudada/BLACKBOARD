@@ -101,3 +101,12 @@
     transform: translate(-50%, -50%) !important;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0; 
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}

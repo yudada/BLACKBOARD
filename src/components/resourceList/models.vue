@@ -17,6 +17,7 @@
       <el-checkbox v-for="item in modelsList" :key="item.id" :label="item.id">
         <div class="checknox_content">
           <img v-if="item.modCoverimg" :src="item.modCoverimg" alt="模型图" :onerror="defaultPic" />
+          <img v-else :src="item.modImage" alt="模型图" :onerror="defaultPic" />
           <span>{{ item.modName }}</span>
         </div>
       </el-checkbox>
@@ -34,14 +35,14 @@
     </el-pagination>
 
     <span class="footer">
-      <el-button type="primary" @click="sendContentID">确 定</el-button>
+      <el-button class="cn_btn" @click="sendContentID">{{btnText}}</el-button>
     </span>
   </div>
 </template>
 <script>
 export default {
   name: 'models',
-  props: ['contentId'],
+  props: ['contentId','classWork'],
   data() {
     return {
       // 分页
@@ -66,6 +67,11 @@ export default {
     if(this.contentId) {
       this.sendMsg.contentId = this.contentId
       console.log(this.sendMsg.contentId);
+    }
+  },
+  computed: {
+    btnText: function() {
+      return this.classWork ? '立即发布' : '确 定'
     }
   },
   methods: {

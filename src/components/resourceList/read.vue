@@ -11,7 +11,7 @@
         border
         :tree-props="{ children: 'child', hasChildren: 'hasChildren' }"
       >
-        <el-table-column width="55">
+        <el-table-column width="55" v-if="!hidenBtn">
           <template #header>
             <el-checkbox v-model="checkAll" @change="toggleAllSeclection">
             </el-checkbox>
@@ -28,14 +28,14 @@
         </el-table-column>
       </el-table>
     </div>
-    <span class="footer">
-      <el-button type="primary" @click="sendContentID">确 定</el-button>
+    <span class="footer" v-if="!hidenBtn">
+      <el-button class="cn_btn" @click="sendContentID">{{btnText}}</el-button>
     </span>
   </div>
 </template>
 <script>
 export default {
-  props: ['bookId', 'contentId'],
+  props: ['bookId', 'contentId','hidenBtn','classWork'],
   data() {
     return {
       sendMsg: {
@@ -49,6 +49,16 @@ export default {
   },
   created() {
     this.isSelect()
+  },
+  watch: {
+    bookId: function(newValue, oldValue) {
+      this.getbookList()
+    }
+  },
+  computed: {
+    btnText: function() {
+      return this.classWork ? '立即发布' : '确 定'
+    }
   },
   methods: {
     isSelect() {
@@ -64,7 +74,6 @@ export default {
       if (res.statusCode !== 200) return this.$message.error(res.msg)
       this.bookInfo = res.data
       this.bookDir = this.setChecked(res.data.textbook_dir)
-      console.log(this.bookDir);
       if (this.contentId) {
         this.sendMsg.contentId = this.contentId
         console.log(this.sendMsg.contentId)

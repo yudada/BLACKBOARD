@@ -273,15 +273,16 @@ export default {
       this.$refs.questionFormRef.validate(async (valid) => {
         if (!valid) return this.$message.error('请完整填写必要项！')
         this.questionForm.queAnswer = this.answerContent.toString()
+        console.log(this.questionForm);
         const { data: res } = await this.$http.post(
           `api/library/store`,
           this.questionForm
         )
         if (res.statusCode !== 200) return this.$message.error('添加题目失败！')
         this.$message.success('添加题目成功!')
-
-        this.questionForm.queKnowledge = []
-        this.$refs.questionFormRef.resetFields()
+        if(this.questionForm.queSubjectType === 1) this.$router.push('/expand')
+        if(this.questionForm.queSubjectType === 2) this.$router.push('/textbook')
+        if(this.questionForm.queSubjectType === 3) this.$router.push('/history')
       })
     },
     queTypeChange() {
@@ -302,6 +303,7 @@ export default {
     fromSun(data) {
       this.queKnowledgeDialogVisible = false
       this.questionForm.queKnowledge = data
+      console.log(data);
     },
     handleClose() {
       this.queKnowledgeDialogVisible = false

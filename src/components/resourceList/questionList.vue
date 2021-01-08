@@ -22,10 +22,8 @@
           </el-col>
         </el-row>
         <el-table :data="questionList" style="width: 100%" stripe border v-loading="loading">
-          <el-table-column v-if="type === 3" prop="queYear" label="年份">
-          </el-table-column>
-          <el-table-column prop="queTitle" label="题目" width="300">
-          </el-table-column>
+          <el-table-column v-if="type === 3" prop="queYear" label="年份" />
+          <el-table-column prop="queTitle" label="题目" width="300" />
           <el-table-column prop="queType" label="题型">
             <template slot-scope="scope">
               <span v-if="scope.row.queType === 1">判断</span>
@@ -35,8 +33,7 @@
               <span v-if="scope.row.queType === 5">主观</span>
             </template>
           </el-table-column>
-          <el-table-column prop="quePracticeSubject" label="练题对象">
-          </el-table-column>
+          <el-table-column prop="quePracticeSubject" label="练题对象" />
           <el-table-column prop="status" label="状态">
             <template slot-scope="scope">
               <span v-if="scope.row.status === 1">显示</span>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="add-course">
     <el-card class="box-card" v-if="addCoursewareForm">
       <div slot="header" class="clearfix">
         <span>{{ btnText }}</span>
@@ -7,8 +7,9 @@
           style="float: right; padding: 3px 0"
           type="text"
           @click="goBack"
-          >返回</el-button
         >
+          返回
+        </el-button>
       </div>
       <el-form
         :model="addCoursewareForm"
@@ -28,19 +29,25 @@
           <br />
           <el-upload
             class="upload-demo"
+            ref="upload"
             drag
             :action="upURL"
+            :accept="accept"
             multiple
-            :auto-upload="true"
+            :auto-upload="false"
             :on-success="handleSuccess"
             :on-remove="handleRemove"
             :file-list="fileList"
+            :limit="5"
+            :on-exceed="handleExceed"
+            :headers="headers"
           >
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">
-              将文件拖到此处，或<em>点击上传</em>
+              将文件拖到此处，或<em>点击选取文件</em>
             </div>
           </el-upload>
+          <el-button size="small" type="success" @click="handleSubmit">上传附件</el-button>
         </el-form-item>
         <el-form-item label="状态" prop="is_share">
           <el-radio-group v-model="addCoursewareForm.is_share">
@@ -69,6 +76,7 @@ import {
   addCourseWareStore,
   courseWareEdit,
   courseWareDetail,
+  teacherInfo,
 } from '@/api/classRoom.js'
 export default {
   components: {
@@ -76,13 +84,13 @@ export default {
   },
   data() {
     return {
-      teacher: {},
       addCoursewareForm: {
         title: '',
         content: '',
         is_share: 2,
-        path: ''
+        path: [],
       },
+      fileName: [],
       addCoursewareFormRules: {
         title: [{ required: true, message: '请输入课件名称', trigger: 'blur' }],
         content: [
@@ -95,6 +103,10 @@ export default {
         { value: 2, title: '私人' },
       ],
       fileList: [],
+      headers: {
+        Authorization: window.sessionStorage.getItem('token')
+      },
+      accept: '.pdf,.PDF,.xlsx,.word,.xls,.ppt,.PPT,.rar,.RAR,.zip,.ZIP'
       // myConfig: {
       //   // 编辑器不自动被内容撑高
       //   autoHeightEnabled: true,
@@ -107,7 +119,6 @@ export default {
     }
   },
   computed: {
-    ...mapState(['teacherInfo']),
     courseId: function () {
       return this.$route.query.id
     },
@@ -120,8 +131,8 @@ export default {
     upURL: function () {
       const isDev = process.env.NODE_ENV === 'development'
       return isDev
-        ? 'api/api/common/uploadAttach'
-        : 'https://api.vrbook.vip/api/common/uploadAttach'
+        ? 'api/api/interactive/uploadAttach'
+        : 'https://api.vrbook.vip/api/interactive/uploadAttach'
     },
   },
   mounted() {
@@ -135,21 +146,28 @@ export default {
     // 获取课件信息
     getCourseWareDetail() {
       courseWareDetail(this.courseId).then((res) => {
-        const { content, is_share, path, status, title } = res.data
+        const { content, is_share, path, status, title, fileName } = res.data
         this.addCoursewareForm.title = title
         this.addCoursewareForm.content = content
         this.addCoursewareForm.is_share = is_share
         this.addCoursewareForm.path = path
-        console.log(this.addCoursewareForm);
+        this.fileName = fileName
+        path.map((item,index)=>{
+          let obj = {
+          name: fileName[index],
+          url: path,
+        }
+        this.fileList.push(obj)
+        })
       })
     },
     // 获取老师信息
     async getClassInfo() {
-      const { data: res } = await this.$http.post(`api/teacher/info`)
-      if (res.statusCode !== 200) return this.$message.error(res.msg)
-      this.teacher = res.data
-      this.addCoursewareForm.title =
-        this.teacher.teaSubject + '课件 ' + this.getNowDate()
+      teacherInfo().then((res) => {
+        const { teaSubject } = res.data
+        if (teaSubject === null) teaSubject = ' '
+        this.addCoursewareForm.title = teaSubject + '课件 ' + this.getNowDate()
+      })
     },
     getNowDate() {
       const dt = new Date()
@@ -157,31 +175,28 @@ export default {
       const m = (dt.getMonth() + 1 + '').padStart(2, '0')
       const d = (dt.getDate() + '').padStart(2, '0')
 
-      const hh = (dt.getHours() + '').padStart(2, '0')
-      const mm = (dt.getMinutes() + '').padStart(2, '0')
-      const ss = (dt.getSeconds() + '').padStart(2, '0')
-
       return `${y}-${m}-${d}`
     },
+    handleSubmit() {
+      this.$refs.upload.submit()
+    },
+    // 添加课件
     addCourseware() {
-      this.addCoursewareForm.is_share = parseFloat(
-        this.addCoursewareForm.is_share
-      )
       this.$refs.addCoursewareFormRef.validate(async (valid) => {
         if (!valid) return
         console.log(this.addCoursewareForm)
         if (!this.courseId) {
-          console.log('新建');
           addCourseWareStore(this.addCoursewareForm).then((res) => {
             this.$message.success(res.msg)
             this.$refs.addCoursewareFormRef.resetFields()
             this.addCoursewareForm.content = ''
             this.getClassInfo()
+            this.goBack()
           })
         } else {
-          console.log('保存');
           courseWareEdit(this.courseId, this.addCoursewareForm).then((res) => {
             this.$message.success(res.data.msg)
+            this.goBack()
           })
         }
       })
@@ -190,18 +205,34 @@ export default {
       this.$router.push('/course-wareList')
     },
     handleRemove(file, fileList) {
-      console.log(file, fileList)
+      this.fileName.map((item,index)=>{
+        if(item === file.name)  {
+          this.fileName.splice(index,1)
+          this.addCoursewareForm.path.splice(index,1)
+        }
+      })
+      console.log(this.addCoursewareForm.path,this.fileName);
     },
     handleSuccess(file, fileList) {
       const { data } = file
-      this.addCoursewareForm.path = data.path
+      this.addCoursewareForm.path.push(data.path)
+      console.log(this.addCoursewareForm.path);
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning(
+        `当前限制选择 5 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
+          files.length + fileList.length
+        } 个文件`
+      )
     },
   },
 }
 </script>
 
 <style lang="scss">
-.ql-editor {
-  height: 200px !important;
+.add-course {
+  .ql-editor {
+    height: 200px !important;
+  }
 }
 </style>

@@ -87,7 +87,6 @@ export default {
         this.studentIndexs = this.studentList.map((v, i) => i)
         this.setStudentList(this.studentList)
         this.setStudentIndexs(this.studentIndexs)
-        console.log('刷新班级列表');
       })
     },
     // 数据处理

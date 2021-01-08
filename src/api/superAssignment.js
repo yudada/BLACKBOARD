@@ -44,3 +44,20 @@ export function editExercises(id,data) {
     params: data
   })
 }
+
+// 作业列表
+export function exercisesList(data) {
+  return request({
+    url: `api/exercises/lists`,
+    method: 'get',
+    params: data
+  })
+}
+
+// 删除作业
+export function deleteExercises(id) {
+  return request({
+    url: `api/exercises/${id}`,
+    method: 'delete'
+  })
+}

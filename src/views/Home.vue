@@ -556,10 +556,11 @@ export default {
         /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
       )
       if (flag === null) {
-        this.$store.commit('setCollapse', false);
+        this.$store.commit('setCollapse', false)
+        this.$store.commit('setFooter', true)
       } else {
-        this.setFooter(false);
-        this.$store.commit('setCollapse', true);
+        this.$store.commit('setCollapse', true)
+        this.$store.commit('setFooter', false)
       }
     },
     // 获取班级列表

@@ -139,16 +139,16 @@
           >
         </el-radio-group>
         <div v-if="publishForm.exeType == 1">
-          <models @func="getContentId" :contentId="publishForm.contentId" />
+          <Models @func="getContentId" :contentId="publishForm.contentId" />
         </div>
         <div v-else-if="publishForm.exeType == 2">
-          <read @func="getContentId" :contentId="publishForm.contentId" :bookId="bookId" />
+          <Read @func="getContentId" :contentId="publishForm.contentId" :bookId="bookId" />
         </div>
         <div v-else-if="publishForm.exeType == 3">
-          <exercise @func="getContentId" :contentId="publishForm.contentId" />
+          <Exercise @func="getContentId" :contentId="publishForm.contentId" />
         </div>
         <div v-else>
-          <experiment @func="getContentId" :contentId="publishForm.contentId" />
+          <Experiment @func="getContentId" :contentId="publishForm.contentId" />
         </div>
       </el-dialog>
     </div>
@@ -157,8 +157,8 @@
 
 <script>
 import Exercise from '@/components/resourceList/exercise'
-import experiment from '@/components/resourceList/experiment'
-import models from '@/components/resourceList/models'
+import Experiment from '@/components/resourceList/experiment'
+import Models from '@/components/resourceList/models'
 import Read from '@/components/resourceList/read.vue'
 import Breadcrumb from '@/components/breadcrumb.vue'
 import { mapState } from 'vuex'
@@ -169,8 +169,8 @@ import {
 } from '@/api/superAssignment'
 export default {
   components: {
-    experiment,
-    models,
+    Experiment,
+    Models,
     Read,
     Exercise,
     Breadcrumb,
