@@ -43,7 +43,7 @@
         </el-dropdown-menu>
       </el-dropdown>
       <el-button @click="openHandUPDialog"> 举手 </el-button>
-      <div v-show="isSeat">
+      <div>
         <el-dropdown placement="top">
           <el-button> <i class="el-icon-arrow-up" /> 控屏 </el-button>
           <el-dropdown-menu slot="dropdown">

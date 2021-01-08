@@ -34,7 +34,7 @@
             :action="upURL"
             :accept="accept"
             multiple
-            :auto-upload="false"
+            :auto-upload="true"
             :on-success="handleSuccess"
             :on-remove="handleRemove"
             :file-list="fileList"
@@ -47,7 +47,7 @@
               将文件拖到此处，或<em>点击选取文件</em>
             </div>
           </el-upload>
-          <el-button size="small" type="success" @click="handleSubmit">上传附件</el-button>
+          <!-- <el-button size="small" type="success" @click="handleSubmit">上传附件</el-button> -->
         </el-form-item>
         <el-form-item label="状态" prop="is_share">
           <el-radio-group v-model="addCoursewareForm.is_share">
