@@ -38,6 +38,7 @@
         <el-button @click="openCheckedBox"> 多选 </el-button>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item @click.native="opAllStudent(true)"> 全选 </el-dropdown-item>
+          <el-dropdown-item @click.native="opStudent()"> 反选 </el-dropdown-item>
           <el-dropdown-item @click.native="opAllStudent(false)"> 取消 </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -111,14 +112,14 @@ export default {
       this.setRewardsDialog(true)
     },
     openCheckedBox() {
-      if (this.checkedBox) {
-        this.setMarkList([])
-        this.studentList.map(item=>item.isChecked = false)
-        this.setCheckedBox(false)
-      } else {
+      // if (this.checkedBox) {
+      //   this.setMarkList([])
+      //   this.studentList.map(item=>item.isChecked = false)
+      //   this.setCheckedBox(false)
+      // } else {
+      //   this.setCheckedBox(true)
+      // }
         this.setCheckedBox(true)
-      }
-        // this.setCheckedBox(true)
     },
     // 全选
     opAllStudent(data) {
@@ -133,6 +134,24 @@ export default {
         this.setMarkList([])
       }
       console.log(this.markList);
+    },
+    // 反选
+    opStudent() {
+        this.studentList.map(item=>{
+          if(item.isChecked === true) {
+            item.isChecked = false
+          } else if(item.isChecked === false) {
+            item.isChecked = true
+          }
+        })
+          const markList = []
+        this.studentList.map((item) => {
+          if (item.isChecked === true) {
+            markList.push(item.sid)
+          }
+        })
+        this.setMarkList(markList)
+        console.log(this.markList);
     },
     // 全班控屏
     switchScreen(text) {
