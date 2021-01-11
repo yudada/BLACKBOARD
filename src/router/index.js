@@ -132,7 +132,15 @@ const routes = [
           {
             path: '/exercise-list',
             component: () => import('../views/classroom/classExercise/exerciseList.vue')
-          }
+          },
+          {
+            path: '/class-exercise-detail',
+            component: () => import('../views/superAssignment/classExerciseDetail.vue')
+          },
+          {
+            path: '/exercise-detail',
+            component: () => import('../views/superAssignment/taskDetial.vue')
+          },
         ]
       },
       // 超级作业
@@ -161,8 +169,12 @@ const routes = [
         component: () => import('../views/superAssignment/mistakes.vue')
       },
       {
-        path: '/taskDetial',
+        path: '/task-detial',
         component: () => import('../views/superAssignment/taskDetial.vue')
+      },
+      {
+        path: '/superAssignment/class-exercise-detail',
+        component: () => import('../views/superAssignment/classExerciseDetail.vue')
       },
       // 系统设置
       {

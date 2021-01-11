@@ -516,6 +516,9 @@ export default {
         { path: '/course-wareList' },
         { path: '/course-detail' },
         { path: '/models-detail' },
+        { path: '/class-exercise-detail' },
+        { path: '/exercise-list' },
+        { path: '/exercise-detail' },
       ],
     }
   },

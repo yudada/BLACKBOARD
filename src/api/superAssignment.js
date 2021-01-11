@@ -61,3 +61,11 @@ export function deleteExercises(id) {
     method: 'delete'
   })
 }
+
+// 练习作业详情
+export function classExerciseDetail(id) {
+  return request({
+    url: `api/exercises/classExerciseDetail/${id}`,
+    method: 'post'
+  })
+}

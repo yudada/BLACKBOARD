@@ -19,7 +19,7 @@
           <a
             v-for="(item, index) in courseData.path"
             :key="item"
-            :href="item"
+            :href="baseUel+item"
             target="_blank"
             style="color: #ad5df3"
           >
@@ -50,6 +50,7 @@ export default {
         goTo: '返回列表'
       },
       courseData: [],
+      baseUel: 'https://view.officeapps.live.com/op/view.aspx?src='
     }
   },
   computed: {

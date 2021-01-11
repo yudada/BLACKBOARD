@@ -25,7 +25,7 @@
             <a
               v-for="(item, index) in scope.row.path"
               :key="item"
-              :href="item"
+              :href="baseUel+item"
               target="_blank"
               style="color: #ad5df3"
             >

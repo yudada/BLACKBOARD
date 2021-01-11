@@ -27,16 +27,30 @@
           />
           <el-table-column prop="exeTitle" label="作业名称" width="350" />
           <el-table-column prop="bookName" label="科目" />
-          <el-table-column prop="className" label="班级" />
+          <el-table-column prop="className" label="班级" v-if="!makeType" />
+          <el-table-column prop="exeType" label="作业类型" v-if="makeType" :formatter="formatterValue" />
           <el-table-column prop="exeStartTime" label="开始时间" />
           <el-table-column prop="exeEndTime" label="结束时间" />
-          <el-table-column prop="exeStatus" label="状态" />
+          <el-table-column
+            prop="status"
+            label="状态"
+            :formatter="formatterFunc"
+            width="80"
+          />
+          <el-table-column label="完成情况" width="80" align="center">
+            <template slot-scope="scope">
+              <el-button
+                type="text"
+                @click="taskPage(scope.row.id)"
+              >查看</el-button>
+            </template>
+          </el-table-column>
           <el-table-column label="操作" width="120">
             <template slot-scope="scope">
               <el-button
                 v-if="scope.row.status === 1"
                 type="text"
-                @click="taskPage(scope.row.id)"
+                @click="taskDetailPage(scope.row.id)"
               >
                 查看
               </el-button>
@@ -98,7 +112,12 @@ export default {
   },
   methods: {
     taskPage(id) {
-      this.$router.push({ path: '/taskDetial', query: { id: id } })
+      // this.$router.push({ path: '/taskDetial', query: { id: id } })
+      if(this.$route.path === '/exercise-list') {
+        this.$router.push({ path: '/exercise-detail', query: { id: id,tip: 'classExe' } })
+      } else {
+        this.$router.push({ path: '/task-detial', query: { id: id } })
+      }
     },
     async getExercisesList() {
       this.params.limit = this.pagesize
@@ -112,7 +131,7 @@ export default {
         }
       }
       exercisesList(this.params).then((res) => {
-        console.log(res)
+        console.log(res);
         const { current_page, data, per_page, total } = res.data
         this.exercisesList = data
         this.currentPage = current_page
@@ -153,6 +172,23 @@ export default {
     },
     goBack() {
       this.$router.go(-1)
+    },
+    formatterFunc(row, column, cellValue, index) {
+      if (cellValue === 1) return '已发布'
+      if (cellValue === 2) return '草稿'
+    },
+    taskDetailPage(id) {
+      if(this.$route.path === '/exercise-list') {
+        this.$router.push({ path: '/class-exercise-detail', query: { id: id,tip: 'classExe' } })
+      } else {
+        this.$router.push({ path: '/superAssignment/class-exercise-detail', query: { id: id } })
+      }
+    },
+    formatterValue(row, column, cellValue, index) {
+      if (cellValue === 1) return 'VR模型控索'
+      if (cellValue === 2) return '智慧课本阅读'
+      if (cellValue === 3) return '精选题库练习'
+      if (cellValue === 4) return '仿真实验'
     },
   },
 }

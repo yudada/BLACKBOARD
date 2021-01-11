@@ -33,7 +33,7 @@
             class="upload-demo"
             ref="upload"
             drag
-            :action="upURL"
+            action="https://api.vrbook.vip/api/interactive/uploadAttach"
             :accept="accept"
             multiple
             :auto-upload="true"
@@ -48,6 +48,7 @@
             <div class="el-upload__text">
               将文件拖到此处，或<em>点击选取文件</em>
             </div>
+            <div class="el-upload__tip" slot="tip">只能上传{{accept2}}文件</div>
           </el-upload>
           <!-- <el-button size="small" type="success" @click="handleSubmit">上传附件</el-button> -->
         </el-form-item>
@@ -110,7 +111,8 @@ export default {
       headers: {
         Authorization: window.sessionStorage.getItem('token')
       },
-      accept: '.pdf,.PDF,.xlsx,.word,.xls,.ppt,.PPT,.rar,.RAR,.zip,.ZIP'
+      accept: '.pdf,.PDF,.xlsx,.doc,.DOC,.xls,.ppt,.PPT,.rar,.RAR,.zip,.ZIP,pptx,.PPTX,docx,.DOCX',
+      accept2: 'pdf/xlsx/doc/docx/xls/ppt/rar/zip'
       // myConfig: {
       //   // 编辑器不自动被内容撑高
       //   autoHeightEnabled: true,

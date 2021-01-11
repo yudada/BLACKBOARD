@@ -69,7 +69,8 @@ export default {
     },
     getOperationLog() {
       const params = {
-        limit: this.pageSize
+        limit: this.pageSize,
+        page: this.currentPage
       }
       operationLog(params).then((res) => {
         console.log(res)

@@ -35,10 +35,7 @@
                         class="status_screen"
                         v-if="student.screenStatus === 1"
                       >
-                        <div
-                          class="content_screen"
-                          @click="switchStudentScreen(student)"
-                        >
+                        <div class="content_screen">
                           <img src="@/assets/images/screenLock.png" alt="" />
                           <p>点击可解锁</p>
                         </div>
@@ -129,7 +126,7 @@ export default {
       this.setMarkList(markList)
     },
     handleCheckAllChange() {
-      this.studentList.map(item=>item.isChecked = true)
+      this.studentList.map((item) => (item.isChecked = true))
     },
     // 学生控屏
     switchStudentScreen(student) {
@@ -210,7 +207,7 @@ export default {
           position: relative;
           img {
             width: 100%;
-            border-radius: 50%;
+            // border-radius: 50%;
           }
           .status_screen {
             position: absolute;
