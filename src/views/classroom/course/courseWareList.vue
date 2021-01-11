@@ -1,7 +1,9 @@
 <template>
   <div>
+    <Breadcrumb :navData="navData" v-if="this.$route.path === '/ware-list'" />
+
     <el-card>
-      <div slot="header">
+      <div slot="header" v-if="this.$route.path === '/course-wareList'">
         <span>课件列表</span>
         <el-button
           style="float: right; padding: 3px 0"
@@ -29,15 +31,6 @@
             >
               {{ scope.row.fileName[index] }} 
             </a>
-            <!-- <el-button
-              size="small"
-              type="text"
-              v-for="(item, index) in scope.row.path"
-              :key="item"
-              @click="openPath(item)"
-              >
-              {{ scope.row.fileName[index] }}
-            </el-button> -->
           </template>
         </el-table-column>
         <el-table-column prop="is_share" label="状态" width="100px">
@@ -79,10 +72,16 @@
 </template>
 
 <script>
+import Breadcrumb from '@/components/breadcrumb.vue'
 import { courseWareList, deleteCourseWare } from '@/api/classRoom.js'
 export default {
+  components: { Breadcrumb },
   data() {
     return {
+      navData: {
+        title: '班级管理',
+        childTitle: '课件列表'
+      },
       courseData: [],
       total: 0,
       currentPage: 1,
@@ -92,6 +91,11 @@ export default {
   },
   created() {
     this.getcourseWareList()
+  },
+  computed: {
+    routerURL: function() {
+      return this.$route.path
+    }
   },
   methods: {
     getcourseWareList() {
@@ -107,9 +111,6 @@ export default {
         this.currentPage = current_page
         this.pageSize = parseFloat(per_page)
       })
-    },
-    editCourse(id) {
-      this.$router.push({ path: '/create-courseware', query: { id: id } })
     },
     async deleteCourse(id) {
       const confirmResult = await this.$confirm(
@@ -130,11 +131,28 @@ export default {
         this.getcourseWareList()
       })
     },
-    openDetail(id) {
-      this.$router.push({ path: '/course-detail', query: { id: id } })
-    },
     addCourse() {
-      this.$router.push('/create-courseware')
+      if(this.routerURL === '/course-wareList') {
+        this.$router.push('/create-courseware')
+      } else if(this.routerURL === '/ware-list') {
+        this.$router.push('/ware-list/create-courseware')
+      }
+    },
+    openDetail(id) {
+      // console.log(this.routerURL);
+      if(this.routerURL === '/course-wareList') {
+        this.$router.push({ path: '/course-detail', query: { id: id } })
+      } else if(this.routerURL === '/ware-list') {
+        this.$router.push({ path: '/ware-list/course-detail', query: { id: id } })
+      }
+    },
+    editCourse(id) {
+      // console.log(this.routerURL);
+      if(this.routerURL === '/course-wareList') {
+        this.$router.push({ path: '/create-courseware', query: { id: id } })
+      } else if(this.routerURL === '/ware-list') {
+        this.$router.push({ path: '/ware-list/create-courseware', query: { id: id } })
+      }
     },
     // 分页
     handleSizeChange(val) {

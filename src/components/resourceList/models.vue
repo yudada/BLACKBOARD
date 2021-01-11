@@ -16,8 +16,10 @@
       class="check_list">
       <el-checkbox v-for="item in modelsList" :key="item.id" :label="item.id">
         <div class="checknox_content">
-          <img v-if="item.modCoverimg" :src="item.modCoverimg" alt="模型图" :onerror="defaultPic" />
-          <img v-else :src="item.modImage" alt="模型图" :onerror="defaultPic" />
+          <div class="img_content">
+            <img v-if="item.modCoverimg" :src="item.modCoverimg" alt="模型图" :onerror="defaultPic" />
+            <img v-else :src="item.modImage" alt="模型图" :onerror="defaultPic" />
+          </div>
           <span>{{ item.modName }}</span>
         </div>
       </el-checkbox>
@@ -27,15 +29,15 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="currentPage"
-      :page-sizes="[8, 20, 40, 80, 9999]"
-      :page-size="8"
+      :page-sizes="[ 20, 40, 80, 9999]"
+      :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"
     >
     </el-pagination>
 
     <span class="footer">
-      <el-button class="cn_btn" @click="sendContentID">{{btnText}}</el-button>
+      <el-button :class="classWork ? 'pb_btn' : 'cn_btn'" @click="sendContentID">{{btnText}}</el-button>
     </span>
   </div>
 </template>
@@ -47,7 +49,7 @@ export default {
     return {
       // 分页
       currentPage: 1,
-      pageSize: 8,
+      pageSize: 20,
       total: 0,
       //
       sendMsg: {
@@ -128,17 +130,31 @@ export default {
 .el-checkbox-group {
   display: flex;
   flex-wrap: wrap;
+  // max-height: 48vh;
+  // overflow: overlay;
   .el-checkbox {
-    width: 20%;
-    margin: 1rem;
+    // width: calc(10% -20px);
+    width: 10%;
+    margin: 1rem 0;
     .checknox_content {
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       margin-bottom: 0.5rem;
-      img {
+      .img_content {
+        width: 90%;
+        height: 0;
+        padding-bottom: 90%;
+        overflow: hidden;
+        img {
+          width: 100%;
+        }
+      }
+      span {
         width: 100%;
+        overflow: auto;
+        text-align: center;
       }
     }
   }
@@ -154,8 +170,8 @@ export default {
   .el-checkbox {
     .el-checkbox__input {
       position: absolute !important;
-      right: 1px !important;
-      top: 1px !important;
+      right: 8% !important;
+      top: 5px !important;
       .el-checkbox__inner {
         border: 2px solid #DCDFE6;
         border-radius: 50%;
@@ -167,6 +183,10 @@ export default {
         left: 6px;
         font-weight: 600;
       }
+    }
+    .el-checkbox__label {
+      width: 100% !important;
+      padding-left: 0 !important;
     }
   }
 }

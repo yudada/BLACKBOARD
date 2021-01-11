@@ -1,7 +1,8 @@
 <template>
   <div>
+    <Breadcrumb :navData="navData" v-if="this.$route.path === '/ware-list/course-detail'" />
     <el-card>
-      <div slot="header">
+      <div slot="header"  v-if="this.$route.path === '/course-detail'">
         <span>课件详情</span>
         <el-button
           style="float: right; padding: 3px 0"
@@ -38,10 +39,16 @@
 </template>
 
 <script>
+import Breadcrumb from '@/components/breadcrumb.vue'
 import { courseWareDetail } from '@/api/classRoom.js'
 export default {
+  components: { Breadcrumb },
   data() {
     return {
+      navData: {
+        childTitle: '课件详情',
+        goTo: '返回列表'
+      },
       courseData: [],
     }
   },

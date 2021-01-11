@@ -1,7 +1,9 @@
 <template>
   <div class="add-course">
+    <Breadcrumb v-if="this.$route.path === '/ware-list/create-courseware'" :navData="navData" />
+
     <el-card class="box-card" v-if="addCoursewareForm">
-      <div slot="header" class="clearfix">
+      <div slot="header" class="clearfix" v-if="this.$route.path === '/create-courseware'">
         <span>{{ btnText }}</span>
         <el-button
           style="float: right; padding: 3px 0"
@@ -70,6 +72,7 @@
   </div>
 </template>
 <script>
+import Breadcrumb from '@/components/breadcrumb.vue'
 import VueUeditorWrap from 'vue-ueditor-wrap'
 import { mapState } from 'vuex'
 import {
@@ -81,6 +84,7 @@ import {
 export default {
   components: {
     VueUeditorWrap,
+    Breadcrumb
   },
   data() {
     return {
@@ -134,6 +138,13 @@ export default {
         ? 'api/api/interactive/uploadAttach'
         : 'https://api.vrbook.vip/api/interactive/uploadAttach'
     },
+    navData: function() {
+      let navData = {
+        childTitle: this.btnText,
+        goTo: '返回列表'
+      }
+      return navData
+    }
   },
   mounted() {
     if (this.$route.query.id) {
@@ -195,14 +206,15 @@ export default {
           })
         } else {
           courseWareEdit(this.courseId, this.addCoursewareForm).then((res) => {
-            this.$message.success(res.data.msg)
+            this.$message.success(res.msg)
+            console.log(res);
             this.goBack()
           })
         }
       })
     },
     goBack() {
-      this.$router.push('/course-wareList')
+      this.$router.go(-1)
     },
     handleRemove(file, fileList) {
       this.fileName.map((item,index)=>{

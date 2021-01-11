@@ -137,7 +137,7 @@ export default {
     handleCloseRewardsDialog() {
       this.setRewardsDialog(false)
       // this.setHandUPDialog(false)
-      this.setCheckedBox(false)
+      // this.setCheckedBox(false)
       this.setReload()
     },
   },

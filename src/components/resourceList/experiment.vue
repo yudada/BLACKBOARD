@@ -32,7 +32,7 @@
     </el-pagination>
 
     <span class="footer" v-show="!hidenBtn">
-      <el-button class="cn_btn" @click="sendContentID">{{btnText}}</el-button>
+      <el-button :class="classWork ? 'pb_btn' : 'cn_btn'" @click="sendContentID">{{btnText}}</el-button>
     </span>
   </div>
 </template>

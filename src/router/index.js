@@ -82,6 +82,18 @@ const routes = [
         path:'/papers-add',
         component: () => import('../views/classManage/components/papersAdd.vue')
       },
+      {
+        path: '/ware-list',
+        component: () => import('../views/classroom/course/courseWareList.vue')
+      },
+      {
+        path: '/ware-list/create-courseware',
+        component: () => import('../views/classroom/course/createCourseware.vue')
+      },
+      {
+        path: '/ware-list/course-detail',
+        component: () => import('../views/classroom/course/courseDetail.vue')
+      },
       // 我的班级
       {
         path: '/myclass',
@@ -115,7 +127,7 @@ const routes = [
           },
           {
             path: '/course-detail',
-            component: () => import('../views/classroom/course//courseDetail.vue')
+            component: () => import('../views/classroom/course/courseDetail.vue')
           },
           {
             path: '/exercise-list',

@@ -29,7 +29,7 @@
       </el-table>
     </div>
     <span class="footer" v-if="!hidenBtn">
-      <el-button class="cn_btn" @click="sendContentID">{{btnText}}</el-button>
+      <el-button :class="classWork ? 'pb_btn' : 'cn_btn'" @click="sendContentID">{{btnText}}</el-button>
     </span>
   </div>
 </template>

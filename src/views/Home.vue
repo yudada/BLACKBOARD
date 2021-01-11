@@ -109,7 +109,7 @@
           </el-menu>
         </div>
       </el-aside>
-      <el-main :class="{edu: path}">
+      <el-main :class="{ edu: path }">
         <!-- 路由占位符 -->
         <transition name="fade-transform" mode="out-in">
           <router-view></router-view>
@@ -139,15 +139,14 @@ export default {
     return {
       flag: '',
       menuData: [
+        // 首页
         {
-          //一级
           entity: {
             id: 0,
             name: '#home',
             icon: 'icon-diannao1',
             alias: '校园大脑',
           },
-          //二级
           childs: [
             {
               entity: {
@@ -191,8 +190,8 @@ export default {
             },
           ],
         },
+        // 智慧课本
         {
-          //一级
           entity: {
             id: 1,
             name: 'wisdomBook',
@@ -200,8 +199,8 @@ export default {
             alias: '智慧课本',
           },
         },
+        // 互动课堂
         {
-          //一级
           entity: {
             id: 2,
             name: 'classroom',
@@ -209,15 +208,14 @@ export default {
             alias: '互动课堂',
           },
         },
+        // 超级作业
         {
-          //一级
           entity: {
             id: 3,
             name: '#Submenu2',
             icon: 'icon-zuoye',
             alias: '超级作业',
           },
-          //二级
           childs: [
             {
               entity: {
@@ -269,8 +267,8 @@ export default {
             },
           ],
         },
+        // 在线研学
         {
-          //一级
           entity: {
             id: 4,
             name: 'onlineStudies',
@@ -278,8 +276,8 @@ export default {
             alias: '在线研学',
           },
         },
+        // 我的班级
         {
-          //一级
           entity: {
             id: 5,
             name: 'myclass',
@@ -287,15 +285,14 @@ export default {
             alias: '我的班级',
           },
         },
+        // 班级管理
         {
-          //一级
           entity: {
             id: 6,
             name: '#Uidesign',
             icon: 'icon-banjiguanli',
             alias: '班级管理',
           },
-          //二级
           childs: [
             {
               entity: {
@@ -324,6 +321,14 @@ export default {
             {
               entity: {
                 id: 3,
+                name: 'ware-list',
+                icon: 'icon-PPT',
+                alias: '课件列表',
+              },
+            },
+            {
+              entity: {
+                id: 4,
                 name: 'progress',
                 icon: 'icon-tongji',
                 alias: '作业统计',
@@ -331,7 +336,7 @@ export default {
             },
             {
               entity: {
-                id: 4,
+                id: 5,
                 name: 'performance',
                 icon: 'icon-baogao',
                 alias: '成绩报告',
@@ -339,7 +344,7 @@ export default {
             },
             {
               entity: {
-                id: 5,
+                id: 6,
                 name: 'faq',
                 icon: 'icon-biji',
                 alias: '阅读笔记',
@@ -347,15 +352,14 @@ export default {
             },
           ],
         },
+        // 学生管理
         {
-          //一级
           entity: {
             id: 7,
             name: '#pages',
             icon: 'icon-xueshengliebiao',
             alias: '学生管理',
           },
-          //二级
           childs: [
             {
               entity: {
@@ -383,8 +387,8 @@ export default {
             },
           ],
         },
+        // 学科工具
         {
-          //一级
           entity: {
             id: 8,
             name: 'drawing',
@@ -392,15 +396,14 @@ export default {
             alias: '学科工具',
           },
         },
+        // 题库资源
         {
-          //一级
           entity: {
             id: 9,
             name: '#Question',
             icon: 'icon-tiku',
             alias: '题库资源',
           },
-          //二级
           childs: [
             {
               entity: {
@@ -436,15 +439,14 @@ export default {
             },
           ],
         },
+        // 系统设置
         {
-          //一级
           entity: {
             id: 10,
             name: '#Apps',
             icon: 'icon-xitong',
             alias: '系统设置',
           },
-          //二级
           childs: [
             {
               entity: {
@@ -505,31 +507,31 @@ export default {
       classInfo: {},
       school: {},
       userInfo: {},
-      defaultPic: 'this.src="'+require('../assets/def_avater.jpg')+'"',
+      defaultPic: 'this.src="' + require('../assets/def_avater.jpg') + '"',
       pathArr: [
-        {path: '/student-seat'},
-        {path: '/book-resource'},
-        {path: '/exercise'},
-        {path: '/create-courseware'},
-        {path: '/course-wareList'},
-        {path: '/course-detail'},
-        {path: '/models-detail'}
-      ]
+        { path: '/student-seat' },
+        { path: '/book-resource' },
+        { path: '/exercise' },
+        { path: '/create-courseware' },
+        { path: '/course-wareList' },
+        { path: '/course-detail' },
+        { path: '/models-detail' },
+      ],
     }
   },
   computed: {
     ...mapState(['isCollapse', 'isFooter']),
-    path: function() {
-      const path = this.$route.path 
+    path: function () {
+      const path = this.$route.path
       let result = false
-      this.pathArr.map(item=>{
-        if(item.path === path) {
+      this.pathArr.map((item) => {
+        if (item.path === path) {
           result = true
           return
         }
       })
       return result
-    }
+    },
   },
   created() {
     this.getClassInfo()

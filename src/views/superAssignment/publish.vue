@@ -130,7 +130,7 @@
         :close-on-click-modal="false"
         custom-class="content-diolog"
       >
-        <el-radio-group v-model="publishForm.exeType" @change="restContent">
+        <el-radio-group v-model="publishForm.exeType" @change="restContent" style="padding: 20px 0 0 20px">
           <el-radio
             v-for="item in taskTypeList"
             :key="item.value"
@@ -407,5 +407,8 @@ export default {
 .content-diolog {
   max-height: 88vh;
   overflow: overlay;
+  .el-dialog__body {
+    padding: 0;
+  }
 }
 </style>

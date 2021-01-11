@@ -229,6 +229,7 @@ export default {
               img {
                 width: 35%;
                 margin-top: 1em;
+                border-radius: 0 !important;
               }
               p {
                 color: #fff;
