@@ -170,9 +170,7 @@ export default {
     onSubmit(data) {
       this.$refs.classFormRef.validate(async (valid) => {
         if (!valid) return
-        console.log(this.classForm)
         await addClassroom(this.classForm).then((res) => {
-          console.log(res)
           this.$message.success('班级创建成功!')
           this.getclassInviteCode()
           if (data === 'reload') {
@@ -205,10 +203,8 @@ export default {
     saveEditClassRoom() {
       this.$refs.classFormRef.validate(async (valid) => {
         if (!valid) return
-        console.log(this.classForm)
         const id = parseFloat(this.classId)
         editClassRoom(id, this.classForm).then((res) => {
-          console.log(res)
           this.$message.success(res.msg)
         })
       })

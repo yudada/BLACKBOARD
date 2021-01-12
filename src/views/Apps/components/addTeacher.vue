@@ -197,7 +197,6 @@ export default {
       this.$refs.teacherFormRef.validate(valid => {
         if(!valid) return this.$message.error('请填写必填项！')
         this.teacherForm.userMobile = this.teacherForm.userMobile.toString()
-        console.log(this.teacherForm);
         if(!this.tId) {
           addTeacher(this.teacherForm).then(res => {
             this.$message.success(res.msg)

@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { classList, changeClass, classInfo, commonConfiguration } from '@/api/index.js'
+import { classList, commonConfiguration } from '@/api/index'
 import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
   components: { Breadcrumb },
@@ -34,7 +34,7 @@ export default {
       },
       classRoomList:[],
       loading:false,
-      classType: {}
+      classTypeList: []
     }
   },
   created() {
@@ -63,15 +63,15 @@ export default {
     // 获取班级列表
     getClassRoomList() {
       classList().then(res => {
-        const {data} = res
-        this.classRoomList = data.data;
+        const { data } = res
+        this.classRoomList = data;
       })
     },
     // 获取班级类型
     getClassTypeList() {
       commonConfiguration().then(res => {
-        const {periodArr} = res.data.data;
-        this.classType = periodArr;
+        const { periodArr } = res.data;
+        this.classTypeList = Object.values(periodArr)
       })
     }
   },

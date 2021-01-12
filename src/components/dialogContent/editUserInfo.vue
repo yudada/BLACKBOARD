@@ -113,21 +113,17 @@ export default {
   },
   created() {
     this.getSubjectArr();
-    console.log(this.uploadURL);
   },
   methods: {
     getSubjectArr() {
       teacherSubject().then((res) => {
-        const { data } = res
-        const { subjectArr = [] } = data.data
+        const { subjectArr = [] } = res.data
         this.subjectArr = subjectArr
-        console.log(subjectArr)
       })
     },
     // 监听图片上传成功的事件
     handleSuccess(response, file) {
       this.editUserInfo.photo = response.data.path
-      console.log(this.editUserInfo.photo)
     },
     beforeAvatarUpload(file) {
       const isLt2M = file.size / 1024 / 1024 < 2
@@ -137,12 +133,9 @@ export default {
       return isLt2M
     },
     submitForm() {
-      console.log(this.editUserInfo)
       changeUserInfo(this.editUserInfo).then((res) => {
-        const { data } = res
-        if (data.statusCode !== 200) return this.$message.error(data.msg)
-        this.$message.success(data.msg)
-        this.$emit('closeDialog', false)
+        this.$message.success(res.msg)
+        // this.$emit('closeDialog', false)
       })
     },
   },

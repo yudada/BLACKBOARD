@@ -76,7 +76,6 @@ export default {
       this.bookDir = this.setChecked(res.data.textbook_dir)
       if (this.contentId) {
         this.sendMsg.contentId = this.contentId
-        console.log(this.sendMsg.contentId)
         this.bookDir.map(item=>{
           this.contentId.map(item2=>{
             if(item.id === item2) {
@@ -128,7 +127,6 @@ export default {
         })
       }
       this.sendMsg.contentId = [...father, ...children]
-      console.log((this.sendMsg.contentId = [...father, ...children]))
     },
     toggleSelection(row) {
       this.sendMsg.contentId = []

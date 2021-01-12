@@ -3,6 +3,7 @@
     <el-card>
       <div slot="header">
         <span>学生座位</span>
+        <!-- <el-button style="float: right" @click="shuffle">shuffle</el-button> -->
       </div>
       <el-row>
         <el-col class="student_box" v-if="studentList[0]">
@@ -85,6 +86,7 @@
 
 <script>
 import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
+import _ from 'lodash'
 import { studentScreen } from '@/api/classRoom'
 export default {
   data() {
@@ -100,7 +102,12 @@ export default {
     ...mapState(['classInfo', 'studentList', 'checkedBox']),
   },
   methods: {
-    ...mapMutations(['setMarkList', 'setRewardsDialog', 'setReload']),
+    ...mapMutations([
+      'setMarkList',
+      'setRewardsDialog',
+      'setReload',
+      'setStudentList',
+    ]),
     // 单独加分
     addScoreMark(sid) {
       const markList = []
@@ -170,6 +177,20 @@ export default {
         this.$store.commit('setCollapse', true)
       }
     },
+    shuffle: function (subGroupLength) {
+      // this.setStudentList(_.shuffle(this.studentList))
+      let groupArr = this.group(this.studentList, 5);
+      console.log(groupArr)
+    },
+    group(array, subGroupLength) {
+    let index = 0;
+    let newArray = [];
+    console.log(array.length);
+    while(index < array.length) {
+        newArray.push(array.slice(index, index += subGroupLength));
+    }
+    return newArray;
+}
   },
 }
 </script>
@@ -180,8 +201,8 @@ export default {
   flex-direction: row;
   flex-flow: wrap;
   .student_card {
-    width: 10%;
-    margin: 1rem 0.5rem;
+    width: calc(10% - 20px);
+    margin: 10px 0.5rem;
     border: 1px solid #ebeef5;
     .student_content {
       position: relative;
@@ -281,5 +302,8 @@ export default {
       cursor: pointer;
     }
   }
+}
+.flip-list-item-move {
+  transition: transform 1s;
 }
 </style>

@@ -130,7 +130,7 @@
 <script>
 import { mapState, mapMutations } from 'vuex'
 import NavMenu from '../components/SideNavMenu/NavMenu.vue'
-import { classList, changeClass, classInfo } from '@/api/index.js'
+import { classList, changeClass, classInfo } from '@/api/index'
 export default {
   components: {
     NavMenu: NavMenu,
@@ -571,7 +571,7 @@ export default {
     // 获取班级列表
     async getClassList() {
       await classList(1).then((res) => {
-        const { data } = res.data
+        const { data } = res
         this.classList = data
       })
       this.firstLogin()
@@ -596,12 +596,12 @@ export default {
     // 当前班级
     getClassInfo() {
       classInfo().then((res) => {
-        const { data } = res.data
-        const classInfo = data.class
+        const classInfo = res.data.class
+        const { school, userInfo } = res.data
         this.classInfo = classInfo
         this.$store.commit('setClassInfo', classInfo)
-        this.school = data.school
-        this.userInfo = data.userInfo
+        this.school = school
+        this.userInfo = userInfo
       })
     },
     goPage(tool) {

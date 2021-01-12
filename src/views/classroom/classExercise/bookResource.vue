@@ -20,10 +20,13 @@
                 v-for="item in modelsList"
                 :key="item.id"
                 :label="item.id"
-                style="width: 20%"
+                style="width: 10%"
               >
                 <div class="img_model" @click="modelDialogVisible(item)">
-                  <img :src="item.modCoverimg" alt="模型图" />
+                  <div class="model-img">
+                    <img v-if="item.modCoverimg" :src="item.modCoverimg" alt="模型图" />
+                    <img v-if="item.modImage" :src="item.modImage" alt="模型图" />
+                  </div>
                   <span>{{ item.modName }}</span>
                 </div>
               </div>
@@ -161,10 +164,22 @@ export default {
     justify-content: center;
     align-items: center;
     margin: 0.5rem;
-    padding: 0.5rem;
     border: 1px solid rgba(167, 180, 201, 0.2);
-    img {
+    .model-img {
       width: 100%;
+      height: 0;
+      overflow: hidden;
+      padding-bottom: 100%;
+      img {
+        width: 100%;
+        cursor: pointer;
+      }
+    }
+    span {
+      width: 100%;
+      overflow: auto;
+      text-align: center;
+      height: 1.5rem;
     }
   }
 }

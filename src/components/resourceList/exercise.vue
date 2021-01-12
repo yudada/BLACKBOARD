@@ -79,18 +79,19 @@
         type="selection"
         label="全选"
         :reserve-selection="true"
-        width="55"
+        width="50"
+        align="center"
         v-if="!hidenBtn"
       />
-      <el-table-column prop="queTitle" label="题目" width="300" />
-      <el-table-column label="题纲">
+      <el-table-column prop="queTitle" label="题目" min-width="55%" />
+      <el-table-column label="题纲" min-width="15%">
         <template slot-scope="scope">
           <span v-if="scope.row.queSubjectType === 1">练习题</span>
           <span v-if="scope.row.queSubjectType === 2">自检题</span>
           <span v-if="scope.row.queSubjectType === 3">历年考题</span>
         </template>
       </el-table-column>
-      <el-table-column prop="queType" label="题型">
+      <el-table-column prop="queType" label="题型" min-width="15%">
         <template slot-scope="scope">
           <span v-if="scope.row.queType === 1">判断</span>
           <span v-if="scope.row.queType === 2">单选</span>
@@ -99,8 +100,8 @@
           <span v-if="scope.row.queType === 5">主观</span>
         </template>
       </el-table-column>
-      <el-table-column prop="quePracticeSubject" label="练题对象" />
-      <el-table-column prop="queKnowledge" label="知识点" />
+      <el-table-column prop="quePracticeSubject" label="练题对象" min-width="15%" />
+      <!-- <el-table-column prop="queKnowledge" label="知识点" /> -->
     </el-table>
     <el-pagination
       :hide-on-single-page="false"
@@ -210,7 +211,6 @@ export default {
       })
       if (res.statusCode !== 200) return this.$message.error(res.msg)
       this.exerciseList = res.data.data
-      console.log(res.data);
       this.total = res.data.total
       this.pageSize = res.data.per_page
       this.currentPage = res.data.current_page

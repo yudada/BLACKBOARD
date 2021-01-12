@@ -26,24 +26,23 @@
               <el-table-column prop="stuName" label="学生姓名" width="120" />
               <el-table-column prop="exeStartTime" label="开始时间" />
               <el-table-column prop="exeEndTime" label="结束时间" />
-              <el-table-column prop="status" label="状态">
+              <el-table-column prop="status" label="状态" width="80">
                 <template slot-scope="scope">
-                  <el-tag type="warning" v-show="scope.row.status === 0">
-                    未开始
-                  </el-tag>
-                  <el-tag type="warning" v-show="scope.row.status === 1">
-                    待完成(进行中)
-                  </el-tag>
-                  <el-tag type="success" v-show="scope.row.status === 2">
-                    已完成
-                  </el-tag>
-                  <el-tag type="danger" v-show="scope.row.status === 3">
-                    已超时
+                  <el-tag :type="statusList[scope.row.status].type">
+                    {{ statusList[scope.row.status].status }}
                   </el-tag>
                 </template>
               </el-table-column>
-              <el-table-column prop="attachFinalTime" label="最后的答题时间" />
-              <el-table-column prop="finishTime" label="作业完成时间" />
+              <el-table-column
+                prop="attachFinalTime"
+                label="最后的答题时间"
+                :formatter="formatterValue"
+              />
+              <el-table-column
+                prop="finishTime"
+                label="作业完成时间"
+                :formatter="formatterValue"
+              />
               <el-table-column
                 prop="attachCount"
                 label="作业内容数量"
@@ -76,11 +75,16 @@ export default {
       },
       detialTableData: [],
       loading: true,
+      statusList: [
+        { type: 'warning', status: '未开始' },
+        { type: 'warning', status: '待完成(进行中)' },
+        { type: 'success', status: '已完成' },
+        { type: 'danger', status: '已超时' },
+      ],
     }
   },
   created() {
     this.getdetail()
-    console.log(this.tip);
   },
   computed: {
     id: function () {
@@ -97,13 +101,19 @@ export default {
       )
       if (res.statusCode !== 200)
         return this.$message.error('获取详细信息失败！')
-      console.log(res)
       this.detialTableData = res.data
       this.loading = false
     },
     goBack() {
       this.$router.go(-1)
-    }
-  }
+    },
+    formatterValue(row, column, cellValue, index) {
+      if (!Boolean(cellValue)) {
+        return '— —'
+      } else {
+        return cellValue
+      }
+    },
+  },
 }
 </script>

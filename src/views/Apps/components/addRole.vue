@@ -100,7 +100,6 @@ export default {
   methods: {
     getRolrInfo() {
       roleInfo(this.roleId).then(res => {
-        console.log(res.data);
         const { name,module_id=[] } = res.data;
         this.roleForm.roleName = name;
         this.defKeys = module_id;
@@ -142,7 +141,6 @@ export default {
       this.roleForm.module_ids = keys
       this.$refs.roleFormRef.validate(async (valid) => {
         if (!valid) return
-        console.log(this.roleForm)
         if(!this.roleId) {
           addRole(this.roleForm).then((res) => {
           this.$message.success(res.msg)

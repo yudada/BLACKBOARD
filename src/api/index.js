@@ -1,4 +1,3 @@
-import http from '../utils/http'
 import request from '@/utils/requset'
  
 // 登录
@@ -20,7 +19,7 @@ export function userInfo() {
 
 // 班级列表
 export function classList(type) {
-    return http({
+    return request({
       url: `api/classroom/myList`,
       method: 'get',
       params: {type: type} 
@@ -29,7 +28,7 @@ export function classList(type) {
 
 // 切换班级
 export function changeClass(id) {
-  return http({
+  return request({
     url: `api/classroom/switch`,
     method: 'post',
     params: {class_id: id} 
@@ -38,7 +37,7 @@ export function changeClass(id) {
 
 // 班级信息
 export function classInfo() {
-  return http({
+  return request({
     url: `api/user/info`,
     method: 'get'
   })
@@ -46,7 +45,7 @@ export function classInfo() {
 
 // 公共配置
 export function commonConfiguration() {
-  return http({
+  return request({
     url: `api/common/constant`,
     method: 'get'
   })
@@ -54,7 +53,7 @@ export function commonConfiguration() {
 
 // 全校数据
 export function schoolData() {
-  return http({
+  return request({
     url: `api/index/statistics`,
     method: 'get'
   })
@@ -62,7 +61,7 @@ export function schoolData() {
 
 // 发送手机验证码
 export function sendCode(data) {
-  return http({
+  return request({
     url: `api/user/sendCode`,
     method: 'post',
     params: data
@@ -71,7 +70,7 @@ export function sendCode(data) {
 
 // 修改手机号码
 export function changeMobile(data) {
-  return http({
+  return request({
     url: `api/user/modifyMobile`,
     method: 'post',
     params: data
@@ -80,7 +79,7 @@ export function changeMobile(data) {
 
 // 修改用户信息
 export function changeUserInfo(data) {
-  return http({
+  return request({
     url: `api/user/modifyInfo`,
     method: 'post',
     params: data
@@ -89,7 +88,7 @@ export function changeUserInfo(data) {
 
 // 添加教师前获取基础信息
 export function teacherSubject() {
-  return http({
+  return request({
     url: `api/teacher/create`,
     method: 'post'
   })

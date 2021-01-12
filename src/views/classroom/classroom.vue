@@ -20,7 +20,6 @@ import {
   studentScreen,
   classScreen,
 } from '@/api/classRoom.js'
-import { classInfo } from '@/api/index.js'
 export default {
   components: { Footer },
   data() {

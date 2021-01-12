@@ -15,12 +15,12 @@
         <el-form-item label="课件名称" prop="title">
           <span>{{ courseData.title }}</span>
         </el-form-item>
-        <el-form-item label="附件" prop="path">
+        <el-form-item label="附件下载" prop="path">
           <a
             v-for="(item, index) in courseData.path"
             :key="item"
-            :href="baseUel+item"
-            target="_blank"
+            :href="item"
+            target="_self"
             style="color: #ad5df3"
           >
             {{ courseData.fileName[index] }} ,

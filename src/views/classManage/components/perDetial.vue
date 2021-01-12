@@ -72,7 +72,6 @@ export default {
     // 获取成绩报告详情
     async getdetail() {
       achievementDetail(this.id).then((res) => {
-        console.log(res)
         const { student } = res.data
         this.detialData = Array(res.data)
         student.map((item) => {

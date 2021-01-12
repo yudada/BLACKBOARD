@@ -37,7 +37,7 @@ export default {
     return {
       navData: {
         title: '校园大脑',
-        childTitle: '全校数据大屏'
+        childTitle: '全校数据大屏',
       },
       topTabledate: [
         { name: '王小虎', class: '一年3班', addText: '2019年度', top: '1' },
@@ -124,13 +124,18 @@ export default {
   methods: {
     getUserNubemr() {
       schoolData().then((res) => {
-        const { data } = res.data
-        console.log(data)
-        this.teacherTableData = data.courseWare
-        this.cardList[0].num = data.teacher_number + '位'
-        this.cardList[1].num = data.courseWare_number + '个'
-        this.cardList[2].num = data.student_number + '位'
-        this.cardList[3].num = data.parents_number + '位'
+        const {
+          courseWare_number,
+          parents_number,
+          student_number,
+          teacher_number,
+          courseWare,
+        } = res.data
+        this.teacherTableData = courseWare
+        this.cardList[0].num = teacher_number + '位'
+        this.cardList[1].num = courseWare_number + '个'
+        this.cardList[2].num = student_number + '位'
+        this.cardList[3].num = parents_number + '位'
       })
     },
   },

@@ -177,13 +177,11 @@ export default {
     if(!this.editStudentInfo.userName) {
       this.editStudentInfo.userPassword = '123456'
     }
-    console.log(this.editStudentInfo);
   },
   methods: {
     // 监听图片上传成功的事件
     handleSuccess(response, file) {
       this.editStudentInfo.photo = response.data.path
-      console.log(this.editStudentInfo.photo)
     },
     beforeAvatarUpload(file) {
       const isLt2M = file.size / 1024 / 1024 < 2
@@ -210,10 +208,7 @@ export default {
       this.editStudentInfo.userPassword = '123456'
     },
     submitForm() {
-      console.log(this.sid,this.editStudentInfo);
-
       saveEditStudent(this.sid,this.editStudentInfo).then(res => {
-        console.log(res);
         if (res.statusCode !== 200) return this.$message.error(res.msg)
         this.$message.success(res.msg)
         this.$emit('closeDialog', false)

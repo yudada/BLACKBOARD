@@ -73,7 +73,6 @@ export default {
         page: this.currentPage
       }
       operationLog(params).then((res) => {
-        console.log(res)
         const { current_page, data=[], per_page, total } = res.data;
         this.total = total;
         this.currentPage = current_page;

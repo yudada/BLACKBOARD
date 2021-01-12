@@ -14,16 +14,7 @@
             返回
           </el-button>
         </div>
-        <!-- <el-table :data="tableData" style="width: 100%">
-          <el-table-column prop="exeTitle" label="标题" width="350px" />
-          <el-table-column prop="created_at" label="创建时间" />
-          <el-table-column prop="exeStartTime" label="开始时间" />
-          <el-table-column prop="exeEndTime" label="结束时间" />
-          <el-table-column prop="exeType" label="练习类型" :formatter="formatterValue" />
-          <el-table-column prop="status" label="状态" :formatter="formatterValue2" />
-        </el-table> -->
-        <!-- <br>
-        <span>作业内容</span> -->
+        <span style="line-height: 40px; color: #636262" v-if="exeType === 2"> {{bookName}}</span>
         <Models-task :data="taskDetail" v-if="exeType === 1" />
         <Wisdom-read-task :data="taskDetail" v-if="exeType === 2" />
         <Exercise-task :data="taskDetail" v-if="exeType === 3" />
@@ -56,7 +47,8 @@ export default {
       },
       tableData: [],
       taskDetail: [],
-      exeType: 0
+      exeType: 0,
+      bookName: ''
     }
   },
   computed: {
@@ -89,10 +81,10 @@ export default {
           textbook_id,
           tid,
         } = res.data
-        console.log(res)
         this.tableData.push(res.data)
         this.taskDetail = detail
         this.exeType = exeType
+        this.bookName = bookName
       })
     },
     formatterValue(row, column, cellValue, index) {

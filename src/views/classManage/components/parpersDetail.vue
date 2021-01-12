@@ -76,14 +76,12 @@ export default {
   methods: {
     getBookList() {
       wisdomBookList().then(res => {
-        console.log(res);
         this.bookList = res.data;
         this.getParperDetail();
       })
     },
     getParperDetail() {
       parperDetail(this.parperId).then(res=>{
-        console.log(res);
         this.detailForm = res.data;
         this.bookList.map(item => {
           if(this.detailForm.bookid === item.id) {

@@ -77,17 +77,13 @@ export default {
     async getMobileCode() {
       await this.$refs.mobileInfoFormRef.validateField('userMobile', (err) => {
         if (!err) this.mobileCode = true
-        console.log(this.mobileInfoForm.userMobile)
       })
       if (this.mobileCode === true) {
         const userMobile = {
           userMobile: this.mobileInfoForm.userMobile,
         }
         sendCode(userMobile).then((res) => {
-          const { data } = res
-          console.log(data)
-          if(data.statusCode !== 200) return this.$message.error(data.msg)
-          this.$message.success(data.msg)
+          this.$message.success(res.msg)
           if (!this.timer) {
             const TIME_COUNT = 60
             this.count = TIME_COUNT
@@ -109,10 +105,7 @@ export default {
       this.$refs.mobileInfoFormRef.validate(async valid=>{
         if(!valid) return
         changeMobile(this.mobileInfoForm).then(res => {
-          const {data} = res;
-          console.log(data);
-          if(data.statusCode !== 200) return this.$message.error(data.msg)
-          this.$message.success(data.msg)
+          this.$message.success(res.msg)
           this.$emit('closeDialog', false);
         })
       })

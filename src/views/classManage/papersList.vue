@@ -137,8 +137,6 @@ export default {
         return
       }
       parperDelete(id).then((res) => {
-        console.log(res)
-        if (res.statusCode !== 200) return this.$message.error(res.msg)
         this.$message.success('删除成功！')
         this.getpapersList()
       })
@@ -163,7 +161,6 @@ export default {
         this.total = total
         this.papersList = data.data
         this.loading = false
-        console.log(data)
       })
     },
   },

@@ -139,9 +139,9 @@ export default {
   methods: {
     getUserInfo() {
       userInfo().then((res) => {
-        const { data } = res
-        this.schoolInfo = data.school
-        this.userInfo = data.userInfo
+        const { school, userInfo} = res.data
+        this.schoolInfo = school
+        this.userInfo = userInfo
         const {
           realName,
           photo,
@@ -149,7 +149,7 @@ export default {
           sex,
           address,
           teaSubject,
-        } = data.userInfo
+        } = userInfo
         this.uesrInfoForm.realName = realName
         this.uesrInfoForm.photo = photo
         this.uesrInfoForm.email = email

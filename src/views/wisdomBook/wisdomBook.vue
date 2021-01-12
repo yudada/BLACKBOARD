@@ -95,7 +95,6 @@ export default {
       const { data: res } = await this.$http.get('/api/textbook/lists')
       if (res.statusCode !== 200)
         return this.$messsage.error('获取课本列表失败！')
-      console.log(res.data)
       this.subjectList = res.data
     },
     openBookDialogVisible(item) {

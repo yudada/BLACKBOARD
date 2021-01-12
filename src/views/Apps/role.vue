@@ -68,7 +68,6 @@ export default {
         const { data } = res;
         this.loading = false;
         this.roleTable = data
-        console.log(data);
       })
     },
     // 删除角色

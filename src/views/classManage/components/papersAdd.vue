@@ -345,7 +345,6 @@ export default {
           }
         })
       })
-      console.log(this.papersForm)
       this.papersForm.exaQStructure.map((item) => {
         if (item.type === '判断题') item.type = 'judge'
         if (item.type === '单选题') item.type = 'single'
@@ -355,7 +354,6 @@ export default {
       })
       this.$refs.papersFormRef.validate(async (valid) => {
         if (!valid) return this.$message.error('请填写必要的表单项！')
-        console.log(this.papersForm)
         if (!this.$route.query.id) {
           // 保存
           papersAdd(this.papersForm).then((res) => {

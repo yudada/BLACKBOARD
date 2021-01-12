@@ -110,7 +110,6 @@ export default {
         this.schoolRuleForm.schoolAddress = schoolAddress
         this.schoolRuleForm.schoolIntroduce = schoolIntroduce
         this.schoolRuleForm.schoolLogo = schoolLogo
-        console.log(res)
       })
     },
     handleChange(file) {
@@ -122,7 +121,6 @@ export default {
       this.showBtnImg = true
     },
     handleSuccess(response) {
-      console.log(response.data.path)
       if (response.statusCode !== 200) return this.$message.error(response.msg)
       this.schoolRuleForm.schoolLogo = response.data.path
     },
@@ -130,7 +128,6 @@ export default {
     submitForm() {
       this.$refs.schoolRuleFormRef.validate(async (valid) => {
         if (!valid) return
-        console.log(this.schoolRuleForm)
         editSchoolDetail(this.schoolRuleForm).then((res) => {
           console.log(res)
         })

@@ -35,10 +35,10 @@
               v-model="questionForm.queType"
               @change="queTypeChange"
             >
-              <el-radio :label="1">判断</el-radio>
-              <el-radio :label="2">单选</el-radio>
-              <el-radio :label="3">多选</el-radio>
-              <el-radio :label="4">填空</el-radio>
+              <el-radio :label="1">判断题</el-radio>
+              <el-radio :label="2">单选题</el-radio>
+              <el-radio :label="3">多选题</el-radio>
+              <el-radio :label="4">填空题</el-radio>
               <el-radio :label="5">主观题</el-radio>
             </el-radio-group>
           </el-form-item>

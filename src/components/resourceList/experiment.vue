@@ -60,7 +60,6 @@ export default {
     this.getExperimentsList();
     if(this.contentId) {
       this.sendMsg.contentId = this.contentId
-      console.log(this.sendMsg.contentId);
     }
   },
   computed: {

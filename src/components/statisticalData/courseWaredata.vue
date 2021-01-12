@@ -54,7 +54,6 @@ export default {
   },
   methods: {
     toCourse(data) {
-      console.log(data);
       this.$router.push({ path: '/course-detail', query: {id:data.id}})
     }
   },

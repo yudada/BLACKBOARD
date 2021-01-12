@@ -68,7 +68,6 @@ export default {
     this.getModelsList();
     if(this.contentId) {
       this.sendMsg.contentId = this.contentId
-      console.log(this.sendMsg.contentId);
     }
   },
   computed: {

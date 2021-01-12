@@ -95,7 +95,6 @@ export default {
       if (confirmResult !== "confirm") {
         return 
       }
-      console.log(tid);
     },
     // 分页
     handleSizeChange(val) {

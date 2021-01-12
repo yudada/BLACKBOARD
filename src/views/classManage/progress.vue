@@ -53,7 +53,6 @@ export default {
         startTime: this.startTime
       }
       workStatistics(params).then((res) => {
-        console.log(res);
         const { accuracy_student, error_student, endTime, startTime } = res.data
         this.accuracyList = accuracy_student
         this.errorList = error_student
@@ -62,7 +61,6 @@ export default {
       })
     },
     fromSun(data) {
-      console.log(data);
       this.startTime = data.startTime
       this.endTime = data.endTime
       this.getWorkStatisticsList()

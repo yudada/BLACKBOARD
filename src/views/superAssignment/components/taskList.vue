@@ -25,19 +25,19 @@
             width="50px"
             align="center"
           />
-          <el-table-column prop="exeTitle" label="作业名称" width="350" />
-          <el-table-column prop="bookName" label="科目" />
-          <el-table-column prop="className" label="班级" v-if="!makeType" />
-          <el-table-column prop="exeType" label="作业类型" v-if="makeType" :formatter="formatterValue" />
-          <el-table-column prop="exeStartTime" label="开始时间" />
-          <el-table-column prop="exeEndTime" label="结束时间" />
+          <el-table-column prop="exeTitle" label="作业名称" min-width="30%" />
+          <el-table-column prop="bookName" label="科目" min-width="10%" />
+          <el-table-column prop="className" label="班级" min-width="10%" v-if="!makeType" />
+          <el-table-column prop="exeType" label="作业类型" min-width="10%" v-if="makeType" :formatter="formatterValue" />
+          <el-table-column prop="exeStartTime" label="开始时间" min-width="15%" />
+          <el-table-column prop="exeEndTime" label="结束时间" min-width="15%" />
           <el-table-column
             prop="status"
             label="状态"
             :formatter="formatterFunc"
-            width="80"
+             min-width="10%"
           />
-          <el-table-column label="完成情况" width="80" align="center">
+          <el-table-column label="完成情况"  min-width="10%">
             <template slot-scope="scope">
               <el-button
                 type="text"
@@ -45,7 +45,7 @@
               >查看</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="120">
+          <el-table-column label="操作"  min-width="15%">
             <template slot-scope="scope">
               <el-button
                 v-if="scope.row.status === 1"
@@ -131,7 +131,6 @@ export default {
         }
       }
       exercisesList(this.params).then((res) => {
-        console.log(res);
         const { current_page, data, per_page, total } = res.data
         this.exercisesList = data
         this.currentPage = current_page

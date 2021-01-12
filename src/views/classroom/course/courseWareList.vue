@@ -3,7 +3,7 @@
     <Breadcrumb :navData="navData" v-if="this.$route.path === '/ware-list'" />
 
     <el-card>
-      <div slot="header" v-if="this.$route.path === '/course-wareList'">
+      <div slot="header">
         <span>课件列表</span>
         <el-button
           style="float: right; padding: 3px 0"
@@ -22,15 +22,23 @@
         <el-table-column prop="title" label="标题" />
         <el-table-column prop="path" label="附件">
           <template slot-scope="scope">
-            <a
+            <!-- <a
               v-for="(item, index) in scope.row.path"
               :key="item"
               :href="baseUel+item"
-              target="_blank"
+              target="_self"
               style="color: #ad5df3"
             >
               {{ scope.row.fileName[index] }} 
-            </a>
+            </a> -->
+            <el-button
+              v-for="(item, index) in scope.row.path"
+              :key="item"
+              type="text"
+              @click="openDialog(baseUel + item)"
+            >
+              {{ scope.row.fileName[index] }}
+            </el-button>
           </template>
         </el-table-column>
         <el-table-column prop="is_share" label="状态" width="100px">
@@ -67,6 +75,16 @@
         :total="total"
       >
       </el-pagination>
+      <el-dialog
+        title="附件"
+        :visible.sync="dialogVisible"
+        :fullscreen="true"
+        :before-close="handleClose"
+        :append-to-body="true"
+        custom-class="path-dialog"
+      >
+        <iframe :src="path" frameborder="0"></iframe>
+      </el-dialog>
     </el-card>
   </div>
 </template>
@@ -80,22 +98,24 @@ export default {
     return {
       navData: {
         title: '班级管理',
-        childTitle: '课件列表'
+        childTitle: '课件列表',
       },
       courseData: [],
       total: 0,
       currentPage: 1,
       pageSize: 20,
-      baseUel: 'https://view.officeapps.live.com/op/view.aspx?src='
+      baseUel: 'https://view.officeapps.live.com/op/view.aspx?src=',
+      path: '',
+      dialogVisible: false,
     }
   },
   created() {
     this.getcourseWareList()
   },
   computed: {
-    routerURL: function() {
+    routerURL: function () {
       return this.$route.path
-    }
+    },
   },
   methods: {
     getcourseWareList() {
@@ -132,26 +152,32 @@ export default {
       })
     },
     addCourse() {
-      if(this.routerURL === '/course-wareList') {
+      if (this.routerURL === '/course-wareList') {
         this.$router.push('/create-courseware')
-      } else if(this.routerURL === '/ware-list') {
+      } else if (this.routerURL === '/ware-list') {
         this.$router.push('/ware-list/create-courseware')
       }
     },
     openDetail(id) {
       // console.log(this.routerURL);
-      if(this.routerURL === '/course-wareList') {
+      if (this.routerURL === '/course-wareList') {
         this.$router.push({ path: '/course-detail', query: { id: id } })
-      } else if(this.routerURL === '/ware-list') {
-        this.$router.push({ path: '/ware-list/course-detail', query: { id: id } })
+      } else if (this.routerURL === '/ware-list') {
+        this.$router.push({
+          path: '/ware-list/course-detail',
+          query: { id: id },
+        })
       }
     },
     editCourse(id) {
       // console.log(this.routerURL);
-      if(this.routerURL === '/course-wareList') {
+      if (this.routerURL === '/course-wareList') {
         this.$router.push({ path: '/create-courseware', query: { id: id } })
-      } else if(this.routerURL === '/ware-list') {
-        this.$router.push({ path: '/ware-list/create-courseware', query: { id: id } })
+      } else if (this.routerURL === '/ware-list') {
+        this.$router.push({
+          path: '/ware-list/create-courseware',
+          query: { id: id },
+        })
       }
     },
     // 分页
@@ -166,9 +192,14 @@ export default {
     previewAccessory(path) {
       console.log(path)
     },
-    openPath(item) {
-      console.log(item);
-    }
+    openDialog(item) {
+      console.log(item)
+      this.dialogVisible = true
+      this.path = item
+    },
+    handleClose() {
+      this.dialogVisible = false
+    },
   },
 }
 </script>
@@ -193,6 +224,20 @@ export default {
       border: none;
       color: #fff;
       background: linear-gradient(to bottom right, #9853af, #623aa2) !important;
+    }
+  }
+}
+</style>
+
+<style lang="scss">
+.path-dialog {
+  .el-dialog__body {
+    width: 100%;
+    height: 100%;
+    padding: 0 !important;
+    iframe {
+      width: 100%;
+      height: 100%;
     }
   }
 }

@@ -70,7 +70,6 @@ export default {
         this.currentPage = current_page
         this.total = total
         this.pageSize = parseFloat(per_page)
-        console.log(data)
       })
     },
     // 分页
