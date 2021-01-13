@@ -42,31 +42,53 @@
           <el-col :span="8">
             <el-card>
               <div slot="header">{{ item.teachName }}</div>
-              <div @click="openDialogVisible(item)">
+              <div @click="openDialogVisible(item)" class="card-img">
                 <img :src="item.teachImage" alt="" />
               </div>
+              <div class="card-content">
+                <div class="card-content-item">
+                  <i class="el-icon-view"></i>
+                  <span>观看人数：{{ item.viewCount }}</span>
+                </div>
+                <el-button
+                  :loading="loading"
+                  type="text"
+                  @click="openAnserDialog(item)"
+                >
+                  答题列表
+                </el-button>
+              </div>
             </el-card>
+            <!-- 对话框 -->
             <el-dialog
               :title="museumInfo.teachName"
               :visible.sync="dialogVisible"
               fullscreen
               :append-to-body="true"
               custom-class="dialog"
+              :destroy-on-close="true"
             >
-              <iframe
-                :src="museumInfo.teachUrl"
-                frameborder="0"
-              ></iframe>
+              <iframe :src="museumInfo.teachUrl" frameborder="0"></iframe>
             </el-dialog>
           </el-col>
         </div>
       </el-row>
+
+      <Answer-list
+        :visible="openAnswer"
+        :data="studiesData"
+        @closeDilog="closeAnswerDialog"
+        @closeLoading="closeAnswerLoading"
+      />
     </div>
   </div>
 </template>
 
 <script>
+import { onlineList, answerPerson } from '@/api/onlineStudies'
+import AnswerList from './componts/answerList.vue'
 export default {
+  components: { AnswerList },
   data() {
     return {
       menulist: [
@@ -102,6 +124,9 @@ export default {
       dialogVisible: false,
       museumList: [],
       museumInfo: {},
+      openAnswer: false,
+      studiesData: '',
+      loading: false
     }
   },
   created() {
@@ -110,15 +135,25 @@ export default {
   methods: {
     // 获取博物馆列表
     async getOnlieList() {
-      const { data: res } = await this.$http.get(`api/online/teach`)
-      this.museumList = res.data
-      console.log(res);
+      onlineList().then((res) => {
+        this.museumList = res.data
+      })
     },
     openDialogVisible(item) {
       this.museumInfo = item
-      console.log(this.museumInfo);
       this.dialogVisible = true
     },
+    openAnserDialog(item) {
+      this.studiesData = item
+      this.openAnswer = true
+      this.loading = true
+    },
+    closeAnswerDialog(data) {
+      this.openAnswer = data
+    },
+    closeAnswerLoading(data) {
+      this.loading = data
+    }
   },
 }
 </script>
@@ -126,9 +161,28 @@ export default {
 <style lang="scss" scoped>
 .el-card {
   margin: 1rem;
-  img {
+  .card-img {
     width: 100%;
-    cursor: pointer;
+    // height: 0;
+    // padding-bottom: 100%;
+    // overflow: hidden;
+    img {
+      width: 100%;
+      cursor: pointer;
+    }
+  }
+  .card-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .card-content-item {
+      i {
+        margin-right: 10px;
+      }
+      span {
+        color: #636262;
+      }
+    }
   }
 }
 </style>

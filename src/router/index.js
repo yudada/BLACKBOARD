@@ -254,10 +254,10 @@ const routes = [
         path: '/onlineStudies',
         component: () => import('../views/onlineStudies/onlineStudies.vue'),
         children: [
-          {
-            path: '/BYIM',
-            component: () => import('../views/onlineStudies/componts/BYIM.vue')
-          }
+          // {
+          //   path: '/BYIM',
+          //   component: () => import('../views/onlineStudies/componts/BYIM.vue')
+          // }
         ]
       }
     ]
