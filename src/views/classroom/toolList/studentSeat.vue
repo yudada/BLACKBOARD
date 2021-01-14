@@ -3,73 +3,186 @@
     <el-card>
       <div slot="header">
         <span>学生座位</span>
-        <!-- <el-button style="float: right" @click="shuffle">shuffle</el-button> -->
       </div>
       <el-row>
-        <el-col class="student_box" v-if="studentList[0]">
-          <!-- 学生 -->
-          <div
-            v-for="(student, index) in studentList"
-            :key="index"
-            class="student_card"
-          >
-            <div class="student_content">
-              <div style="position: relative">
-                <div class="student_avatar">
-                  <!-- 头像 -->
-                  <el-tooltip
-                    effect="dark"
-                    content="点击头像可更改屏幕状态"
-                    placement="top"
-                    :open-delay="1000"
-                  >
-                    <div class="avater" @click="switchStudentScreen(student)">
-                      <img
-                        v-if="student.photo"
-                        :src="student.photo"
-                        alt=""
-                        :onerror="defaultPic"
-                      />
-                      <img v-else src="@/assets/def_avater.jpg" alt="" />
-                      <!-- 控屏状态 -->
-                      <div
-                        class="status_screen"
-                        v-if="student.screenStatus === 1"
-                      >
-                        <div class="content_screen">
-                          <img src="@/assets/images/screenLock.png" alt="" />
-                          <p>点击可解锁</p>
+        <el-col v-if="studentList[0]">
+          <div class="group-arr" v-if="isGroup">
+            <div
+              v-for="(item, index) in groupArr"
+              :key="index"
+              class="group-arr-item"
+              :class="{
+                'group-arr-item-2': groupNum === 2,
+                'group-arr-item-3': groupNum === 3
+              }"
+            >
+                <draggable
+                  v-model="groupArr[index]"
+                  group="site"
+                  animation="300"
+                  dragClass="dragClass"
+                  ghostClass="ghostClass"
+                  chosenClass="chosenClass"
+                  @start="onStart"
+                  @end="onEnd"
+                >
+                  <transition-group class="student_box" name="list-complete">
+                    <!-- 学生 -->
+                    <div
+                      v-for="(student, index) in item"
+                      :key="index"
+                      class="student_card"
+                      :class="{ 
+                        'grounp': groupNum > 3,
+                        'grounp2' : groupNum === 2,
+                        'grounp3' : groupNum === 3,
+                         }"
+                    >
+                      <transition-group name="list-complete">
+                        <div class="student_content list-complete-item" :key="student.sid">
+                          <div style="position: relative">
+                            <div class="student_avatar">
+                              <!-- 头像 -->
+                              <el-tooltip
+                                effect="dark"
+                                content="点击头像可更改屏幕状态"
+                                placement="top"
+                                :open-delay="1000"
+                              >
+                                <div
+                                  class="avater"
+                                  @click="switchStudentScreen(student)"
+                                >
+                                  <img
+                                    v-if="student.photo"
+                                    :src="student.photo"
+                                    alt=""
+                                    :onerror="defaultPic"
+                                  />
+                                  <img
+                                    v-else
+                                    src="@/assets/def_avater.jpg"
+                                    alt=""
+                                  />
+                                  <!-- 控屏状态 -->
+                                  <div
+                                    class="status_screen"
+                                    v-if="student.screenStatus === 1"
+                                  >
+                                    <div class="content_screen">
+                                      <img
+                                        src="@/assets/images/screenLock.png"
+                                        alt=""
+                                      />
+                                      <p>点击可解锁</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </el-tooltip>
+                              <span v-if="student.stuName">
+                                {{ student.stuName }}
+                              </span>
+                              <span v-else>未知</span>
+                            </div>
+                            <!-- 评分 -->
+                            <div class="student_score">
+                              <el-tag
+                                type="success"
+                                size="medium"
+                                @click="addScoreMark(student.sid)"
+                              >
+                                {{ student.addScore }}
+                              </el-tag>
+                              <el-tag
+                                type="danger"
+                                size="medium"
+                                @click="minusScoreMark(student.sid)"
+                              >
+                                {{ student.minusScore }}
+                              </el-tag>
+                            </div>
+                            <!-- 复选 -->
+                            <el-checkbox
+                              v-show="checkedBox"
+                              class="student_check"
+                              v-model="student.isChecked"
+                              @change="toggleSelection(studentList, student)"
+                            />
+                          </div>
+                        </div>
+                      </transition-group>
+                    </div>
+                  </transition-group>
+                </draggable>
+            </div>
+          </div>
+          <div v-else class="student_box">
+            <!-- 学生 -->
+            <div
+              v-for="(student, index) in studentList"
+              :key="index"
+              class="student_card"
+            >
+              <div class="student_content">
+                <div style="position: relative">
+                  <div class="student_avatar">
+                    <!-- 头像 -->
+                    <el-tooltip
+                      effect="dark"
+                      content="点击头像可更改屏幕状态"
+                      placement="top"
+                      :open-delay="1000"
+                    >
+                      <div class="avater" @click="switchStudentScreen(student)">
+                        <img
+                          v-if="student.photo"
+                          :src="student.photo"
+                          alt=""
+                          :onerror="defaultPic"
+                        />
+                        <img v-else src="@/assets/def_avater.jpg" alt="" />
+                        <!-- 控屏状态 -->
+                        <div
+                          class="status_screen"
+                          v-if="student.screenStatus === 1"
+                        >
+                          <div class="content_screen">
+                            <img src="@/assets/images/screenLock.png" alt="" />
+                            <p>点击可解锁</p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </el-tooltip>
-                  <span v-if="student.stuName">{{ student.stuName }}</span>
-                  <span v-else>未知</span>
+                    </el-tooltip>
+                    <span v-if="student.stuName">
+                      {{ student.stuName }}
+                    </span>
+                    <span v-else>未知</span>
+                  </div>
+                  <!-- 评分 -->
+                  <div class="student_score">
+                    <el-tag
+                      type="success"
+                      size="medium"
+                      @click="addScoreMark(student.sid)"
+                    >
+                      {{ student.addScore }}
+                    </el-tag>
+                    <el-tag
+                      type="danger"
+                      size="medium"
+                      @click="minusScoreMark(student.sid)"
+                    >
+                      {{ student.minusScore }}
+                    </el-tag>
+                  </div>
+                  <!-- 复选 -->
+                  <el-checkbox
+                    v-show="checkedBox"
+                    class="student_check"
+                    v-model="student.isChecked"
+                    @change="toggleSelection(studentList, student)"
+                  />
                 </div>
-                <!-- 评分 -->
-                <div class="student_score">
-                  <el-tag
-                    type="success"
-                    size="medium"
-                    @click="addScoreMark(student.sid)"
-                  >
-                    {{ student.addScore }}
-                  </el-tag>
-                  <el-tag
-                    type="danger"
-                    size="medium"
-                    @click="minusScoreMark(student.sid)"
-                  >
-                    {{ student.minusScore }}
-                  </el-tag>
-                </div>
-                <!-- 复选 -->
-                <el-checkbox
-                  v-show="checkedBox"
-                  class="student_check"
-                  v-model="student.isChecked"
-                  @change="toggleSelection(studentList)"
-                />
               </div>
             </div>
           </div>
@@ -86,20 +199,37 @@
 
 <script>
 import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
-import _ from 'lodash'
+import draggable from 'vuedraggable'
+import SeatList from '../components/seatList.vue'
 import { studentScreen } from '@/api/classRoom'
+import _ from 'lodash'
 export default {
+  components: { SeatList, draggable },
   data() {
     return {
+      isGroup: false,
+      groupArr: [],
       defaultPic: 'this.src="' + require('@/assets/def_avater.jpg') + '"',
       params: {
         screenStatus: 0,
         sid_arr: [],
+        drag: false,
       },
     }
   },
   computed: {
-    ...mapState(['classInfo', 'studentList', 'checkedBox']),
+    ...mapState(['classInfo', 'studentList', 'checkedBox', 'groupNum','groupNumChange']),
+  },
+  watch: {
+    groupNumChange: function () {
+      this.shuffle()
+    },
+  },
+  created() {
+    if (this.studentList) {
+      this.groupArr.push(this.studentList)
+      console.log(this.groupArr)
+    }
   },
   methods: {
     ...mapMutations([
@@ -107,48 +237,22 @@ export default {
       'setRewardsDialog',
       'setReload',
       'setStudentList',
+      'setGroupNum',
     ]),
-    // 单独加分
-    addScoreMark(sid) {
-      const markList = []
-      markList.push(sid)
-      this.setMarkList(markList)
-      this.setRewardsDialog(true)
+    shuffle: function () {
+      if (this.groupNum <= 1) return (this.isGroup = false)
+      this.isGroup = true
+      this.setStudentList(_.shuffle(this.studentList))
+      let groupArr = this.group(this.studentList, this.groupNum)
+      this.groupArr = groupArr
     },
-    // 单独减分
-    minusScoreMark(sid) {
-      const markList = []
-      markList.push(sid)
-      this.setMarkList(markList)
-      this.setRewardsDialog(true)
-    },
-    // 多选
-    toggleSelection(studentList) {
-      const markList = []
-      studentList.map((item) => {
-        if (item.isChecked === true) {
-          markList.push(item.sid)
-        }
-      })
-      this.setMarkList(markList)
-    },
-    handleCheckAllChange() {
-      this.studentList.map((item) => (item.isChecked = true))
-    },
-    // 学生控屏
-    switchStudentScreen(student) {
-      this.params.sid_arr = []
-      console.log(this.params)
-      if (student.screenStatus === 0) {
-        this.params.screenStatus = 1
-      } else {
-        this.params.screenStatus = 0
+    group(array, subGroupLength) {
+      let index = 0
+      let newArray = []
+      while (index < array.length) {
+        newArray.push(array.slice(index, (index += subGroupLength)))
       }
-      this.params.sid_arr.push(student.sid)
-      studentScreen(this.params).then((res) => {
-        this.$message.success(res.msg)
-        this.setReload()
-      })
+      return newArray
     },
     // 退出教室，添加学生
     async goAddStudent() {
@@ -177,26 +281,64 @@ export default {
         this.$store.commit('setCollapse', true)
       }
     },
-    shuffle: function (subGroupLength) {
-      // this.setStudentList(_.shuffle(this.studentList))
-      let groupArr = this.group(this.studentList, 5);
-      console.log(groupArr)
+    // 单独加分
+    addScoreMark(sid) {
+      const markList = []
+      markList.push(sid)
+      this.setMarkList(markList)
+      this.setRewardsDialog(true)
     },
-    group(array, subGroupLength) {
-    let index = 0;
-    let newArray = [];
-    console.log(array.length);
-    while(index < array.length) {
-        newArray.push(array.slice(index, index += subGroupLength));
-    }
-    return newArray;
-}
+    // 单独减分
+    minusScoreMark(sid) {
+      const markList = []
+      markList.push(sid)
+      this.setMarkList(markList)
+      this.setRewardsDialog(true)
+    },
+    // 多选
+    toggleSelection(studentList, student) {
+      console.log(student)
+      const markList = []
+      studentList.map((item) => {
+        if (item.isChecked === true) {
+          markList.push(item.sid)
+        }
+      })
+      console.log(markList)
+      this.setMarkList(markList)
+    },
+    handleCheckAllChange() {
+      this.studentList.map((item) => (item.isChecked = true))
+    },
+    // 学生控屏
+    switchStudentScreen(student) {
+      this.params.sid_arr = []
+      if (student.screenStatus === 0) {
+        this.params.screenStatus = 1
+      } else {
+        this.params.screenStatus = 0
+      }
+      this.params.sid_arr.push(student.sid)
+      studentScreen(this.params).then((res) => {
+        this.$message.success(res.msg)
+        this.setReload()
+      })
+    },
+    //开始拖拽事件
+    onStart() {
+      this.drag = true
+    },
+    //拖拽结束事件
+    onEnd() {
+      this.drag = false
+    },
   },
 }
 </script>
 
 <style lang="scss" scoped>
 .student_box {
+  width: 100%;
   display: flex;
   flex-direction: row;
   flex-flow: wrap;
@@ -289,6 +431,15 @@ export default {
       }
     }
   }
+  .grounp {
+    width: calc(20% - 20px) !important;
+  }
+  .grounp2 {
+    width: calc(50% - 20px) !important;
+  }
+  .grounp3 {
+    width: calc(33% - 20px) !important;
+  }
 }
 .nostudent {
   .nostudent-card {
@@ -303,7 +454,56 @@ export default {
     }
   }
 }
-.flip-list-item-move {
-  transition: transform 1s;
+
+/*定义要拖拽元素的样式*/
+.ghostClass {
+  background-color: blue !important;
 }
+.chosenClass {
+  background-color: red !important;
+  opacity: 1 !important;
+}
+.dragClass {
+  background-color: blueviolet !important;
+  opacity: 1 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  background-image: none !important;
+}
+</style>
+
+<style lang="scss">
+.group-arr {
+  display: flex;
+  flex-wrap: wrap;
+  .group-arr-item {
+    width: calc(50% - 4rem);
+    margin: 2rem;
+    margin-top: 0;
+    border: 1px solid #f1f0f0;
+    border-radius: 10px;
+    .group-arr-item-content {
+      .el-row {
+        // margin: 0;
+        .el-col {
+          width: calc(100% - 2rem);
+          margin: 0 1rem;
+        }
+      }
+    }
+  }
+  .group-arr-item-2 {
+    width: calc(20% - 4rem);
+  }
+  .group-arr-item-3 {
+    width: calc(33% - 4rem);
+  }
+}
+
+// .list-complete-item-move,
+// .list-complete-item-enter,
+// .list-complete-item-to
+//  {
+//   transition: transform 1s;
+// }
 </style>

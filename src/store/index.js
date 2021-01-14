@@ -18,7 +18,9 @@ export default new Vuex.Store({
         rewardsDialog: false,
         reload: false,
         handUPDialog:false,
-        checkedBox: false
+        checkedBox: false,
+        groupNum: 5,
+        groupNumChange: false
     },
     mutations: {
         setTeacherInfo: function (state, data) {
@@ -62,6 +64,10 @@ export default new Vuex.Store({
         },
         setReload: function (state) {
             state.reload = !state.reload
+        },
+        setGroupNum: function (state, data) {
+            state.groupNum = data
+            state.groupNumChange = !state.groupNumChange
         }
     }
 })
