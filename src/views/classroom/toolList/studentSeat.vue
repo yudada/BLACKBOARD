@@ -493,10 +493,10 @@ export default {
     }
   }
   .group-arr-item-2 {
-    width: calc(20% - 4rem);
+    width: calc(20% - 4rem - 2px);
   }
   .group-arr-item-3 {
-    width: calc(33% - 4rem);
+    width: calc(33% - 4rem - 2px);
   }
 }
 
