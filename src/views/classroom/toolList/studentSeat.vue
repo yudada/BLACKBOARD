@@ -477,7 +477,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   .group-arr-item {
-    width: calc(50% - 4rem);
+    width: calc(50% - 4rem - 2px);
     margin: 2rem;
     margin-top: 0;
     border: 1px solid #f1f0f0;
