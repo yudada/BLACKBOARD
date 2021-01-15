@@ -118,6 +118,7 @@ export default {
           this.setIsGroup(true)
           let groupArr = this.groupStudentList(this.studentList, groupLen)
           this.setGroupArr(groupArr)
+          console.log(groupArr);
         } else {
           this.setIsGroup(false)
         }

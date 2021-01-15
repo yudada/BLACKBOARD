@@ -2,8 +2,16 @@
   <div>
     <el-card>
       <div slot="header">
-        <span>学生座位</span>
-        <el-button  v-if="isGroup" style="float: right; padding: 3px 0" type="text" @click="saveGroup">保存分组</el-button>
+        <div class="header-card">
+          <span>学生座位</span>
+          <el-button
+            :loading="loading"
+            v-if="isGroup"
+            @click="saveGroup"
+          >
+            保存分组
+          </el-button>
+        </div>
       </div>
       <el-row>
         <el-col v-if="studentList[0]">
@@ -35,8 +43,9 @@ export default {
     return {
       groupParams: {
         groupLen: '',
-        group: []
-      }
+        group: [],
+      },
+      loading: false,
     }
   },
   computed: {
@@ -77,15 +86,17 @@ export default {
       return newArray
     },
     saveGroup() {
+      this.loading = true
       this.groupParams.group = []
-      this.groupArr.map((item,index)=>{
-        let group = item.map(s=> s.sid)
-        this.groupParams.group = [...this.groupParams.group,...group]
+      this.groupArr.map((item, index) => {
+        let group = item.map((s) => s.sid)
+        this.groupParams.group = [...this.groupParams.group, ...group]
       })
       this.groupParams.groupLen = this.groupNum
-      console.log(this.groupParams);
-      saveStudentGroup(this.groupParams).then(res=>{
+      console.log(this.groupParams)
+      saveStudentGroup(this.groupParams).then((res) => {
         this.$message.success('保存成功!')
+        this.loading = false
       })
     },
     // 退出教室，添加学生
@@ -118,3 +129,15 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.header-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .el-button {
+    color: #fff;
+    background: linear-gradient(to bottom right, #9853af, #623aa2);
+  }
+}
+</style>
