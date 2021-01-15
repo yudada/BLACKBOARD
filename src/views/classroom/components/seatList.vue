@@ -1,73 +1,70 @@
 <template>
-      <transition-group class="student_box">
-        <!-- 学生 -->
-        <div
-          v-for="(student, index) in studentList"
-          :key="index"
-          class="student_card"
-          :class="{ grounp: groupNum === 5 }"
-        >
-          <div class="student_content">
-            <div style="position: relative">
-              <div class="student_avatar">
-                <!-- 头像 -->
-                <el-tooltip
-                  effect="dark"
-                  content="点击头像可更改屏幕状态"
-                  placement="top"
-                  :open-delay="1000"
-                >
-                  <div class="avater" @click="switchStudentScreen(student)">
-                    <img
-                      v-if="student.photo"
-                      :src="student.photo"
-                      alt=""
-                      :onerror="defaultPic"
-                    />
-                    <img v-else src="@/assets/def_avater.jpg" alt="" />
-                    <!-- 控屏状态 -->
-                    <div
-                      class="status_screen"
-                      v-if="student.screenStatus === 1"
-                    >
-                      <div class="content_screen">
-                        <img src="@/assets/images/screenLock.png" alt="" />
-                        <p>点击可解锁</p>
-                      </div>
-                    </div>
+  <transition-group class="student_box">
+    <!-- 学生 -->
+    <div
+      v-for="(student, index) in studentList"
+      :key="index"
+      class="student_card"
+      :class="{ grounp: groupNum === 5 }"
+    >
+      <div class="student_content">
+        <div style="position: relative">
+          <div class="student_avatar">
+            <!-- 头像 -->
+            <el-tooltip
+              effect="dark"
+              content="点击头像可更改屏幕状态"
+              placement="top"
+              :open-delay="1000"
+            >
+              <div class="avater" @click="switchStudentScreen(student)">
+                <img
+                  v-if="student.photo"
+                  :src="student.photo"
+                  alt=""
+                  :onerror="defaultPic"
+                />
+                <img v-else src="@/assets/def_avater.jpg" alt="" />
+                <!-- 控屏状态 -->
+                <div class="status_screen" v-if="student.screenStatus === 1">
+                  <div class="content_screen">
+                    <img src="@/assets/images/screenLock.png" alt="" />
+                    <p>点击可解锁</p>
                   </div>
-                </el-tooltip>
-                <span v-if="student.stuName">{{ student.stuName }}</span>
-                <span v-else>未知</span>
+                </div>
               </div>
-              <!-- 评分 -->
-              <div class="student_score">
-                <el-tag
-                  type="success"
-                  size="medium"
-                  @click="addScoreMark(student.sid)"
-                >
-                  {{ student.addScore }}
-                </el-tag>
-                <el-tag
-                  type="danger"
-                  size="medium"
-                  @click="minusScoreMark(student.sid)"
-                >
-                  {{ student.minusScore }}
-                </el-tag>
-              </div>
-              <!-- 复选 -->
-              <el-checkbox
-                v-show="checkedBox"
-                class="student_check"
-                v-model="student.isChecked"
-                @change="toggleSelection(studentList, student)"
-              />
-            </div>
+            </el-tooltip>
+            <span v-if="student.stuName">{{ student.stuName }}</span>
+            <span v-else>未知</span>
           </div>
+          <!-- 评分 -->
+          <div class="student_score">
+            <el-tag
+              type="success"
+              size="medium"
+              @click="addScoreMark(student.sid)"
+            >
+              {{ student.addScore }}
+            </el-tag>
+            <el-tag
+              type="danger"
+              size="medium"
+              @click="minusScoreMark(student.sid)"
+            >
+              {{ student.minusScore }}
+            </el-tag>
+          </div>
+          <!-- 复选 -->
+          <el-checkbox
+            v-show="checkedBox"
+            class="student_check"
+            v-model="student.isChecked"
+            @change="toggleSelection(studentList, student)"
+          />
         </div>
-      </transition-group>
+      </div>
+    </div>
+  </transition-group>
 </template>
 
 <script>
@@ -141,14 +138,6 @@ export default {
         this.$message.success(res.msg)
         this.setReload()
       })
-    },
-    //开始拖拽事件
-    onStart() {
-      this.drag = true
-    },
-    //拖拽结束事件
-    onEnd() {
-      this.drag = false
     },
   },
 }

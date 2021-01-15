@@ -112,7 +112,6 @@ export default {
   },
   methods: {
     taskPage(id) {
-      // this.$router.push({ path: '/taskDetial', query: { id: id } })
       if(this.$route.path === '/exercise-list') {
         this.$router.push({ path: '/exercise-detail', query: { id: id,tip: 'classExe' } })
       } else {

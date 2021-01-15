@@ -43,7 +43,7 @@
             </el-popover>
           </el-dropdown-item>
           <el-dropdown-item @click.native="selectGroupNum(1)">
-            重置分组
+            取消分组
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -101,6 +101,9 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <div class="tag-view-float">
+      <Tag-view />
+    </div>
     <!-- 评分弹框 -->
     <Presentation />
     <!-- 举手弹框 -->
@@ -112,13 +115,14 @@
 import { mapState, mapMutations } from 'vuex'
 import Interaction from '../components/interaction.vue'
 import Presentation from '../components/presentation.vue'
-import { studentScreen, classScreen } from '@/api/classRoom.js'
+import { studentScreen, classScreen, cancelStudentGroup } from '@/api/classRoom.js'
+import TagView from '@/components/SideNavMenu/tagView.vue'
 export default {
-  components: { Interaction, Presentation },
+  components: { Interaction, Presentation, TagView },
   data() {
     return {
       subToolList: [
-        { id: 0, name: '创建课件', path: 'create-courseware' },
+        { id: 0, name: '添加课件', path: 'create-courseware' },
         { id: 1, name: '我的课件', path: 'course-wareList' },
       ],
       selectGroupNumvisible: false,
@@ -127,7 +131,7 @@ export default {
   },
   created() {},
   computed: {
-    ...mapState(['rewardsDialog', 'markList', 'checkedBox', 'studentList']),
+    ...mapState(['rewardsDialog', 'markList', 'checkedBox', 'studentList','groupNumChange']),
     isSeat: function () {
       return this.$route.path === '/student-seat' ? true : false
     },
@@ -140,6 +144,8 @@ export default {
       'setReload',
       'setMarkList',
       'setGroupNum',
+      'setGroupNumChange',
+      'setIsGroup'
     ]),
     goPage(path) {
       this.$router.push('/' + path).catch((err) => {
@@ -147,11 +153,19 @@ export default {
       })
     },
     selectGroupNum(num) {
-      if (num === 0) {
-        this.setGroupNum(this.groupValue)
-        // this.selectGroupNumvisible = false-
+      if (num <= 1) {
+        this.setIsGroup(false)
+        cancelStudentGroup().then(res=>{
+          console.log(res);
+        })
       } else {
+        this.setIsGroup(true)
         this.setGroupNum(num)
+        if(this.groupNumChange) {
+          this.setGroupNumChange(false)
+        } else {
+          this.setGroupNumChange(true)
+        }
       }
     },
     openHandUPDialog() {
@@ -260,6 +274,9 @@ export default {
         color: red;
       }
     }
+  }
+  .tag-view-float {
+    margin-right: 10px;
   }
 }
 </style>

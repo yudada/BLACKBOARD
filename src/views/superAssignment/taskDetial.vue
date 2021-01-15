@@ -44,6 +44,11 @@
                 :formatter="formatterValue"
               />
               <el-table-column
+                prop="expendSeconds"
+                label="花费时间（分钟）"
+                align="center"
+              />
+              <el-table-column
                 prop="attachCount"
                 label="作业内容数量"
                 width="120"

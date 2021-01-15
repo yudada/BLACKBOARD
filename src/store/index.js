@@ -4,7 +4,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-    state: sessionStorage.getItem('state') ? JSON.parse(sessionStorage.getItem('state')): {
+    state: sessionStorage.getItem('state') ? JSON.parse(sessionStorage.getItem('state')) : {
         classInfo: {},
         teacherInfo: {},
         isCollapse: false,
@@ -17,10 +17,13 @@ export default new Vuex.Store({
         markList: [],
         rewardsDialog: false,
         reload: false,
-        handUPDialog:false,
+        handUPDialog: false,
         checkedBox: false,
-        groupNum: 5,
-        groupNumChange: false
+        groupNum: '',
+        isGroup: false,
+        groupNumChange: false,
+        groupArr: [],
+        pageCache:[],
     },
     mutations: {
         setTeacherInfo: function (state, data) {
@@ -59,7 +62,7 @@ export default new Vuex.Store({
         setHandUPDialog: function (state, data) {
             state.handUPDialog = data
         },
-        setCheckedBox: function (state,data) {
+        setCheckedBox: function (state, data) {
             state.checkedBox = data
         },
         setReload: function (state) {
@@ -67,7 +70,39 @@ export default new Vuex.Store({
         },
         setGroupNum: function (state, data) {
             state.groupNum = data
-            state.groupNumChange = !state.groupNumChange
-        }
+        },
+        setGroupNumChange: function (state, data) {
+            state.groupNumChange = data
+        },
+        setIsGroup: function (state, data) {
+            state.isGroup = data
+        },
+        setGroupArr: function (state, data) {
+            state.groupArr = data
+        },
+        addPageCache(state, obj) {//添加缓存页面
+            let isTrue = state.pageCache.some((cur, index, arr) => {
+                return cur['nameE'] && cur['nameE'] == obj['nameE'];//避免重复添加
+            })
+            if (isTrue) return;
+            state.pageCache.push({
+                nameE: obj.nameE,
+                nameZh: obj.nameZh
+            })
+        },
+        removePageCache(state, obj) {//清除页面缓存
+            var pageCache = state.pageCache.filter((cur, index, arr) => {
+                if (cur['nameE'] && cur['nameE'] != obj['nameE']) {
+                    return cur;
+                }
+            })
+            if (pageCache.length != state.pageCache.length) {//删除成功
+                state.pageCache = pageCache;
+                if (pageCache.length > 0) {//存在多的tagview情况下
+                    // obj.router.go(-1);
+                }
+            }
+
+        },
     }
 })

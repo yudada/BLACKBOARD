@@ -103,3 +103,20 @@ export function classExerciseAdd(data) {
     params: data
   })
 }
+
+// 保存分组
+export function saveStudentGroup(data) {
+  return request({
+    url: `api/student/group`,
+    method: 'post',
+    params: data
+  })
+}
+
+// 取消分组
+export function cancelStudentGroup() {
+  return request({
+    url: `api/student/cancelGroup`,
+    method: 'post'
+  })
+}

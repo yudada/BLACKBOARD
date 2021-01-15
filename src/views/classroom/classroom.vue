@@ -2,7 +2,9 @@
   <div class="classroom_main">
     <el-main>
       <transition name="fade-transform" mode="out-in">
-        <router-view></router-view>
+        <keep-alive>
+          <router-view :key="key"></router-view>
+        </keep-alive>
       </transition>
     </el-main>
     <el-footer>
@@ -12,7 +14,6 @@
 </template>
 <script>
 import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
-import Footer from './toolList/footer.vue'
 import {
   studentName,
   scoreTagList,
@@ -20,8 +21,10 @@ import {
   studentScreen,
   classScreen,
 } from '@/api/classRoom.js'
+import Footer from './toolList/footer.vue'
+import TagView from '../../components/SideNavMenu/tagView.vue'
 export default {
-  components: { Footer },
+  components: { Footer, TagView },
   data() {
     return {
       tagAllList: [],
@@ -37,20 +40,41 @@ export default {
     this.getTagList()
   },
   watch: {
-    reload: function(newReload, oldReload) {
+    reload: function (newReload, oldReload) {
       this.getStudentList()
-    }
+    },
+    $route: function () {
+      console.log(this.$store.state.pageCache)
+      const routeInfo = this.$route
+      var obj = {
+        nameZh: routeInfo.meta.title,
+        nameE: routeInfo.fullPath,
+      }
+      this.$store.commit('addPageCache', obj)
+    },
   },
   computed: {
-    ...mapState(['classInfo', 'reload'])
+    ...mapState(['classInfo', 'reload', 'isGroup']),
+    key() {
+      return this.$route.path
+    },
+  },
+  mounted() {
+    window.addEventListener('unload', this.saveState)
   },
   methods: {
+    saveState() {
+      sessionStorage.setItem('state', JSON.stringify(this.$store.state))
+    },
     ...mapMutations([
       'setTagAllList',
       'setStudentList',
       'setStudentIndexs',
       'setTagAddList',
       'setTagMinusList',
+      'setGroupNum',
+      'setIsGroup',
+      'setGroupArr'
     ]),
     closeSide() {
       this.$store.commit('setCollapse', true)
@@ -81,11 +105,22 @@ export default {
         classType: 1,
       }
       await studentName(info).then((res) => {
-        const { data } = res
-        this.studentList = this.setList(data)
+        console.log(res);
+        const { student, is_group, groupLen } = res.data
+        this.setGroupNum(groupLen)
+
+        this.studentList = this.setList(student)
         this.studentIndexs = this.studentList.map((v, i) => i)
         this.setStudentList(this.studentList)
         this.setStudentIndexs(this.studentIndexs)
+
+        if(is_group === 1) {
+          this.setIsGroup(true)
+          let groupArr = this.groupStudentList(this.studentList, groupLen)
+          this.setGroupArr(groupArr)
+        } else {
+          this.setIsGroup(false)
+        }
       })
     },
     // 数据处理
@@ -97,6 +132,14 @@ export default {
         }
       })
       return result
+    },
+    groupStudentList(array, subGroupLength) {
+      let index = 0
+      let newArray = []
+      while (index < array.length) {
+        newArray.push(array.slice(index, (index += subGroupLength)))
+      }
+      return newArray
     },
   },
 }

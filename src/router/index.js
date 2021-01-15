@@ -107,39 +107,75 @@ const routes = [
         children: [
           {
             path: '/student-seat',
-            component: () => import('../views/classroom/toolList/studentSeat.vue')
+            component: () => import('../views/classroom/toolList/studentSeat.vue'),
+            meta: {
+              title: '学生座位',
+              keepAlive: true
+            }
           },
           {
             path: '/book-resource',
-            component: () => import('../views/classroom/classExercise/bookResource.vue')
+            component: () => import('../views/classroom/classExercise/bookResource.vue'),
+            meta: {
+              title: '资源列表',
+              keepAlive: true
+            }
           },
           {
             path: '/exercise',
-            component: () => import('../views/classroom/classExercise/exercise.vue')
+            component: () => import('../views/classroom/classExercise/exercise.vue'),
+            meta: {
+              title: '课堂练习',
+              keepAlive: true
+            }
           },
           {
             path: '/create-courseware',
-            component: () => import('../views/classroom/course/createCourseware.vue')
+            component: () => import('../views/classroom/course/createCourseware.vue'),
+            meta: {
+              title: '添加课件',
+              keepAlive: true
+            }
           },
           {
             path: '/course-wareList',
-            component: () => import('../views/classroom/course/courseWareList.vue')
+            component: () => import('../views/classroom/course/courseWareList.vue'),
+            meta: {
+              title: '课件列表',
+              keepAlive: true
+            }
           },
           {
             path: '/course-detail',
-            component: () => import('../views/classroom/course/courseDetail.vue')
+            component: () => import('../views/classroom/course/courseDetail.vue'),
+            meta: {
+              title: '课件详情',
+              keepAlive: true
+            }
           },
           {
             path: '/exercise-list',
-            component: () => import('../views/classroom/classExercise/exerciseList.vue')
+            component: () => import('../views/classroom/classExercise/exerciseList.vue'),
+            meta: {
+              title: '课堂练习列表',
+              keepAlive: true
+            }
           },
           {
             path: '/class-exercise-detail',
-            component: () => import('../views/superAssignment/classExerciseDetail.vue')
+            component: () => import('../views/superAssignment/classExerciseDetail.vue'),
+            meta: {
+              title: '课堂练习详情',
+              keepAlive: true
+            }
           },
           {
             path: '/exercise-detail',
-            component: () => import('../views/superAssignment/taskDetial.vue')
+            component: () => import('../views/superAssignment/taskDetial.vue'),
+            meta: {
+              title: '课堂练习完成情况',
+              keepAlive: true
+            }
           },
         ]
       },

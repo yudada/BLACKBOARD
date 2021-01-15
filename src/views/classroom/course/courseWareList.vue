@@ -125,7 +125,6 @@ export default {
       }
       courseWareList(pageInfo).then((res) => {
         const { current_page, data, per_page, total } = res.data
-        console.log(res)
         this.courseData = data
         this.total = total
         this.currentPage = current_page
@@ -159,19 +158,18 @@ export default {
       }
     },
     openDetail(id) {
-      // console.log(this.routerURL);
       if (this.routerURL === '/course-wareList') {
         this.$router.push({ path: '/course-detail', query: { id: id } })
       } else if (this.routerURL === '/ware-list') {
         this.$router.push({
-          path: '/ware-list/course-detail',
+          path: 'ware-list/course-detail',
           query: { id: id },
         })
       }
     },
     editCourse(id) {
-      // console.log(this.routerURL);
       if (this.routerURL === '/course-wareList') {
+        console.log(this.$store.state.pageCache);
         this.$router.push({ path: '/create-courseware', query: { id: id } })
       } else if (this.routerURL === '/ware-list') {
         this.$router.push({
