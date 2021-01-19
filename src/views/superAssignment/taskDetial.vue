@@ -47,6 +47,7 @@
                 prop="expendSeconds"
                 label="花费时间（分钟）"
                 align="center"
+                :formatter="formatterValueTime"
               />
               <el-table-column
                 prop="attachCount"
@@ -118,6 +119,9 @@ export default {
       } else {
         return cellValue
       }
+    },
+    formatterValueTime(row, column, cellValue, index) {
+      return parseInt(cellValue / 60.0)
     },
   },
 }
