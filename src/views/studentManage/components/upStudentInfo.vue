@@ -11,6 +11,7 @@
         class="upload-demo"
         ref="upload"
         :action="upURL + 'api/student/import'"
+        :accept="accept"
         :on-success="handleSuccess"
         :file-list="fileList"
         :auto-upload="false"
@@ -47,7 +48,8 @@ export default {
       upFile: null,
       headers: {
         Authorization: window.sessionStorage.getItem('token')
-      }
+      },
+      accept: '.xlsx,.xls,XLSX,.XLS',
     }
   },
   computed: {
@@ -64,11 +66,11 @@ export default {
       this.$refs.upload.submit();
     },
     handleSuccess(response, file, fileList) {
-      console.log(response);
       if(response.statusCode !== 200) {
         return this.$message.error(response.msg)
       } else {
         this.dialogVisible = false
+        this.$message.success(response.msg)
       }
     }
   },
