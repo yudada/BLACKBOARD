@@ -24,8 +24,16 @@
               >
                 <div class="img_model" @click="modelDialogVisible(item)">
                   <div class="model-img">
-                    <img v-if="item.modCoverimg" :src="item.modCoverimg" alt="模型图" />
-                    <img v-if="item.modImage" :src="item.modImage" alt="模型图" />
+                    <img
+                      v-if="item.modCoverimg"
+                      :src="item.modCoverimg"
+                      alt="模型图"
+                    />
+                    <img
+                      v-if="item.modImage"
+                      :src="item.modImage"
+                      alt="模型图"
+                    />
                   </div>
                   <span>{{ item.modName }}</span>
                 </div>
@@ -81,6 +89,7 @@ import Experiment from '@/components/resourceList/experiment'
 import Exercise from '@/components/resourceList/exercise'
 import Read from '@/components/resourceList/read.vue'
 import { wisdomBookList } from '@/api/wisdomBook'
+import { resourceModelsList } from '@/api/classRoom'
 export default {
   name: 'bookResource',
   components: {
@@ -111,21 +120,22 @@ export default {
   methods: {
     // 模型
     async getModels() {
-      const { data: res } = await this.$http.post(`api/models/lists`, {
+      const params = {
         limit: this.pageSize,
         page: this.currentPage,
         modName: this.modName,
+      }
+      resourceModelsList(params).then((res) => {
+        const { data, total, per_page, current_page } = res.data
+        this.modelsList = data
+        this.total = total
+        this.pageSize = per_page
+        this.currentPage = current_page
+        console.log(res)
       })
-      if (res.statusCode !== 200) return this.$message.error(res.msg)
-      this.modelsList = res.data.data
-
-      this.total = res.data.total
-      this.pageSize = res.data.per_page
-      this.currentPage = res.data.current_page
     },
     getWisdomBookList() {
       wisdomBookList().then((res) => {
-        console.log(res)
         const { data } = res
         this.bookList = data
         this.bookId = data[0].id

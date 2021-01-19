@@ -120,3 +120,12 @@ export function cancelStudentGroup() {
     method: 'post'
   })
 }
+
+// 课堂练习-模型
+export function resourceModelsList(data) {
+  return request({
+    url: `api/models/lists`,
+    method: 'post',
+    params: data
+  })
+}
