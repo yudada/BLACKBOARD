@@ -41,21 +41,31 @@
         <div v-for="item in museumList" :key="item.id">
           <el-col :span="8">
             <el-card>
-              <div slot="header">{{ item.teachName }}</div>
+              <div slot="header">
+                <div class="header-title">
+                  <span>{{ item.teachName }}</span>
+                  <div>
+                    <i class="el-icon-view"></i>
+                    <span>观看人数：{{ item.viewCount }}</span>
+                  </div>
+                </div>
+              </div>
               <div @click="openDialogVisible(item)" class="card-img">
                 <img :src="item.teachImage" alt="" />
               </div>
               <div class="card-content">
-                <div class="card-content-item">
-                  <i class="el-icon-view"></i>
-                  <span>观看人数：{{ item.viewCount }}</span>
-                </div>
                 <el-button
                   :loading="loading"
                   type="text"
                   @click="openAnserDialog(item)"
                 >
                   答题列表
+                </el-button>
+                <el-button
+                  type="text"
+                  @click="openPublishStudiesQuetions(item)"
+                >
+                  发布题目
                 </el-button>
               </div>
             </el-card>
@@ -80,15 +90,26 @@
         @closeDilog="closeAnswerDialog"
         @closeLoading="closeAnswerLoading"
       />
+
+      <Publish-studies-quetions
+        :visible="openPublicQuetions"
+        :data="museumInfo"
+        @closeDilog="closeAnswerDialog"
+      />
     </div>
   </div>
 </template>
 
 <script>
-import { onlineList, answerPerson } from '@/api/onlineStudies'
+import {
+  onlineList,
+  answerPerson,
+  onlineAddQuestions,
+} from '@/api/onlineStudies'
 import AnswerList from './componts/answerList.vue'
+import PublishStudiesQuetions from './componts/publishStudiesQuetions.vue'
 export default {
-  components: { AnswerList },
+  components: { AnswerList, PublishStudiesQuetions },
   data() {
     return {
       menulist: [
@@ -125,8 +146,9 @@ export default {
       museumList: [],
       museumInfo: {},
       openAnswer: false,
+      openPublicQuetions: false,
       studiesData: '',
-      loading: false
+      loading: false,
     }
   },
   created() {
@@ -148,12 +170,17 @@ export default {
       this.openAnswer = true
       this.loading = true
     },
+    openPublishStudiesQuetions(item) {
+      this.museumInfo = item
+      this.openPublicQuetions = true
+    },
     closeAnswerDialog(data) {
       this.openAnswer = data
+      this.openPublicQuetions = data
     },
     closeAnswerLoading(data) {
       this.loading = data
-    }
+    },
   },
 }
 </script>
@@ -161,6 +188,16 @@ export default {
 <style lang="scss" scoped>
 .el-card {
   margin: 1rem;
+  .header-title {
+    display: flex;
+    justify-content: space-between;
+    i {
+      margin-right: 10px;
+    }
+    span {
+      color: #636262;
+    }
+  }
   .card-img {
     width: 100%;
     // height: 0;
@@ -175,14 +212,6 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    .card-content-item {
-      i {
-        margin-right: 10px;
-      }
-      span {
-        color: #636262;
-      }
-    }
   }
 }
 </style>
