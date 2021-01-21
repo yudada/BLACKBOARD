@@ -45,7 +45,7 @@
               />
               <el-table-column
                 prop="expendSeconds"
-                label="花费时间（分钟）"
+                label="花费时间（m:s）"
                 align="center"
                 :formatter="formatterValueTime"
               />
@@ -121,7 +121,9 @@ export default {
       }
     },
     formatterValueTime(row, column, cellValue, index) {
-      return parseInt(cellValue / 60.0)
+      let mm = parseInt(cellValue / 60.0)
+      let ss = parseInt(cellValue % 60.0)
+      return mm + ' : ' + ss
     },
   },
 }

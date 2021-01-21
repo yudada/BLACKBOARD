@@ -1,0 +1,60 @@
+$fa-name: "icon";
+$fa-font-path: "/fonts";
+$fa-font-size-base: "14px";
+$fa-line-height-base: "1";
+$fa-css-prefix: "i";
+$fa-version: "1.0.0";
+
+$icons: (
+    'subj-history': '\F001',
+    'subj-biology': '\F002',
+    'subj-geography': '\F003',
+    'subj-chemistry': '\F004',
+    'subj-phisycs': '\F005',
+    'subj-technology': '\F006',
+    'subj-mathematics': '\F007',
+    'subj-visualarts': '\F008',
+    'subj-all': '\F009',
+    'subj-new': '\F010',
+    'courses': '\F011',
+    'resource': '\F012',
+    'user': '\F013',
+    'experiment': '\F014',
+    'specimen': '\F015',
+    'qrcode': '\F016',
+    'm-object': '\F017',
+    'm-animation': '\F018',
+    'm-panorama': '\F019',
+    'm-annulus': '\F020',
+    'm-svs': '\F021',
+    'm-video': '\F022',
+    'm-experiment': '\F023',
+    'm-image': '\F024',
+);
+
+@font-face {
+    font-family: #{$fa-name};
+    src: url('#{$fa-font-path}/#{$fa-name}.eot?v=#{$fa-version}');
+    src: url('#{$fa-font-path}/#{$fa-name}.eot?#iefix&v=#{$fa-version}') format('embedded-opentype'),
+    url('#{$fa-font-path}/#{$fa-name}.woff2?v=#{$fa-version}') format('woff2'),
+    url('#{$fa-font-path}/#{$fa-name}.woff?v=#{$fa-version}') format('woff'),
+    url('#{$fa-font-path}/#{$fa-name}.ttf?v=#{$fa-version}') format('truetype'),
+    url('#{$fa-font-path}/#{$fa-name}.svg?v=#{$fa-version}##{$fa-name}') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.#{$fa-name} {
+    display: inline-block;
+    font: normal normal normal #{$fa-font-size-base}/#{$fa-line-height-base} #{$fa-name};
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+@each $name, $code in $icons {
+    .#{$fa-css-prefix}-#{$name}:before {
+        content: "#{$code}";
+    }
+}

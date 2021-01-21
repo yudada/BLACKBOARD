@@ -69,3 +69,12 @@ export function classExerciseDetail(id) {
     method: 'post'
   })
 }
+
+// 2.错误人或正确人详情
+export function personDetail(id, type) {
+  return request({
+    url: `api/exercises/personDetail/${id}`,
+    method: 'post',
+    params: {type: type}
+  })
+}

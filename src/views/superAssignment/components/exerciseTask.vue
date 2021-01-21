@@ -11,16 +11,30 @@
           <el-radio label="T">正确</el-radio>
           <el-radio label="F">错误</el-radio>
         </el-radio-group>
-        <div v-if="answerList[index].isShow">
-          <span v-if="item.queAnswer === 'T'">参考答案： 正确</span>
-          <span v-else-if="item.queAnswer === 'F'">参考答案： 错误</span>
-          <span v-else-if="item.queAnswer">
-            参考答案： {{ item.queAnswer }}
-          </span>
-          <span v-else>暂无参考答案</span>
-        </div>
-        <div v-if="!answerList[index].isShow">
-          <el-button type="text" @click="showAnswer(index)">显示答案</el-button>
+        <div class="answer-main">
+          <div
+            style="cursor: pointer"
+            v-if="answerList[index].isShow"
+            @click="showAnswer(index)"
+          >
+            <span v-if="item.queAnswer === 'T'">参考答案： 正确</span>
+            <span v-else-if="item.queAnswer === 'F'">参考答案： 错误</span>
+            <span v-else-if="item.queAnswer">
+              参考答案： {{ item.queAnswer }}
+            </span>
+            <span v-else>暂无参考答案</span>
+          </div>
+          <div v-if="!answerList[index].isShow">
+            <el-button type="text" @click="showAnswer(index)">
+              显示答案
+            </el-button>
+          </div>
+          <div class="answer-num">
+            <span>正确人数：</span
+            ><span @click="checkPersonDetail(1)">{{ item.queRightNum }} </span>
+            <span> 错误人数：</span
+            ><span @click="checkPersonDetail(2)">{{ item.queWrongNum }} </span>
+          </div>
         </div>
       </div>
       <div v-if="item.queType === 2" class="content-exe">
@@ -33,12 +47,24 @@
             <span>{{ index }} {{ childItem }}</span>
           </el-radio>
         </el-radio-group>
-        <span v-if="answerList[index].isShow">
-          参考答案： {{ item.queAnswer }}
-        </span>
-        <el-button v-else type="text" @click="showAnswer(index)">
-          显示答案
-        </el-button>
+        <div class="answer-main">
+          <span
+            style="cursor: pointer"
+            v-if="answerList[index].isShow"
+            @click="showAnswer(index)"
+          >
+            参考答案： {{ item.queAnswer }}
+          </span>
+          <el-button v-else type="text" @click="showAnswer(index)">
+            显示答案
+          </el-button>
+          <div class="answer-num">
+            <span>正确人数：</span
+            ><span @click="checkPersonDetail(1)">{{ item.queRightNum }} </span>
+            <span> 错误人数：</span
+            ><span @click="checkPersonDetail(2)">{{ item.queWrongNum }} </span>
+          </div>
+        </div>
       </div>
       <div v-if="item.queType === 3" class="content-exe">
         <el-checkbox-group v-model="answerList[index].checkboxT">
@@ -51,42 +77,101 @@
             <span>{{ index }} {{ childItem }}</span>
           </el-checkbox>
         </el-checkbox-group>
-        <span v-if="answerList[index].isShow">
-          参考答案： {{ item.queAnswer }}
-        </span>
-        <el-button v-else type="text" @click="showAnswer(index)">
-          显示答案
-        </el-button>
+        <div class="answer-main">
+          <span
+            style="cursor: pointer"
+            v-if="answerList[index].isShow"
+            @click="showAnswer(index)"
+          >
+            参考答案： {{ item.queAnswer }}
+          </span>
+          <el-button v-else type="text" @click="showAnswer(index)">
+            显示答案
+          </el-button>
+          <div class="answer-num">
+            <span>正确人数：</span
+            ><span @click="checkPersonDetail(1)">{{ item.queRightNum }} </span>
+            <span> 错误人数：</span
+            ><span @click="checkPersonDetail(2)">{{ item.queWrongNum }} </span>
+          </div>
+        </div>
       </div>
       <div v-if="item.queType === 4" class="content-exe">
         <el-input v-model="answerList[index].answer"></el-input>
-        <br /><span v-if="answerList[index].isShow">
-          参考答案： {{ item.queAnswer }}
-        </span>
-        <el-button v-else type="text" @click="showAnswer(index)">
-          显示答案
-        </el-button>
+        <br />
+        <div class="answer-main">
+          <span
+            style="cursor: pointer"
+            v-if="answerList[index].isShow"
+            @click="showAnswer(index)"
+          >
+            参考答案： {{ item.queAnswer }}
+          </span>
+          <el-button v-else type="text" @click="showAnswer(index)">
+            显示答案
+          </el-button>
+          <div class="answer-num">
+            <span>正确人数：</span
+            ><span @click="checkPersonDetail(1)">{{ item.queRightNum }} </span>
+            <span> 错误人数：</span
+            ><span @click="checkPersonDetail(2)">{{ item.queWrongNum }} </span>
+          </div>
+        </div>
       </div>
       <div v-if="item.queType === 5" class="content-exe">
         <el-input
           type="textarea"
           :rows="5"
           v-model="answerList[index].answer"
-        ></el-input>
-        <br /><span v-if="answerList[index].isShow">
-          参考答案： {{ item.queAnswer }}
-        </span>
-        <el-button v-else type="text" @click="showAnswer(index)">
-          显示答案
-        </el-button>
+        />
+        <br />
+        <div class="answer-main">
+          <span
+            style="cursor: pointer"
+            v-if="answerList[index].isShow"
+            @click="showAnswer(index)"
+          >
+            参考答案： {{ item.queAnswer }}
+          </span>
+          <el-button v-else type="text" @click="showAnswer(index)">
+            显示答案
+          </el-button>
+          <div class="answer-num">
+            <span>正确人数：</span
+            ><span @click="checkPersonDetail(1)">{{ item.queRightNum }} </span>
+            <span> 错误人数：</span
+            ><span @click="checkPersonDetail(2)">{{ item.queWrongNum }} </span>
+          </div>
+        </div>
       </div>
     </div>
+
+    <!-- 对错人数对话框 -->
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="50%"
+      :append-to-body="true"
+      :before-close="handleClose"
+    >
+      <el-table :data="answerPersonList" stripe style="width: 100%">
+        <el-table-column prop="stuName" label="姓名" />
+        <el-table-column prop="answerResult" label="结果">
+          <template slot-scope="scope">
+            <span v-if="scope.row.answerResult === 1">正确</span>
+            <span v-if="scope.row.answerResult === 2">错误</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="created_at" label="答题时间" />
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import { personDetail } from '@/api/superAssignment'
 export default {
-  props: ['data'],
+  props: ['data', 'id'],
   data() {
     return {
       queTypeList: [
@@ -98,11 +183,14 @@ export default {
         { value: 5, title: '主观题' },
       ],
       answerList: [],
+      dialogVisible: false,
+      answerPersonList: []
     }
   },
   created() {
     this.initData()
     this.initQueAnswer()
+    console.log(this.data)
   },
   methods: {
     initData() {
@@ -120,14 +208,29 @@ export default {
     initQueAnswer() {
       this.data.map((item) => {
         if (item.queAnswer) {
-          item.queAnswer = decodeURIComponent(
-            window.escape(atob(item.queAnswer))
-          )
+          try {
+            item.queAnswer = decodeURIComponent(
+              window.escape(atob(item.queAnswer))
+            )
+          } catch (e) {
+            console.log('已解析')
+          }
         }
       })
     },
     showAnswer(index) {
-      this.answerList[index].isShow = true
+      this.answerList[index].isShow = !this.answerList[index].isShow
+    },
+    checkPersonDetail(num) {
+      personDetail(this.id, num).then((res) => {
+        console.log(res)
+        const { data } = res
+        this.answerPersonList = data
+        this.dialogVisible = true
+      })
+    },
+    handleClose() {
+      this.dialogVisible = false
     },
   },
 }
@@ -146,9 +249,27 @@ export default {
     }
   }
   .content-exe {
+    .answer-main {
+      display: flex;
+      .answer-num {
+        margin-left: 1rem;
+        span {
+          color: #636262;
+          line-height: 40px;
+          margin: 0 5px;
+        }
+        span:nth-child(2) {
+          color: #67c23a;
+          cursor: pointer;
+        }
+        span:nth-child(4) {
+          color: #f56c6c;
+          cursor: pointer;
+        }
+      }
+    }
     span {
       color: #636262;
-      margin: 10px 0;
       line-height: 40px;
     }
   }
@@ -165,6 +286,7 @@ export default {
   .el-input,
   .el-textarea {
     width: 50%;
+    cursor: pointer;
   }
 }
 </style>

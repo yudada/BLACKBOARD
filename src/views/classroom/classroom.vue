@@ -2,9 +2,10 @@
   <div class="classroom_main">
     <el-main>
       <transition name="fade-transform" mode="out-in">
-        <keep-alive>
-          <router-view :key="key"></router-view>
+        <keep-alive v-if="$route.meta.keepAlive">
+          <router-view :key="key" />
         </keep-alive>
+        <router-view v-if="!$route.meta.keepAlive" :key="key" />
       </transition>
     </el-main>
     <el-footer>
@@ -44,8 +45,8 @@ export default {
       this.getStudentList()
     },
     $route: function () {
-      console.log(this.$store.state.pageCache)
       const routeInfo = this.$route
+      if(routeInfo.path === '/exercise-detail' || routeInfo.path === '/class-exercise-detail') return
       var obj = {
         nameZh: routeInfo.meta.title,
         nameE: routeInfo.fullPath,
@@ -105,7 +106,6 @@ export default {
         classType: 1,
       }
       await studentName(info).then((res) => {
-        console.log(res);
         const { student, is_group, groupLen } = res.data
         this.setGroupNum(groupLen)
 

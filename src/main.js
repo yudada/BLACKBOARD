@@ -11,6 +11,7 @@ import '@/assets/css/elementui.scss'
 import '@/theme/theme/index.css'
 import '@/assets/iconfont/iconfont.css'
 import '@/assets/css/transition.scss'
+import '@/assets/icon-none/_icon.scss'
 
 // 导入富文本编辑器
 import VueQuillEditor from 'vue-quill-editor'

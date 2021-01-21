@@ -166,7 +166,7 @@ const routes = [
             component: () => import('../views/superAssignment/classExerciseDetail.vue'),
             meta: {
               title: '课堂练习详情',
-              keepAlive: true
+              keepAlive: false
             }
           },
           {
@@ -174,7 +174,7 @@ const routes = [
             component: () => import('../views/superAssignment/taskDetial.vue'),
             meta: {
               title: '课堂练习完成情况',
-              keepAlive: true
+              keepAlive: false
             }
           },
         ]

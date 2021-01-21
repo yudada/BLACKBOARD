@@ -3,7 +3,7 @@
     <Breadcrumb :navData="navData" v-if="!tip" />
 
     <div class="courseware_concent">
-      <el-card>
+      <el-card v-if="renderComponent">
         <div slot="header" v-if="tip">
           <span>作业详情</span>
           <el-button
@@ -14,10 +14,12 @@
             返回
           </el-button>
         </div>
-        <span style="line-height: 40px; color: #636262" v-if="exeType === 2"> {{bookName}}</span>
+        <span style="line-height: 40px; color: #636262" v-if="exeType === 2">
+          {{ bookName }}</span
+        >
         <Models-task :data="taskDetail" v-if="exeType === 1" />
         <Wisdom-read-task :data="taskDetail" v-if="exeType === 2" />
-        <Exercise-task :data="taskDetail" v-if="exeType === 3" />
+        <Exercise-task :data="taskDetail" :id="exeId" v-if="exeType === 3" />
         <Experiment-task :data="taskDetail" v-if="exeType === 4" />
       </el-card>
     </div>
@@ -48,7 +50,8 @@ export default {
       tableData: [],
       taskDetail: [],
       exeType: 0,
-      bookName: ''
+      bookName: '',
+      renderComponent: true
     }
   },
   computed: {
@@ -58,6 +61,14 @@ export default {
     exeId: function () {
       return this.$route.query.id
     },
+  },
+  $route: function (newValue, oldValue) {
+    this.renderComponent = false
+
+    this.$nextTick(() => {
+      // 在 DOM 中添加 my-component 组件
+      this.renderComponent = true
+    })
   },
   created() {
     this.getClassExerciseDetail()
@@ -80,6 +91,7 @@ export default {
           status,
           textbook_id,
           tid,
+          id
         } = res.data
         this.tableData.push(res.data)
         this.taskDetail = detail
@@ -96,7 +108,7 @@ export default {
     formatterValue2(row, column, cellValue, index) {
       if (cellValue === 1) return '已发布'
       if (cellValue === 2) return '草稿'
-    }
+    },
   },
 }
 </script>

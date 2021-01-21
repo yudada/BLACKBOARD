@@ -87,7 +87,8 @@ export default {
 
 .el-dro-button {
   color: #fff;
-  background: linear-gradient(to bottom right, #9853af, #623aa2);
+  background: linear-gradient(to bottom right, #62fb62, #21a544) !important;
+  border: none;
   i{
     margin: 0 5px;
   }
