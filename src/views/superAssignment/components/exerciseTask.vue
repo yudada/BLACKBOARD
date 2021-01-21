@@ -148,7 +148,7 @@
 
     <!-- 对错人数对话框 -->
     <el-dialog
-      title="提示"
+      :title="dialogTitle"
       :visible.sync="dialogVisible"
       width="50%"
       :append-to-body="true"
@@ -158,7 +158,7 @@
         <el-table-column prop="stuName" label="姓名" />
         <el-table-column prop="answerResult" label="结果">
           <template slot-scope="scope">
-            <span v-if="scope.row.answerResult === 1">正确</span>
+            <span v-if="scope.row.answerResult === 0">正确</span>
             <span v-if="scope.row.answerResult === 2">错误</span>
           </template>
         </el-table-column>
@@ -184,7 +184,8 @@ export default {
       ],
       answerList: [],
       dialogVisible: false,
-      answerPersonList: []
+      answerPersonList: [],
+      dialogTitle: ''
     }
   },
   created() {
@@ -222,6 +223,8 @@ export default {
       this.answerList[index].isShow = !this.answerList[index].isShow
     },
     checkPersonDetail(num) {
+      if(num === 1) this.dialogTitle = '答题正确学生'
+      if(num === 2) this.dialogTitle = '答题错误学生'
       personDetail(this.id, num).then((res) => {
         console.log(res)
         const { data } = res
@@ -287,6 +290,10 @@ export default {
   .el-textarea {
     width: 50%;
     cursor: pointer;
+  }
+  .el-table {
+    max-height: 70vh;
+    overflow: scroll;
   }
 }
 </style>
