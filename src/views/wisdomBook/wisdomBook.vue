@@ -9,6 +9,7 @@
             v-for="item in bookTypeList"
             :key="item.id"
             class="wisdom-header-item"
+            :class="{'wisdom-header-item-active': item.id === bookParams.category_id }"
             @click="changeCategory(item.id)"
           >
             <i class="icon" :class="item.cover"></i>
@@ -125,10 +126,12 @@ export default {
   },
   methods: {
     getbookList() {
+      if(this.bookParams.category_id === 1) this.bookParams.category_id = ''
       console.log(this.bookParams);
       wisdomBookList(this.bookParams).then(res=>{
         const { data } = res
         this.subjectList = data
+        // this.bookParams.category_id = 1
       })
     },
     getCategoryListBook() {
@@ -151,11 +154,7 @@ export default {
       this.getbookList()
     },
     changeCategory(id) {
-      if(id === 1 ) {
-        this.bookParams.category_id = ''
-      } else {
-        this.bookParams.category_id = id
-      }
+      this.bookParams.category_id = id
     }
   },
 }
@@ -193,6 +192,7 @@ export default {
       }
     }
     .wisdom-header-item:hover,
+    .wisdom-header-item-active,
     .wisdom-header-item:focus {
       background: #f2f5f9;
       box-shadow: inset 0 2px 2px rgb(69 87 113 / 20%);

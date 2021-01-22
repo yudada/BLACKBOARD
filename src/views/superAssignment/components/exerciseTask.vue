@@ -111,8 +111,8 @@
             显示答案
           </el-button>
           <div class="answer-num">
-            <span>正确人数：</span
-            ><span @click="checkPersonDetail(1)">{{ item.queRightNum }} </span>
+            <span> 正确人数：</span
+            ><span @click="checkPersonDetail(1)"> {{ item.queRightNum }} </span>
             <span> 错误人数：</span
             ><span @click="checkPersonDetail(2)">{{ item.queWrongNum }} </span>
           </div>
@@ -259,7 +259,8 @@ export default {
         span {
           color: #636262;
           line-height: 40px;
-          margin: 0 5px;
+          font-size: 14px;
+          margin-right: 1px;
         }
         span:nth-child(2) {
           color: #67c23a;
@@ -274,6 +275,7 @@ export default {
     span {
       color: #636262;
       line-height: 40px;
+      font-size: 14px;
     }
   }
   .el-radio-group,
