@@ -65,6 +65,7 @@
 
 <script>
 import Breadcrumb from '@/components/breadcrumb.vue'
+import { detailQuetions } from '@/api/Question'
 export default {
   components: { Breadcrumb },
   data() {
@@ -83,11 +84,13 @@ export default {
   },
   methods: {
     async getdetail() {
-      const { data: res } = await this.$http.get(`api/library/${this.id}`);
-      if (res.statusCode !== 200) return this.$message.error('获取详细信息失败！')
-      this.questionList = res.data;
-      this.queOptions = Object.entries(res.data.queOptions);
-      this.queAnswer = decodeURIComponent(window.escape(atob(res.data.queAnswer)));
+      detailQuetions(this.id).then(res=>{
+        console.log(res);
+        const { data } = res
+        this.questionList = data;
+        this.queOptions = Object.entries(data.queOptions);
+        this.queAnswer = decodeURIComponent(window.escape(atob(data.queAnswer)));
+      })
     },
   },
   computed: {

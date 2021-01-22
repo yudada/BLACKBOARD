@@ -117,14 +117,14 @@
               </div>
               <!-- 填空 -->
               <div v-if="questionForm.queType === 4">
-                <el-input v-model="answerContent[0]"></el-input>
+                <el-input v-model="answerContent"></el-input>
               </div>
               <!-- 主观 -->
               <div v-if="questionForm.queType === 5">
                 <el-input
                   type="textarea"
                   :rows="5"
-                  v-model="answerContent[0]"
+                  v-model="answerContent"
                 ></el-input>
               </div>
             </div>
@@ -180,6 +180,7 @@
 <script>
 import Breadcrumb from '@/components/breadcrumb.vue'
 import AddQuetion from '../../components/dialogContent/addQuetion.vue'
+import { addQuetions, editQuetions, detailQuetions } from '@/api/Question'
 export default {
   components: { Breadcrumb, AddQuetion },
   data() {
@@ -261,6 +262,7 @@ export default {
      } else {
        this.answerContent = answerContent.toString();
      }
+     console.log(this.answerContent);
     },
     async getQuePracticeSubjec() {
       const { data: res } = await this.$http.get(`api/common/constant`)
@@ -274,19 +276,33 @@ export default {
         if (!valid) return this.$message.error('请完整填写必要项！')
         this.questionForm.queAnswer = this.answerContent.toString()
         console.log(this.questionForm);
-        const { data: res } = await this.$http.post(
-          `api/library/store`,
-          this.questionForm
-        )
-        if (res.statusCode !== 200) return this.$message.error('添加题目失败！')
-        this.$message.success('添加题目成功!')
-        if(this.questionForm.queSubjectType === 1) this.$router.push('/expand')
-        if(this.questionForm.queSubjectType === 2) this.$router.push('/textbook')
-        if(this.questionForm.queSubjectType === 3) this.$router.push('/history')
+        if(this.queId) {
+          editQuetions(this.queId, this.questionForm).then(res=>{
+            // console.log(res,'编辑');
+            this.$message.success(res.msg)
+            if(this.questionForm.queSubjectType === 1) this.$router.push('/expand')
+            if(this.questionForm.queSubjectType === 2) this.$router.push('/textbook')
+            if(this.questionForm.queSubjectType === 3) this.$router.push('/history')
+          })
+        } else {
+          addQuetions(this.questionForm).then(res =>{
+            // console.log(res, '保存');
+            this.$message.success(res.msg)
+            if(this.questionForm.queSubjectType === 1) this.$router.push('/expand')
+            if(this.questionForm.queSubjectType === 2) this.$router.push('/textbook')
+            if(this.questionForm.queSubjectType === 3) this.$router.push('/history')
+          })
+        }
       })
     },
     queTypeChange() {
-      this.answerContent = []
+      if(this.questionForm.queType === 4 || this.questionForm.queType === 5) {
+
+        this.answerContent = ''
+      } else {
+        
+        this.answerContent = []
+      }
       this.questionForm.queOptions = ''
     },
     // 知识点弹框
