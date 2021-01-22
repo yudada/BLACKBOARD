@@ -109,9 +109,6 @@ export default {
 .card_body {
   display: flex;
   flex-wrap: wrap;
-  img {
-    cursor: pointer;
-  }
   .text {
     width: 20%;
     .card_content {
@@ -119,6 +116,13 @@ export default {
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      width: calc(100% - 60px);
+      margin: 30px;
+      img {
+        cursor: pointer;
+        width: 100%;
+        border-radius: 5px;
+      }
     }
   }
 }
