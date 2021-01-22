@@ -11,7 +11,7 @@
             class="wisdom-header-item"
             @click="changeCategory(item.id)"
           >
-            <i :class=" 'icon i-subj-history'"></i>
+            <i class="icon" :class="item.cover"></i>
             <span>{{ item.name }}</span>
           </div>
         </el-col>
@@ -234,7 +234,7 @@ export default {
   }
 }
 .addpadding {
-  padding-bottom: 20px;
+  padding-bottom: 30px;
 }
 </style>
 
