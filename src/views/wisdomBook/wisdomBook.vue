@@ -9,10 +9,10 @@
             v-for="item in bookTypeList"
             :key="item.id"
             class="wisdom-header-item"
-            :class="{'wisdom-header-item-active': item.id === bookParams.category_id }"
+            :class="{'wisdom-header-item-active': item.id === activeIcon }"
             @click="changeCategory(item.id)"
           >
-            <i class="icon" :class="item.cover"></i>
+            <i v-html="item.cover"></i>
             <span>{{ item.name }}</span>
           </div>
         </el-col>
@@ -106,13 +106,14 @@ export default {
       bookParams: {
         class_id: '',
         category_id: ''
-      }
+      },
+      activeIcon: 1
     }
   },
   created() {
+    this.bookParams.class_id = this.classInfo.class_id
     this.getbookList()
     this.getCategoryListBook()
-    this.bookParams.class_id = this.classInfo.class_id
   },
   computed: {
     ...mapState(['classInfo']),
@@ -131,7 +132,6 @@ export default {
       wisdomBookList(this.bookParams).then(res=>{
         const { data } = res
         this.subjectList = data
-        // this.bookParams.category_id = 1
       })
     },
     getCategoryListBook() {
@@ -155,6 +155,7 @@ export default {
     },
     changeCategory(id) {
       this.bookParams.category_id = id
+      this.activeIcon = id
     }
   },
 }
