@@ -3,6 +3,7 @@
     <Breadcrumb :navData="navData" />
 
     <div class="wisdomBook_concent">
+      <!-- 分类导航 -->
       <el-row>
         <el-col class="wisdom-header">
           <div
@@ -17,9 +18,10 @@
           </div>
         </el-col>
       </el-row>
-      <el-row :gutter="20">
+      <!-- 课本列表 -->
+      <el-row :gutter="50">
         <el-col
-          :span="4"
+          :span="5"
           v-for="(item, index) in subjectList"
           :key="index"
           class="addpadding iapd_w"
@@ -27,10 +29,10 @@
           <el-card
             shadow="always"
             :body-style="{ padding: 0 }"
-            @click.native="openBookDialogVisible(item)"
             class="wisdiom-book"
           >
-            <div class="card_img">
+            <div class="card_img" 
+            @click="openBookDialogVisible(item)">
               <img
                 v-if="item.bookImg !== null"
                 :src="item.bookImg"
@@ -41,10 +43,15 @@
             <div class="card_info">
               <span>{{ item.bookName }}</span>
               <span>{{ item.subName }}</span>
+              <!-- <div>
+                <span>{{ item.bookName }}</span>
+              <span>{{ item.subName }}</span>
+              </div>
+              <el-button @click="isOpenDialog = true">目录</el-button> -->
             </div>
           </el-card>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="5">
           <el-card
             shadow="always"
             :body-style="{ padding: 0 }"
@@ -80,6 +87,14 @@
         >
           <select-dialog @closeDialog="fromSun"></select-dialog>
         </el-dialog>
+
+        
+        <!-- 课程目录对话框 -->
+        <Catalog-dialog
+          :isOpenDialog="isOpenDialog"
+          :bookInfo="bookInfo"
+          @dialog="fromDialog"
+        />
       </el-row>
     </div>
   </div>
@@ -88,10 +103,11 @@
 <script>
 import { mapState, mapMutations } from 'vuex'
 import selectDialog from './components/selectDialog.vue'
+import CatalogDialog from './components/catalogDialog'
 import Breadcrumb from '@/components/breadcrumb.vue'
 import { wisdomBookList, categoryListBook } from '@/api/wisdomBook'
 export default {
-  components: { selectDialog, Breadcrumb },
+  components: { selectDialog, Breadcrumb, CatalogDialog },
   data() {
     return {
       navData: {
@@ -107,7 +123,8 @@ export default {
         class_id: '',
         category_id: ''
       },
-      activeIcon: 1
+      activeIcon: 1,
+      isOpenDialog: false
     }
   },
   created() {
@@ -156,6 +173,11 @@ export default {
     changeCategory(id) {
       this.bookParams.category_id = id
       this.activeIcon = id
+    },
+    // 接收弹框数据
+    fromDialog(data) {
+      this.isOpenDialog = data;
+      // 
     }
   },
 }
@@ -164,7 +186,7 @@ export default {
 <style lang="scss" scoped>
 .wisdiom-book {
   cursor: pointer;
-  transition: transform 0.6s;
+  transition: transform 0.3s;
   box-shadow: 6px 6px 5px #888 !important;
 }
 .wisdiom-book:hover {
@@ -205,7 +227,7 @@ export default {
   }
   .card_img {
     width: 100%;
-    padding-bottom: 140%;
+    padding-bottom: 125%;
     height: 0;
     overflow: hidden;
     img {
@@ -215,7 +237,7 @@ export default {
   .space_img {
     img {
       width: 100%;
-      margin: 38px 0;
+      margin: 1.5rem 0;
     }
   }
   .card_info {
@@ -243,5 +265,10 @@ export default {
 .select-dialog {
   max-height: 84vh;
   overflow: overlay;
+}
+.wisdomBook_main {
+  .el-col-5 {
+    width: 19.83333%;
+  }
 }
 </style>
