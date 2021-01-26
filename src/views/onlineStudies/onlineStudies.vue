@@ -55,7 +55,7 @@
               </div>
               <div class="card-content">
                 <el-button
-                  :loading="loading"
+                  :loading="item.loading"
                   type="text"
                   @click="openAnserDialog(item)"
                 >
@@ -158,7 +158,14 @@ export default {
     // 获取博物馆列表
     async getOnlieList() {
       onlineList().then((res) => {
-        this.museumList = res.data
+        const { data } = res
+        data.map(item=>{
+          let key = 'loading'
+          let value = false
+          item[key] = value
+        })
+        this.museumList = data
+        console.log(this.museumList);
       })
     },
     openDialogVisible(item) {
@@ -168,7 +175,7 @@ export default {
     openAnserDialog(item) {
       this.studiesData = item
       this.openAnswer = true
-      this.loading = true
+      item.loading = true
     },
     openPublishStudiesQuetions(item) {
       this.museumInfo = item
@@ -179,7 +186,7 @@ export default {
       this.openPublicQuetions = data
     },
     closeAnswerLoading(data) {
-      this.loading = data
+      this.studiesData.loading = data
     },
   },
 }

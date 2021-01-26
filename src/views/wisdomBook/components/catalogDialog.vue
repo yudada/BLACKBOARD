@@ -20,18 +20,18 @@
           <div slot="header">
             <span>{{ item.dirName }}</span>
           </div>
-          <div>
-            <div
-              class="catalog-content"
-              v-for="(item2, index) in item.child"
-              :key="index"
-            >
+          <div
+            class="catalog-content"
+            v-for="(item2, index) in item.child"
+            :key="index"
+          >
+            <div class="catalog-content-item">
               <span>{{ item2.dirName }}</span>
-              <div class="resource">
-                <img src="@/assets/images/catalog_resource.png" alt="" />
-                <span v-if="item2.modelNum">{{ item2.modelNum }}个</span>
-                <span v-else>0个</span>
-              </div>
+            </div>
+            <div class="resource">
+              <img src="@/assets/images/catalog_resource.png" alt="" />
+              <span v-if="item2.modelNum">{{ item2.modelNum }}个</span>
+              <span v-else>0个</span>
             </div>
           </div>
         </el-card>
@@ -67,9 +67,6 @@ export default {
         color: #666666;
       }
     }
-    .title_catalog::-webkit-scrollbar {
-      display: none;
-    }
   }
 }
 .catalog-card {
@@ -86,6 +83,12 @@ export default {
     justify-content: space-between;
     margin: 12px 0;
     border-bottom: 1px dashed #dcdcdc;
+    height: 1.5rem;
+    .catalog-content-item {
+      width: 88%;
+      height: 100%;
+      overflow: hidden;
+    }
     .resource {
       img {
         margin-right: 10px;

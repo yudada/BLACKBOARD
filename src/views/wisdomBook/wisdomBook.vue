@@ -40,7 +40,7 @@
                 <span>{{ item.subName }}</span>
               </div>
               <div
-                v-loading="loading"
+                v-loading="item.isLoading"
                 class="book-catalog"
                 @click="openCatalog(item)"
               >
@@ -151,7 +151,13 @@ export default {
       console.log(this.bookParams)
       wisdomBookList(this.bookParams).then((res) => {
         const { data } = res
+        data.map((item, i)=>{
+          let key = 'isLoading'
+          let value = false
+          item[key] = value
+        })
         this.subjectList = data
+        console.log(this.subjectList);
       })
     },
     getCategoryListBook() {
@@ -161,6 +167,7 @@ export default {
       })
     },
     openBookDialogVisible(item) {
+      console.log(item);
       this.bookDialogVisible = true
       this.bookInfo = item
     },
@@ -180,10 +187,10 @@ export default {
       this.isOpenDialog = data
     },
     openCatalog(book) {
-      this.loading = true
+      book.isLoading = true
       wisdomBookDeatil(book.id, 1).then((res) => {
         this.catalogInfo = res.data
-        this.loading = false
+        book.isLoading = false
         this.isOpenDialog = true
       })
     },
