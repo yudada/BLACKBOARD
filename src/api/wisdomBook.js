@@ -16,3 +16,12 @@ export function categoryListBook() {
     method: 'get'
   })
 }
+
+// 获取课本详情
+export function wisdomBookDeatil(book_id, data) {
+   return request({
+    url: `api/textbook/${book_id}`,
+    method: 'get',
+    params: { type: data}
+  })
+}

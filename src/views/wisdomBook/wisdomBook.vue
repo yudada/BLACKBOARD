@@ -10,7 +10,7 @@
             v-for="item in bookTypeList"
             :key="item.id"
             class="wisdom-header-item"
-            :class="{'wisdom-header-item-active': item.id === activeIcon }"
+            :class="{ 'wisdom-header-item-active': item.id === activeIcon }"
             @click="changeCategory(item.id)"
           >
             <i v-html="item.cover"></i>
@@ -20,19 +20,13 @@
       </el-row>
       <!-- 课本列表 -->
       <el-row :gutter="50">
-        <el-col
-          :span="5"
-          v-for="(item, index) in subjectList"
-          :key="index"
-          class="addpadding iapd_w"
-        >
+        <el-col :span="5" v-for="(item, index) in subjectList" :key="index">
           <el-card
             shadow="always"
             :body-style="{ padding: 0 }"
             class="wisdiom-book"
           >
-            <div class="card_img" 
-            @click="openBookDialogVisible(item)">
+            <div class="book-cover" @click="openBookDialogVisible(item)">
               <img
                 v-if="item.bookImg !== null"
                 :src="item.bookImg"
@@ -40,14 +34,18 @@
               />
               <img v-else src="@/assets/book/七年级生物.jpg" />
             </div>
-            <div class="card_info">
-              <span>{{ item.bookName }}</span>
-              <span>{{ item.subName }}</span>
-              <!-- <div>
+            <div class="book-info">
+              <div style="width: 80%">
                 <span>{{ item.bookName }}</span>
-              <span>{{ item.subName }}</span>
+                <span>{{ item.subName }}</span>
               </div>
-              <el-button @click="isOpenDialog = true">目录</el-button> -->
+              <div
+                v-loading="loading"
+                class="book-catalog"
+                @click="openCatalog(item)"
+              >
+                <img src="@/assets/icon/1_catalog.png" alt="" />
+              </div>
             </div>
           </el-card>
         </el-col>
@@ -58,7 +56,7 @@
             @click.native="addBook"
             class="wisdiom-book"
           >
-            <div class="space_img">
+            <div class="book-add">
               <img src="@/assets/book/addBook.jpg" />
             </div>
           </el-card>
@@ -88,11 +86,10 @@
           <select-dialog @closeDialog="fromSun"></select-dialog>
         </el-dialog>
 
-        
         <!-- 课程目录对话框 -->
         <Catalog-dialog
           :isOpenDialog="isOpenDialog"
-          :bookInfo="bookInfo"
+          :catalogInfo="catalogInfo"
           @dialog="fromDialog"
         />
       </el-row>
@@ -101,11 +98,15 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState } from 'vuex'
 import selectDialog from './components/selectDialog.vue'
 import CatalogDialog from './components/catalogDialog'
 import Breadcrumb from '@/components/breadcrumb.vue'
-import { wisdomBookList, categoryListBook } from '@/api/wisdomBook'
+import {
+  wisdomBookList,
+  categoryListBook,
+  wisdomBookDeatil,
+} from '@/api/wisdomBook'
 export default {
   components: { selectDialog, Breadcrumb, CatalogDialog },
   data() {
@@ -118,13 +119,15 @@ export default {
       bookInfo: {},
       bookDialogVisible: false,
       defaultPic: 'this.src="' + require('@/assets/book/七年级生物.jpg') + '"',
-      bookTypeList: [ { id: 0, name: '全部'}],
+      bookTypeList: [{ id: 0, name: '全部' }],
       bookParams: {
         class_id: '',
-        category_id: ''
+        category_id: '',
       },
       activeIcon: 1,
-      isOpenDialog: false
+      isOpenDialog: false,
+      loading: false,
+      catalogInfo: {},
     }
   },
   created() {
@@ -136,32 +139,30 @@ export default {
     ...mapState(['classInfo']),
   },
   watch: {
-    'bookParams.category_id':function(newValue, oldValue) {
-      if(newValue !== oldValue) {
+    'bookParams.category_id': function (newValue, oldValue) {
+      if (newValue !== oldValue) {
         this.getbookList()
       }
-    }
+    },
   },
   methods: {
     getbookList() {
-      if(this.bookParams.category_id === 1) this.bookParams.category_id = ''
-      console.log(this.bookParams);
-      wisdomBookList(this.bookParams).then(res=>{
+      if (this.bookParams.category_id === 1) this.bookParams.category_id = ''
+      console.log(this.bookParams)
+      wisdomBookList(this.bookParams).then((res) => {
         const { data } = res
         this.subjectList = data
       })
     },
     getCategoryListBook() {
-      categoryListBook().then(res=>{
+      categoryListBook().then((res) => {
         const { data } = res
         this.bookTypeList = data
-        console.log(data);
       })
     },
     openBookDialogVisible(item) {
       this.bookDialogVisible = true
       this.bookInfo = item
-      console.log(this.bookInfo)
     },
     addBook() {
       this.selectDialogVisible = true
@@ -176,22 +177,21 @@ export default {
     },
     // 接收弹框数据
     fromDialog(data) {
-      this.isOpenDialog = data;
-      // 
-    }
+      this.isOpenDialog = data
+    },
+    openCatalog(book) {
+      this.loading = true
+      wisdomBookDeatil(book.id, 1).then((res) => {
+        this.catalogInfo = res.data
+        this.loading = false
+        this.isOpenDialog = true
+      })
+    },
   },
 }
 </script>
 
 <style lang="scss" scoped>
-.wisdiom-book {
-  cursor: pointer;
-  transition: transform 0.3s;
-  box-shadow: 6px 6px 5px #888 !important;
-}
-.wisdiom-book:hover {
-  transform: scale(1.1);
-}
 .wisdomBook_concent {
   .wisdom-header {
     width: 1005;
@@ -221,43 +221,63 @@ export default {
       box-shadow: inset 0 2px 2px rgb(69 87 113 / 20%);
       border-radius: 3px;
       i {
-        color: #AD5DF3;
+        color: #ad5df3;
       }
     }
   }
-  .card_img {
-    width: 100%;
-    padding-bottom: 125%;
-    height: 0;
-    overflow: hidden;
-    img {
+  .wisdiom-book {
+    cursor: pointer;
+    transition: transform 0.5s;
+    box-shadow: 6px 6px 5px #888 !important;
+    .book-cover {
       width: 100%;
-    }
-  }
-  .space_img {
-    img {
-      width: 100%;
-      margin: 1.5rem 0;
-    }
-  }
-  .card_info {
-    padding: 1rem;
-    height: 3rem;
-    display: flex;
-    flex-direction: column;
-    span {
-      height: 50%;
+      padding-bottom: 125%;
+      height: 0;
       overflow: hidden;
-      color: #ad5df3;
-      font-weight: bold;
+      img {
+        width: 100%;
+      }
     }
-    span:nth-child(2) {
-      font-weight: normal;
+    .book-info {
+      width: calc(100% - 1rem);
+      padding: 1rem 0.5rem;
+      height: 3rem;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      span {
+        height: 50%;
+        display: flex;
+        overflow: hidden;
+        color: #ad5df3;
+        font-weight: bold;
+      }
+      span:nth-child(2) {
+        font-weight: normal;
+      }
+      .book-catalog {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #ad5df3;
+        img {
+          width: 1.5rem;
+        }
+      }
+    }
+    .book-add {
+      img {
+        width: 100%;
+        margin: 1.5rem 0;
+      }
     }
   }
 }
-.addpadding {
-  padding-bottom: 30px;
+.wisdiom-book:hover {
+  transform: scale(1.1);
 }
 </style>
 
@@ -269,6 +289,7 @@ export default {
 .wisdomBook_main {
   .el-col-5 {
     width: 19.83333%;
+    padding-bottom: 30px;
   }
 }
 </style>
