@@ -251,6 +251,13 @@ export default {
         { title: '填空题', type: 4, num: 0, select: [], btnText: '添加题目' },
         { title: '主观题', type: 5, num: 0, select: [], btnText: '添加题目' },
       ],
+      changeLang: [
+        { cn: '判断题' , en: 'judge' },
+        { cn: '单选题' , en: 'single' },
+        { cn: '多选题' , en: 'multiple' },
+        { cn: '填空题' , en: 'filling' },
+        { cn: '主观题' , en: 'subjective' },
+      ]
     }
   },
   created() {
@@ -312,11 +319,7 @@ export default {
       parperDetail(this.parperId).then((res) => {
         this.papersForm = res.data
         this.papersForm.exaQStructure.map((item) => {
-          if (item.type === 'judge') item.type = '判断题'
-          if (item.type === 'single') item.type = '单选题'
-          if (item.type === 'multiple') item.type = '多选题'
-          if (item.type === 'filling') item.type = '填空题'
-          if (item.type === 'subjective') item.type = '主观题'
+          if (item.type === this.changeLang.en) item.type = this.changeLang.cn
           this.typeList.map((item2) => {
             if (item.type === item2.title) {
               item2.select = item.select
@@ -346,18 +349,13 @@ export default {
         })
       })
       this.papersForm.exaQStructure.map((item) => {
-        if (item.type === '判断题') item.type = 'judge'
-        if (item.type === '单选题') item.type = 'single'
-        if (item.type === '多选题') item.type = 'multiple'
-        if (item.type === '填空题') item.type = 'filling'
-        if (item.type === '主观题') item.type = 'subjective'
+        if (item.type === this.changeLang.cn) item.type = this.changeLang.en
       })
       this.$refs.papersFormRef.validate(async (valid) => {
         if (!valid) return this.$message.error('请填写必要的表单项！')
         if (!this.$route.query.id) {
           // 保存
           papersAdd(this.papersForm).then((res) => {
-            if (res.statusCode !== 200) return
             this.$message.success('发布试卷成功!')
             this.papersForm.exaQStructure = [
               { num: '', score: '', type: '判断题' },
@@ -366,15 +364,13 @@ export default {
               { num: '', score: '', type: '填空题' },
               { num: '', score: '', type: '主观题' },
             ]
-            // this.cancelSubmitl()
+            this.$router.push('/papers-list')
           })
         } else {
           // 编辑
           delete this.papersForm.created_at
           papersEdit(this.parperId, this.papersForm).then((res) => {
-            if (res.statusCode !== 200) return
             this.$message.success('编辑试卷成功!')
-            this.getParpersDetail()
           })
         }
       })

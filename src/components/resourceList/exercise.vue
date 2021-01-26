@@ -55,11 +55,9 @@
             :label="item.queTitle"
             :value="item"
           >
-            <span class="que-select" v-if="item.queType === 1">判断题 {{ item.queTitle }}</span>
-            <span class="que-select" v-if="item.queType === 2">单选题 {{ item.queTitle }}</span>
-            <span class="que-select" v-if="item.queType === 3">多选题 {{ item.queTitle }}</span>
-            <span class="que-select" v-if="item.queType === 4">填空题 {{ item.queTitle }}</span>
-            <span class="que-select" v-if="item.queType === 5">主观题 {{ item.queTitle }}</span>
+            <span class="que-select" v-if="item.queType === queTypeList.value">
+              {{ queTypeList.label }}题 {{ item.queTitle }}
+            </span>
           </el-option>
         </el-select>
       </el-col>
@@ -93,15 +91,16 @@
       </el-table-column>
       <el-table-column prop="queType" label="题型" min-width="15%">
         <template slot-scope="scope">
-          <span v-if="scope.row.queType === 1">判断</span>
-          <span v-if="scope.row.queType === 2">单选</span>
-          <span v-if="scope.row.queType === 3">多选</span>
-          <span v-if="scope.row.queType === 4">填空</span>
-          <span v-if="scope.row.queType === 5">主观</span>
+          <span v-if="scope.row.queType === queTypeList.value">{{
+            queTypeList.label
+          }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="quePracticeSubject" label="练题对象" min-width="15%" />
-      <!-- <el-table-column prop="queKnowledge" label="知识点" /> -->
+      <el-table-column
+        prop="quePracticeSubject"
+        label="练题对象"
+        min-width="15%"
+      />
     </el-table>
     <el-pagination
       :hide-on-single-page="false"
@@ -115,14 +114,20 @@
     >
     </el-pagination>
     <span class="footer" v-show="!hidenBtn">
-      <el-button :class="classWork ? 'pb_btn' : 'cn_btn'" @click="sendContentID">{{btnText}}</el-button>
+      <el-button
+        :class="classWork ? 'pb_btn' : 'cn_btn'"
+        @click="sendContentID"
+        >{{ btnText }}</el-button
+      >
     </span>
   </div>
 </template>
+
 <script>
+import { practiceSubject, ExerciseLists } from '@/api/components'
 import _ from 'lodash'
 export default {
-  props: ['hidenBtn', 'queId', 'selectLimit','contentId','classWork'],
+  props: ['hidenBtn', 'queId', 'selectLimit', 'contentId', 'classWork'],
   data() {
     return {
       // 分页
@@ -151,7 +156,7 @@ export default {
     }
   },
   created() {
-    this.getQuePracticeSubjec()
+    this.getQuePracticeSubject()
     if (this.queId && this.queId.length) {
     }
     if (this.selectLimit) {
@@ -161,7 +166,7 @@ export default {
     } else {
       this.getExerciseList()
     }
-    if(this.contentId) {
+    if (this.contentId) {
       this.sendMsg.contentId = this.contentId
       this.getExerciseList()
     }
@@ -179,9 +184,9 @@ export default {
     },
   },
   computed: {
-    btnText: function() {
+    btnText: function () {
       return this.classWork ? '立即发布' : '确 定'
-    }
+    },
   },
   methods: {
     handleSizeChange(val) {
@@ -193,30 +198,33 @@ export default {
       this.getExerciseList()
     },
     // 练习对象列表
-    async getQuePracticeSubjec() {
-      const { data: res } = await this.$http.get(`api/common/constant`)
-      const { periodArr } = res.data
-      this.quePracticeSubjectList = Object.values(periodArr)
+    async getQuePracticeSubject() {
+      practiceSubject().then(res=>{
+        const { periodArr } = res.data
+        this.quePracticeSubjectList = Object.values(periodArr)
+      })
     },
     // 获取题库列表
     async getExerciseList() {
-      const { data: res } = await this.$http.get(`api/library/lists`, {
-        params: {
+      this.loading = true
+      let params =  {
           limit: this.pageSize,
           page: this.currentPage,
           queTitle: this.queTitle,
           queType: this.queType,
           quePracticeSubject: this.quePracticeSubject,
-        },
-      })
-      if (res.statusCode !== 200) return this.$message.error(res.msg)
-      this.exerciseList = res.data.data
-      this.total = res.data.total
-      this.pageSize = res.data.per_page
-      this.currentPage = res.data.current_page
-      this.loading = false
-      this.$nextTick(() => {
-        this.setChecked()
+        }
+      ExerciseLists(params).then(res=>{
+        console.log(res);
+        const { current_page, data, per_page, total } = res.data
+        this.exerciseList = data
+        this.total = total
+        this.pageSize = parseFloat(per_page)
+        this.currentPage = current_page
+        this.loading = false
+        this.$nextTick(() => {
+          this.setChecked()
+        })
       })
     },
     // 发送内容

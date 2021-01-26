@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import { wisdomBookList, wisdomBookDeatil } from '@/api/wisdomBook'
 export default {
   props: ['bookId', 'selecdId'],
   data() {
@@ -54,12 +55,12 @@ export default {
       bookDir: [],
       checkAll: false,
       sendMsg: [],
-      book: ''
+      book: '',
     }
   },
   created() {
     this.getbookList()
-    if(this.bookId) {
+    if (this.bookId) {
       this.book = this.bookId
       this.getbookInfo()
     }
@@ -67,38 +68,40 @@ export default {
   methods: {
     // 获取课本列表
     async getbookList() {
-      const { data: res } = await this.$http.get('api/textbook/lists')
-      if (res.statusCode !== 200)
-        return this.$messsage.error('获取课本列表失败！')
-      this.bookList = res.data
+      wisdomBookList().then((res) => {
+        const { data } = res
+        this.bookList = data
+      })
     },
     // 获取课本信息
     async getbookInfo() {
       const bookId = this.book
-      const { data: res } = await this.$http.get(`api/textbook/${bookId}`)
-      if (res.statusCode !== 200) return this.$message.error(res.msg)
-      this.bookInfo = res.data
-      this.bookDir = this.setChecked(res.data.textbook_dir)
-      if(this.selecdId) {
-        const selecdId = this.selecdId
-        const bookDir = this.bookDir
-        bookDir.map(item=>{
-          selecdId.map(item2=>{
-            if(item2 === item.id) {
-              item.isChecked = true
-            }
+      wisdomBookDeatil(bookId).then((res) => {
+        console.log(res)
+        const { data } = res
+        this.bookInfo = data
+        this.bookDir = this.setChecked(data.textbook_dir)
+        if (this.selecdId) {
+          const selecdId = this.selecdId
+          const bookDir = this.bookDir
+          bookDir.map((item) => {
+            selecdId.map((item2) => {
+              if (item2 === item.id) {
+                item.isChecked = true
+              }
+            })
           })
-        })
-        for (let item of bookDir) {
-        item.child.map((childItem) => {
-          selecdId.map(item2=>{
-            if(item2 ===childItem.id) {
-              childItem.isChecked = true
-            }
-          })
-        })
-      }
-      }
+          for (let item of bookDir) {
+            item.child.map((childItem) => {
+              selecdId.map((item2) => {
+                if (item2 === childItem.id) {
+                  childItem.isChecked = true
+                }
+              })
+            })
+          }
+        }
+      })
     },
     // 数据初始化
     setChecked(bookDir, checked = false) {

@@ -86,6 +86,15 @@ export function changeUserInfo(data) {
   })
 }
 
+// 修改用户密码
+export function changePassWord(data) {
+  return request({
+    url: `api/user/modifyPassword`,
+    method: 'post',
+    params: data
+  })
+}
+
 // 添加教师前获取基础信息
 export function teacherSubject() {
   return request({

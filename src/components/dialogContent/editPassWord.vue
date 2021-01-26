@@ -11,21 +11,25 @@
         label-width="100px"
       >
         <el-form-item label="旧密码" prop="userPassword">
-          <el-input v-model.number="ruleForm.userPassword"></el-input>
+          <el-input
+            type="password"
+            autocomplete="off"
+            v-model="ruleForm.userPassword"
+          />
         </el-form-item>
         <el-form-item label="新密码" prop="newPassword">
           <el-input
             type="password"
             v-model="ruleForm.newPassword"
             autocomplete="off"
-          ></el-input>
+          />
         </el-form-item>
         <el-form-item label="确认密码" prop="checkPass">
           <el-input
             type="password"
             v-model="ruleForm.checkPass"
             autocomplete="off"
-          ></el-input>
+          />
         </el-form-item>
         <el-form-item>
           <el-button @click="submitForm" class="cn_btn">提交</el-button>
@@ -36,6 +40,7 @@
 </template>
 
 <script>
+import { changePassWord } from '@/api/index'
 export default {
   data() {
     var checkOldPass = (rule, value, callback) => {
@@ -75,13 +80,13 @@ export default {
       },
       rules: {
         newPassword: [
-          { required: true, validator: validatePass, trigger: 'blur' }
+          { required: true, validator: validatePass, trigger: 'blur' },
         ],
         checkPass: [
-          { required: true, validator: validatePass2, trigger: 'blur' }
+          { required: true, validator: validatePass2, trigger: 'blur' },
         ],
         userPassword: [
-          { required: true, validator: checkOldPass, trigger: 'blur' }
+          { required: true, validator: checkOldPass, trigger: 'blur' },
         ],
       },
     }
@@ -90,15 +95,11 @@ export default {
     submitForm() {
       this.$refs.ruleForm.validate(async (valid) => {
         if (!valid) return
-        const { data: res } = await this.$http.post(
-          `api/user/modifyPassword`,
-          this.ruleForm
-        )
-        if (res.statusCode !== 200) return this.$message.error(res.msg)
-        this.$message.success(res.msg)
-
-        this.$emit('closeDialog', false)
-        this.resetForm()
+        changePassWord(this.ruleForm).then((res) => {
+          this.$message.success(res.msg)
+          this.$emit('closeDialog', false)
+          this.resetForm()
+        })
       })
     },
     resetForm() {
