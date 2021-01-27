@@ -24,8 +24,7 @@
         <el-form-item label="课件内容">
           <br />
           <!-- 富文本编辑器组件 -->
-          <!-- <vue-ueditor-wrap v-model="addCoursewareForm.content" :config="myConfig"></vue-ueditor-wrap> -->
-          <quill-editor v-model="addCoursewareForm.content" />
+          <quill-editor :options="editorOption" v-model="addCoursewareForm.content" />
         </el-form-item>
         <el-form-item label="添加附件">
           <br />
@@ -72,7 +71,13 @@
     </el-card>
   </div>
 </template>
+
 <script>
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+import '@/assets/css/editor.scss'
+import { quillEditor } from 'vue-quill-editor'
 import Breadcrumb from '@/components/breadcrumb.vue'
 import VueUeditorWrap from 'vue-ueditor-wrap'
 import { mapState } from 'vuex'
@@ -85,10 +90,14 @@ import {
 export default {
   components: {
     VueUeditorWrap,
-    Breadcrumb
+    Breadcrumb,
+    quillEditor
   },
   data() {
     return {
+      editorOption: {
+        placeholder: '在此输入...'
+      },
       addCoursewareForm: {
         title: '',
         content: '',
@@ -112,16 +121,7 @@ export default {
         Authorization: window.sessionStorage.getItem('token')
       },
       accept: '.pdf,.PDF,.xlsx,.doc,.DOC,.xls,.ppt,.PPT,.rar,.RAR,.zip,.ZIP,pptx,.PPTX,docx,.DOCX',
-      accept2: 'pdf/xlsx/doc/docx/xls/ppt/rar/zip'
-      // myConfig: {
-      //   // 编辑器不自动被内容撑高
-      //   autoHeightEnabled: true,
-      //   // 初始容器高度
-      //   initialFrameHeight: 240,
-      //   // 初始容器宽度
-      //   initialFrameWidth: '100%',
-      //   serverUrl: this.upURL,
-      // },
+      accept2: 'pdf/xlsx/doc/docx/xls/ppt/rar/zip',
     }
   },
   computed: {
@@ -242,11 +242,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">
-.add-course {
-  .ql-editor {
-    height: 200px !important;
-  }
-}
-</style>

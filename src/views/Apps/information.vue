@@ -40,7 +40,7 @@
               </el-form-item>
               <el-form-item label="学校介绍"></el-form-item>
               <!-- 富文本编辑器组件 -->
-              <quill-editor v-model="schoolRuleForm.schoolIntroduce" />
+              <quill-editor :options="editorOption" v-model="schoolRuleForm.schoolIntroduce" />
               <div class="submit_btn">
                 <el-button @click="submitForm">保存学校信息</el-button>
               </div>
@@ -53,15 +53,23 @@
 </template>
 
 <script>
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+import '@/assets/css/editor.scss'
+import { quillEditor } from 'vue-quill-editor'
 import { schoolDetail, editSchoolDetail } from '@/api/apps'
 import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
-  components: { Breadcrumb },
+  components: { Breadcrumb, quillEditor },
   data() {
     return {
       navData: {
         title: '系统设置',
         childTitle: '学校资料'
+      },
+      editorOption: {
+        placeholder: '在此输入...'
       },
       // 学校信息
       schoolRuleForm: {
@@ -139,13 +147,6 @@ export default {
 
 <style lang="scss">
 .information_main {
-  .ql-editor {
-    height: 200px !important;
-  }
-  .ql-snow .ql-tooltip {
-    left: 0% !important;
-    top: 0 !important;
-  }
   .submit_btn {
     display: flex;
     justify-content: flex-end;
