@@ -146,7 +146,7 @@ export default {
     },
     //清除cookie
     clearCookie: function () {
-      this.setCookie('', '', -1) //修改2值都为空，天数为负1天就好了
+      this.setCookie('', '', -1) //修改2值都为空，天数为负1天
     },
   },
 }

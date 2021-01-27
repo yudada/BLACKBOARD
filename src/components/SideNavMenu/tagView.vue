@@ -1,21 +1,4 @@
 <template>
-  <!-- <ul class="tag_views" v-if="$store.state.pageCache.length > 0">
-    <li
-      :t="$store.state.curPage"
-      :class="{ active: $store.state.curPage == item.nameE }"
-      v-for="(item, index) in $store.state.pageCache"
-      :key="index"
-      @click.stop="goPage(item.nameZh, item.nameE, item.queryInfo)"
-    >
-      <div>
-        {{ item.nameZh }}
-        <i
-          class="el-icon-close"
-          @click.stop="removeTab(item.nameZh, item.nameE)"
-        />
-      </div>
-    </li>
-  </ul> -->
   <div>
     <el-dropdown>
       <el-button class="el-dro-button">
@@ -47,10 +30,7 @@ export default {
   },
   methods: {
     goPage(nameZh, nameE) {
-      console.log(nameZh, nameE);
-      this.$router.push(nameE).catch((err) => {
-          console.log(nameZh)
-        })
+      this.$router.push(nameE).catch((err) => {})
     },
     removeTab(nameZh, nameE) {
       //移除tab

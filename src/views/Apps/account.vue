@@ -11,6 +11,7 @@
               <el-button style="float: right; padding: 3px 0" type="text" @click="addTeacher">添加新老师</el-button>
             </div>
             <el-table :data="roleTable" stripe border>
+              <el-table-column type="index" label="序号" width="50px" align="center" />
               <el-table-column prop="teaName" label="姓名" />
               <el-table-column prop="teaPosition" label="职位" />
               <el-table-column prop="mobile" label="联系电话" />

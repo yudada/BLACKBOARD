@@ -12,11 +12,11 @@
             </div>
             <el-table :data="roleTable" stripe border>
               <el-table-column type="index" label="序号" width="50px" align="center" />
-              <el-table-column prop="userName" label="账号" width="100px" />
-              <el-table-column prop="realName" label="姓名" width="100px" />
-              <el-table-column prop="content" label="操作内容"/>
-              <el-table-column prop="ip" label="IP地址" width="150px" />
-              <el-table-column prop="created_at" label="操作时间" width="180px" />
+              <el-table-column prop="userName" label="账号" min-width="15%" />
+              <el-table-column prop="realName" label="姓名" min-width="15%" />
+              <el-table-column prop="ip" label="IP地址" min-width="15%" />
+              <el-table-column prop="created_at" label="操作时间" min-width="15%" />
+              <el-table-column prop="content" label="操作内容" min-width="40%"/>
             </el-table>
             <el-pagination
               :hide-on-single-page="false"

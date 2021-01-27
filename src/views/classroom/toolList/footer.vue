@@ -16,32 +16,6 @@
           >
             <span v-if="num > 1">每组{{ num }}人</span>
           </el-dropdown-item>
-          <el-dropdown-item @click.native="selectGroupNum(0)">
-            <el-popover
-              placement="top"
-              width="160"
-              v-model="selectGroupNumvisible"
-            >
-              <el-input
-                style="margin-bottom: 5px"
-                size="mini"
-                type="number"
-                v-model="groupValue"
-              />
-              <div style="text-align: right; margin: 0">
-                <el-button
-                  type="primary"
-                  size="mini"
-                  @click="selectGroupNum(0)"
-                >
-                  确定
-                </el-button>
-              </div>
-              <!-- <el-button @click="selectGroupNumvisible = true" type="text" style="color: #636262" slot="reference">
-                指定人数
-              </el-button> -->
-            </el-popover>
-          </el-dropdown-item>
           <el-dropdown-item @click.native="selectGroupNum(1)">
             取消分组
           </el-dropdown-item>
@@ -115,7 +89,7 @@
 import { mapState, mapMutations } from 'vuex'
 import Interaction from '../components/interaction.vue'
 import Presentation from '../components/presentation.vue'
-import { studentScreen, classScreen, cancelStudentGroup } from '@/api/classRoom.js'
+import { classScreen, cancelStudentGroup } from '@/api/classRoom.js'
 import TagView from '@/components/SideNavMenu/tagView.vue'
 export default {
   components: { Interaction, Presentation, TagView },
@@ -129,9 +103,8 @@ export default {
       groupValue: 0,
     }
   },
-  created() {},
   computed: {
-    ...mapState(['rewardsDialog', 'markList', 'checkedBox', 'studentList','groupNumChange']),
+    ...mapState(['markList', 'checkedBox', 'studentList','groupNumChange']),
     isSeat: function () {
       return this.$route.path === '/student-seat' ? true : false
     },
@@ -153,10 +126,13 @@ export default {
       })
     },
     selectGroupNum(num) {
+      console.log(this.$store.state.groupNum);
       if (num <= 1) {
+      if(!this.$store.state.groupNum) return this.$message.info('暂无分组')
+        this.$store.state.groupNum = ''
         this.setIsGroup(false)
         cancelStudentGroup().then(res=>{
-          console.log(res);
+          this.$message.success(res.msg)
         })
       } else {
         this.setIsGroup(true)

@@ -1,19 +1,10 @@
 <template>
   <div class="wscn-http404-container">
     <div class="wscn-http404">
-      <!-- <div class="pic-404">
-        <img class="pic-404__parent" src="@/assets/404_images/404.png" alt="404">
-        <img class="pic-404__child left" src="@/assets/404_images/404_cloud.png" alt="404">
-        <img class="pic-404__child mid" src="@/assets/404_images/404_cloud.png" alt="404">
-        <img class="pic-404__child right" src="@/assets/404_images/404_cloud.png" alt="404">
-      </div> -->
       <div class="bullshit">
-        <div class="bullshit__oops">OOPS!</div>
-        <!-- <div class="bullshit__info">All rights reserved
-          <a style="color:#20a0ff" href="https://wallstreetcn.com" target="_blank">wallstreetcn</a>
-        </div> -->
+        <div class="bullshit__oops">哎呀！</div>
         <div class="bullshit__headline">{{ message }}</div>
-        <div class="bullshit__info">Please check that the URL you entered is correct, or click the button below to return to the homepage.</div>
+        <div class="bullshit__info">请检查您输入的URL是否正确，或单击下面的按钮返回首页。</div>
         <a href="javascript:history.back(-1)" class="bullshit__return-home">Go Back</a>
       </div>
     </div>
@@ -26,7 +17,7 @@ export default {
   name: 'Page404',
   computed: {
     message() {
-      return 'The webmaster said that you can not enter this page...'
+      return '进入了未知领域...'
     }
   }
 }
@@ -37,11 +28,11 @@ export default {
   transform: translate(-50%,-50%);
   position: absolute;
   top: 40%;
-  left: 50%;
+  left: 30%;
 }
 .wscn-http404 {
   position: relative;
-  width: 1200px;
+  width: 100%;
   padding: 0 50px;
   overflow: hidden;
   .pic-404 {
@@ -165,7 +156,7 @@ export default {
       font-size: 32px;
       font-weight: bold;
       line-height: 40px;
-      color: #1482f0;
+      color: #AD5Df3;
       opacity: 0;
       margin-bottom: 20px;
       animation-name: slideUp;
@@ -200,7 +191,7 @@ export default {
       float: left;
       width: 110px;
       height: 36px;
-      background: #1482f0;
+      background: #AD5Df3;
       border-radius: 100px;
       text-align: center;
       color: #ffffff;

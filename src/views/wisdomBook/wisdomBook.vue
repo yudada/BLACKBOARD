@@ -201,7 +201,7 @@ export default {
 <style lang="scss" scoped>
 .wisdomBook_concent {
   .wisdom-header {
-    width: 1005;
+    width: 100%;
     display: flex;
     justify-content: space-around;
     background-color: #fff;
@@ -214,11 +214,12 @@ export default {
       align-items: center;
       color: #6d7382;
       padding: 20px 0;
+      margin: 0 5px;
       width: 100%;
       cursor: pointer;
       i {
-        font-size: x-large;
-        margin-bottom: 5px;
+        font-size: xx-large;
+        margin-bottom: 10px;
       }
     }
     .wisdom-header-item:hover,

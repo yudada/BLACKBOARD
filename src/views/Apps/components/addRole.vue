@@ -179,5 +179,6 @@ export default {
 <style lang="scss">
   .el-tree-node.is-expanded>.el-tree-node__children {
     display: flex;
+    flex-wrap: wrap;
   }
 </style>

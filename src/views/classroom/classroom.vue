@@ -14,14 +14,8 @@
   </div>
 </template>
 <script>
-import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
-import {
-  studentName,
-  scoreTagList,
-  score,
-  studentScreen,
-  classScreen,
-} from '@/api/classRoom.js'
+import { mapState, mapMutations } from 'vuex'
+import { studentName, scoreTagList } from '@/api/classRoom.js'
 import Footer from './toolList/footer.vue'
 import TagView from '../../components/SideNavMenu/tagView.vue'
 export default {
@@ -41,17 +35,11 @@ export default {
     this.getTagList()
   },
   watch: {
-    reload: function (newReload, oldReload) {
+    reload: function () {
       this.getStudentList()
     },
     $route: function () {
-      const routeInfo = this.$route
-      if(routeInfo.path === '/exercise-detail' || routeInfo.path === '/class-exercise-detail') return
-      var obj = {
-        nameZh: routeInfo.meta.title,
-        nameE: routeInfo.fullPath,
-      }
-      this.$store.commit('addPageCache', obj)
+      this.addTagView()
     },
   },
   computed: {
@@ -62,6 +50,7 @@ export default {
   },
   mounted() {
     window.addEventListener('unload', this.saveState)
+    this.addTagView()
   },
   methods: {
     saveState() {
@@ -75,8 +64,21 @@ export default {
       'setTagMinusList',
       'setGroupNum',
       'setIsGroup',
-      'setGroupArr'
+      'setGroupArr',
     ]),
+    addTagView() {
+      const routeInfo = this.$route
+      if (
+        routeInfo.path === '/exercise-detail' ||
+        routeInfo.path === '/class-exercise-detail'
+      )
+        return
+      var obj = {
+        nameZh: routeInfo.meta.title,
+        nameE: routeInfo.fullPath,
+      }
+      this.$store.commit('addPageCache', obj)
+    },
     closeSide() {
       this.$store.commit('setCollapse', true)
       this.$store.commit('setFooter', false)
@@ -114,11 +116,11 @@ export default {
         this.setStudentList(this.studentList)
         this.setStudentIndexs(this.studentIndexs)
 
-        if(is_group === 1) {
+        if (is_group === 1) {
           this.setIsGroup(true)
           let groupArr = this.groupStudentList(this.studentList, groupLen)
           this.setGroupArr(groupArr)
-          console.log(groupArr);
+          console.log(groupArr)
         } else {
           this.setIsGroup(false)
         }

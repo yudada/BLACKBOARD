@@ -11,14 +11,15 @@
               <el-button style="float: right; padding: 3px 0" type="text" @click="addRole">添加新角色</el-button>
             </div>
             <el-table :data="roleTable" stripe border v-loading="loading">
-              <el-table-column prop="name" label="角色名称" width="160" />
-              <el-table-column prop="module_name" label="权限" :show-overflow-tooltip="true">
+              <el-table-column type="index" label="序号" width="50px" align="center" />
+              <el-table-column prop="name" label="角色名称" min-width="12%" />
+              <el-table-column prop="module_name" label="权限" :show-overflow-tooltip="true"  min-width="65%">
                 <template slot-scope="scope">
                   <span v-for="(item,index) in scope.row.module_name" :key="item + index">{{item}}   </span>
                   <span v-if="scope.row.module_name.length === 0">—— ——</span>
                 </template>
               </el-table-column>
-              <el-table-column label="操作" width="160">
+              <el-table-column label="操作" min-width="18%">
                 <template slot-scope="scope">
                   <el-button type="text" @click="editRole(scope.row.id)">编辑</el-button>
                   <el-button type="text" @click="removeRole(scope.row.id)" class="delete_btn">删除</el-button>

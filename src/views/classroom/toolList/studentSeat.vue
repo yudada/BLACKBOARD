@@ -140,4 +140,17 @@ export default {
     background: linear-gradient(to bottom right, #9853af, #623aa2);
   }
 }
+.nostudent {
+  .nostudent-card {
+    height: 50vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: x-large;
+    span {
+      color: #b1afaf;
+      cursor: pointer;
+    }
+  }
+}
 </style>

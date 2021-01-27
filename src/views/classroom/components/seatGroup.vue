@@ -106,7 +106,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import draggable from 'vuedraggable'
 import SeatList from '../components/seatList.vue'
 import { studentScreen } from '@/api/classRoom'
@@ -299,19 +299,6 @@ export default {
   }
   .grounp3 {
     width: calc(33% - 20px) !important;
-  }
-}
-.nostudent {
-  .nostudent-card {
-    height: 500px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: xx-large;
-    span {
-      color: #b1afaf;
-      cursor: pointer;
-    }
   }
 }
 
