@@ -35,12 +35,13 @@
     </div>
     <span slot="footer" class="dialog-footer">
       <el-button @click="closeDialog">取 消</el-button>
-      <el-button type="primary" @click="addWisdomBook">确 定</el-button>
+      <el-button type="primary" :loading="loading" @click="addWisdomBook">确 定</el-button>
     </span>
   </div>
 </template>
 
 <script>
+import { textbookChoose, additionTextbook } from '@/api/wisdomBook'
 export default {
   name: 'selectDialog',
   props: ['dialogvisible'],
@@ -51,6 +52,7 @@ export default {
       classId: '',
       wisdomBookId: [],
       defaultPic: 'this.src="' + require('@/assets/book/七年级生物.jpg') + '"',
+      loading: false
     }
   },
   computed: {
@@ -63,28 +65,23 @@ export default {
   },
   methods: {
     async getBookList() {
-      const { data: res } = await this.$http.get(`api/textbook/choose`)
-      this.bookList = res.data
-    },
-    // async getClassList() {
-    //   const { data: res } = await this.$http.get(`api/classroom/select`)
-    //   console.log(res)
-    //   this.classList = res.data
-    //   this.classId = this.classList[0].class_id
-
-    //   this.getBookList()
-    // },
-    async addWisdomBook() {
-      if(this.bookList.length === 0) return this.closeDialog()
-      console.log(this.classId, this.wisdomBookId)
-      const { data: res } = await this.$http.post(`api/textbook/store`, {
-        textbook_ids: this.wisdomBookId,
+      textbookChoose().then(res=>{
+        const { data } = res
+        this.bookList = data
       })
-      if (res.statusCode !== 200) return this.$message.error(res.msg)
-      this.$message.success(res.msg)
-      this.closeDialog()
+    },
+    async addWisdomBook() {
+      this.loading = true
+      if(this.bookList.length === 0) return this.closeDialog()
+      additionTextbook(this.wisdomBookId).then(res=>{
+        console.log(res);
+        this.$message.success(res.msg)
+        this.closeDialog()
+        this.loading = false
+      })
     },
     closeDialog() {
+      this.loading = false
       this.$emit('closeDialog', false)
     },
   },

@@ -33,7 +33,9 @@
     </span>
   </div>
 </template>
+
 <script>
+import { wisdomBookDeatil } from '@/api/wisdomBook'
 export default {
   props: ['bookId', 'contentId','hidenBtn','classWork'],
   data() {
@@ -70,29 +72,30 @@ export default {
     },
     // 获取课本信息
     async getbookList() {
-      const { data: res } = await this.$http.get(`api/textbook/${this.bookId}`)
-      if (res.statusCode !== 200) return this.$message.error(res.msg)
-      this.bookInfo = res.data
-      this.bookDir = this.setChecked(res.data.textbook_dir)
-      if (this.contentId) {
-        this.sendMsg.contentId = this.contentId
-        this.bookDir.map(item=>{
-          this.contentId.map(item2=>{
-            if(item.id === item2) {
-              item.isChecked = true
-            }
+      wisdomBookDeatil(this.bookId).then((res)=>{
+        const { data } = res
+        this.bookInfo = data
+        this.bookDir = this.setChecked(data.textbook_dir)
+        if (this.contentId) {
+          this.sendMsg.contentId = this.contentId
+          this.bookDir.map(item=>{
+            this.contentId.map(item2=>{
+              if(item.id === item2) {
+                item.isChecked = true
+              }
+            })
           })
-        })
-        for (let item of this.bookDir) {
-        item.child.map((childItem) => {
-          this.contentId.map(item2=>{
-            if(childItem.id === item2) {
-              childItem.isChecked = true
-            }
+          for (let item of this.bookDir) {
+          item.child.map((childItem) => {
+            this.contentId.map(item2=>{
+              if(childItem.id === item2) {
+                childItem.isChecked = true
+              }
+            })
           })
-        })
-      }
-      }
+        }
+        }
+      })
     },
     // 发送内容
     sendContentID() {

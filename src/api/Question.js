@@ -26,3 +26,20 @@ export function detailQuetions(id) {
   })
 }
 
+// 题库列表
+export function libraryLists(data) {
+  return request({
+    url: `api/library/lists`,
+    method: 'get',
+    params: data
+  })
+}
+
+// 删除题目
+export function libraryDelete(id) {
+  return request({
+    url: `api/library/${id}`,
+    method: 'delete'
+  })
+}
+

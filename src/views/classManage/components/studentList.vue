@@ -92,7 +92,6 @@ export default {
       this.queryInfo.limit = this.pageSize;
       nowStudents(this.classInfo.class_id,this.queryInfo).then(res => {
         const { data } = res;
-        console.log(data);
         this.studentData = data.data
         this.total = data.total
         this.currentPage = data.current_page

@@ -2,7 +2,6 @@ import Vue from 'vue'
 import App from '@/App.vue'
 import router from '@/router'
 import '@/plugins/element.js'
-import instance from '@/utils/http'
 import store from '@/store/index'
 
 // 导入全局样式
@@ -19,9 +18,6 @@ import VueQuillEditor from 'vue-quill-editor'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
-
-
-Vue.prototype.$http = instance
 
 Vue.config.productionTip = false
 

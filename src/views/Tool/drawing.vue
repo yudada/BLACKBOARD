@@ -39,13 +39,14 @@
 </template>
 
 <script>
+import { subjectToolsLists } from '@/api/tool'
 import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
   components: { Breadcrumb },
   data() {
     return {
       navData: {
-        childTitle: '学科工具'
+        childTitle: '学科工具',
       },
       toolList: [],
       dialogVisible: false,
@@ -78,27 +79,26 @@ export default {
   },
   methods: {
     async getToolList() {
-      const { data: res } = await this.$http.get(`api/subjectTools/lists`)
-      if (res.statusCode !== 200)
-        return this.$message.error('获取工具列表失败！')
-      this.toolList = res.data
+      subjectToolsLists().then((res) => {
+        const { data } = res
+        this.toolList = data
 
-      this.toolList.map((item) => {
-        this.toolUrlList.map((item2) => {
-          if (item.toolTitle === item2.toolTitle) {
-            item.toolAddress = item2.toolAddress
-          }
+        this.toolList.map((item) => {
+          this.toolUrlList.map((item2) => {
+            if (item.toolTitle === item2.toolTitle) {
+              item.toolAddress = item2.toolAddress
+            }
+          })
         })
+        console.log(this.toolList)
       })
-      console.log(this.toolList)
     },
     openDialogVisible(tool) {
-      console.log(tool)
-      this.toolInfo = tool
       if (tool.toolAddress !== '#' && tool.toolAddress !== null) {
+        this.toolInfo = tool
         this.dialogVisible = true
       } else {
-        this.$message.info('功能开发中!!!')
+        this.$message.info('功能开发中...敬请期待!')
       }
     },
   },

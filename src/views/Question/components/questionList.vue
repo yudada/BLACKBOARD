@@ -23,28 +23,17 @@
         </el-row>
         <el-table :data="questionList" style="width: 100%" v-loading="loading" stripe border>
           <el-table-column type="index" label="序号" width="50px" align="center" />
-          <el-table-column v-if="type === 3" prop="queYear" label="年份">
-          </el-table-column>
-          <el-table-column prop="queTitle" label="题目" width="300">
-          </el-table-column>
-          <el-table-column prop="queType" label="题型">
-            <template slot-scope="scope">
-              <span v-if="scope.row.queType === 1">判断</span>
-              <span v-if="scope.row.queType === 2">单选</span>
-              <span v-if="scope.row.queType === 3">多选</span>
-              <span v-if="scope.row.queType === 4">填空</span>
-              <span v-if="scope.row.queType === 5">主观</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="quePracticeSubject" label="练题对象">
-          </el-table-column>
-          <el-table-column prop="status" label="状态">
+          <el-table-column v-if="type === 3" prop="queYear" label="年份" />
+          <el-table-column prop="queTitle" label="题目" min-width="40%" />
+          <el-table-column prop="queType" label="题型" :formatter="formatterValue" min-width="10%" />
+          <el-table-column prop="quePracticeSubject" label="练题对象" min-width="15%" :formatter="formatterValueSubject" />
+          <el-table-column prop="status" label="状态" min-width="10%">
             <template slot-scope="scope">
               <span v-if="scope.row.status === 1">显示</span>
               <span v-if="scope.row.status === 0">暂存</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作">
+          <el-table-column label="操作" min-width="15%">
             <template slot-scope="scope">
               <div class="deit_box">
                 <el-button type="text" @click="openDetail(scope.row.id)">查看</el-button>
@@ -72,6 +61,8 @@
 </template>
 
 <script>
+import { practiceSubject } from '@/api/components'
+import { libraryLists, libraryDelete } from '@/api/Question'
 export default {
     name: 'questionList',
     props: ['type'],
@@ -103,35 +94,39 @@ export default {
   },
   methods: {
     async getQuePracticeSubjec() {
-      const { data: res } = await this.$http.get(`api/common/constant`)
-      const {periodArr} =res.data;
-      this.quePracticeSubjectList = Object.values(periodArr)
+      practiceSubject().then(res=>{
+        const { periodArr } = res.data
+        this.quePracticeSubjectList = Object.values(periodArr)
+      })
     },
     // 获取题库列表
     async getQueList() {
-      const { data: res } = await this.$http.get("api/library/lists", {
-        params: {
-          limit: this.pageSize,
-          page: this.currentPage,
-          type: this.type,
-          queTitle: this.queTitle,
-          queType: this.queType,
-          quePracticeSubject: this.quePracticeSubject,
-        },
-      });
-      if (res.statusCode !== 200) return this.$message.error(res.msg);
-      this.questionList = res.data.data;
-      this.total = res.data.total;
-      this.currentPage = res.data.current_page;
+      this.loading = true;
+      let params = {
+        limit: this.pageSize,
+        page: this.currentPage,
+        type: this.type,
+        queTitle: this.queTitle,
+        queType: this.queType,
+        quePracticeSubject: this.quePracticeSubject,
+      }
+      libraryLists(params).then((res)=>{
+        console.log(res);
+        const { current_page, data, per_page, total } = res.data
+        this.questionList = data;
+        this.total = total;
+        this.currentPage = current_page;
+        this.pageSize = parseFloat(per_page)
 
-      this.loading = false;
+        this.loading = false;
+      })
     },
     openDetail(id) {
       this.$router.push({ path: "/detail", query: { id: id } });
     },
     async removeById(id) {
       const confirmResult = await this.$confirm(
-        "此操作将永久删除该作业, 是否继续?",
+        "此操作将永久删除该题目, 是否继续?",
         "提示",
         {
           confirmButtonText: "确定",
@@ -143,10 +138,10 @@ export default {
       if (confirmResult !== "confirm") {
         return 
       }
-      const { data: res } = await this.$http.delete(`api/library/${id}`);
-      if (res.statusCode !== 200) return this.$message.error(res.msg);
-      this.$message.success("删除成功！");
-      this.getQueList();
+      libraryDelete(id).then(res=>{
+        this.$message.success("删除成功！");
+        this.getQueList();
+      })
     },
     editById(id) {
       this.$router.push({ path: "/establish", query: { id: id } });
@@ -159,6 +154,21 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val;
       this.getQueList();
+    },
+    formatterValue(row, column, cellValue, index) {
+      let result = this.queTypeList.map(item=>{
+        if(item.value === cellValue) {
+          return item.label
+        }
+      })
+      return result
+    },
+    formatterValueSubject(row, column, cellValue, index) {
+      if (!Boolean(cellValue)) {
+          return "— —";
+      } else {
+          return cellValue;
+      }
     }
   },
 };

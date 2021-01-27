@@ -181,6 +181,7 @@
 import Breadcrumb from '@/components/breadcrumb.vue'
 import AddQuetion from '../../components/dialogContent/addQuetion.vue'
 import { addQuetions, editQuetions, detailQuetions } from '@/api/Question'
+import { commonConfiguration } from '@/api/index'
 export default {
   components: { Breadcrumb, AddQuetion },
   data() {
@@ -202,6 +203,7 @@ export default {
         queKnowledge: [],
         queYear: '',
       },
+      optiongsContent: {},
       questionFormRules: {
         queSubjectType: [
           { required: true, message: '请选择题纲', trigger: 'blur' },
@@ -247,28 +249,31 @@ export default {
   },
   methods: {
     async getQueById() {
-     const { data: res } = await this.$http.get(`api/library/${this.queId}`) 
-     if(res.statusCode !== 200) return this.$message.error('获取详细信息失败！')
-     console.log(res.data);
-     this.questionForm = res.data;
-     this.book = res.data.textbook_id;
-     this.optiongsContent = res.data.queOptions;
-     this.questionForm.queKnowledge = res.data.dir_id;
-     
-     const { queAnswer } = res.data;
-     const answerContent = decodeURIComponent(window.escape(atob(queAnswer))).split(',');
-     if(answerContent.length > 1) {
-       this.answerContent = answerContent
-     } else {
-       this.answerContent = answerContent.toString();
-     }
-     console.log(this.answerContent);
+      detailQuetions(this.queId).then((res)=>{
+        const { data } = res
+        this.questionForm = data;
+        this.book = data.textbook_id;
+        this.questionForm.queKnowledge = data.dir_id;
+        const { queAnswer } = data;
+        const answerContent = decodeURIComponent(window.escape(atob(queAnswer))).split(',');
+        if(answerContent.length > 1) {
+          this.answerContent = answerContent
+        } else {
+          this.answerContent = answerContent.toString();
+        }
+        let queOption = ''
+        let queOptions = Object.values(data.queOptions)
+        queOptions.map((v, i)=>{
+          queOption = queOption + v + '\n'
+        })
+        this.questionForm.queOptions = queOption
+      })
     },
     async getQuePracticeSubjec() {
-      const { data: res } = await this.$http.get(`api/common/constant`)
-      if (res.statusCode !== 200) return this.$message.error(res.msg)
-      const { periodArr } = res.data
-      this.quePracticeSubjectList = Object.values(periodArr)
+      commonConfiguration().then(res=>{
+        const { periodArr } = res.data
+        this.quePracticeSubjectList = Object.values(periodArr)
+      })
     },
     // 发布作业
     onSubmit() {
@@ -278,7 +283,6 @@ export default {
         console.log(this.questionForm);
         if(this.queId) {
           editQuetions(this.queId, this.questionForm).then(res=>{
-            // console.log(res,'编辑');
             this.$message.success(res.msg)
             if(this.questionForm.queSubjectType === 1) this.$router.push('/expand')
             if(this.questionForm.queSubjectType === 2) this.$router.push('/textbook')
@@ -286,7 +290,6 @@ export default {
           })
         } else {
           addQuetions(this.questionForm).then(res =>{
-            // console.log(res, '保存');
             this.$message.success(res.msg)
             if(this.questionForm.queSubjectType === 1) this.$router.push('/expand')
             if(this.questionForm.queSubjectType === 2) this.$router.push('/textbook')
@@ -297,10 +300,8 @@ export default {
     },
     queTypeChange() {
       if(this.questionForm.queType === 4 || this.questionForm.queType === 5) {
-
         this.answerContent = ''
       } else {
-        
         this.answerContent = []
       }
       this.questionForm.queOptions = ''

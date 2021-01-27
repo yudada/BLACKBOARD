@@ -25,3 +25,20 @@ export function wisdomBookDeatil(book_id, data) {
     params: { type: data}
   })
 }
+
+// 添加课本列表
+export function textbookChoose() {
+   return request({
+    url: `api/textbook/choose`,
+    method: 'get'
+  })
+}
+
+// 添加课本
+export function additionTextbook(textbook_ids) {
+   return request({
+    url: `api/textbook/store`,
+    method: 'post',
+    params: { textbook_ids: textbook_ids }
+  })
+}

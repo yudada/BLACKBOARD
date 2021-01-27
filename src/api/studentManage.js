@@ -61,3 +61,28 @@ export function studentExport() {
   })
 }
 
+// 学生风彩
+export function studentLife() {
+  return request({
+    url: `api/student/life`,
+    method: 'post'
+  })
+}
+
+// 学生列表
+export function studentLists(data) {
+  return request({
+    url: `api/student/lists`,
+    method: 'post',
+    params: data
+  })
+}
+
+// 学生删除
+export function studentDelete(sid) {
+  return request({
+    url: `api/student/${sid}`,
+    method: 'delete'
+  })
+}
+

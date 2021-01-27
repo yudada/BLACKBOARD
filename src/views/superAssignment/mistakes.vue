@@ -19,14 +19,15 @@
                 width="50px"
                 align="center"
               />
-              <el-table-column prop="queTitle" label="题目" width="350" />
-              <el-table-column prop="bookName" label="科目" />
+              <el-table-column prop="queTitle" label="题目" min-width="45%" />
+              <el-table-column prop="bookName" label="科目" min-width="30%" />
               <el-table-column
                 prop="queType"
                 label="题型"
                 :formatter="formatterFilter"
+                 min-width="10%"
               />
-              <el-table-column prop="wrong_num" label="错题人数">
+              <el-table-column prop="wrong_num" label="错题人数"  min-width="15%">
                 <template slot-scope="scope">
                   <el-button
                     type="text"
@@ -82,7 +83,11 @@
 
 <script>
 import Breadcrumb from '@/components/breadcrumb.vue'
-import { wrongAnswer, wrongStudents } from '@/api/superAssignment'
+import {
+  wrongAnswer,
+  wrongStudents,
+  deleteExercises,
+} from '@/api/superAssignment'
 export default {
   components: { Breadcrumb },
   data() {
@@ -147,25 +152,7 @@ export default {
     handleCurrentChange(newPage) {
       this.currentPage = newPage
       this.getExercisesList()
-    },
-    async removeById(id) {
-      const confirmResult = await this.$confirm(
-        '此操作将永久删除该作业, 是否继续?',
-        '提示',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-        }
-      ).catch((err) => err)
-
-      if (confirmResult !== 'confirm') {
-        return
-      }
-      const { data: res } = await this.$http.delete(`api/exercises/${id}`)
-      if (res.statusCode !== 200) return this.$message.error(res.msg)
-      this.getExercisesList()
-    },
+    }
   },
 }
 </script>

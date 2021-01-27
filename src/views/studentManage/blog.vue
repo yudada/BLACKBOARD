@@ -38,6 +38,7 @@
 </template>
 
 <script>
+import { studentLife } from '@/api/studentManage'
 import studentDetail from './components/studentDetail.vue';
 import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
@@ -56,11 +57,11 @@ export default {
     this.getStudentLife();
   },
   methods: {
-   async getStudentLife() {
-     const { data: res } = await this.$http.post(`api/student/life`)
-     if(res.statusCode !==200 ) return this.$message.error(res.msg);
-     this.cardList = res.data;
-     console.log(res.data);
+   getStudentLife() {
+     studentLife().then(res=>{
+       const{ data } = res
+       this.cardList = data
+     })
    } 
   }
 }
@@ -116,6 +117,8 @@ export default {
         justify-content: space-between;
         i {
           margin: 0.5rem;
+          cursor: pointer;
+          font-size: large;
         }
       }
     }

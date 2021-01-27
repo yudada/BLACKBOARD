@@ -70,6 +70,7 @@
 </template>
 
 <script>
+import { exercisesDoneDetail } from '@/api/superAssignment'
 import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
   components: { Breadcrumb },
@@ -102,13 +103,12 @@ export default {
   },
   methods: {
     async getdetail() {
-      const { data: res } = await this.$http.post(
-        `api/exercises/detail/${this.id}`
-      )
-      if (res.statusCode !== 200)
-        return this.$message.error('获取详细信息失败！')
-      this.detialTableData = res.data
-      this.loading = false
+      this.loading = true
+      exercisesDoneDetail(this.id).then((res) => {
+        const { data } = res
+        this.detialTableData = data
+        this.loading = false
+      })
     },
     goBack() {
       this.$router.go(-1)

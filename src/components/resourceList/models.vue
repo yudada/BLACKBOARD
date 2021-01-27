@@ -41,7 +41,9 @@
     </span>
   </div>
 </template>
+
 <script>
+import { modelsLists } from '@/api/components' 
 export default {
   name: 'models',
   props: ['contentId','classWork'],
@@ -86,20 +88,23 @@ export default {
     },
     // 获取模型列表
     async getModelsList() {
-      const { data: res } = await this.$http.post(`api/models/lists`, {
+      let params = {
         limit: this.pageSize,
         page: this.currentPage,
         modName: this.modName
-      });
-      if (res.statusCode !== 200) return this.$message.error(res.msg);
-      this.modelsList = res.data.data;
-      res.data.data.forEach((item) => {
-        this.allModels.push(item.id);
-      });
+      }
+      modelsLists(params).then((res)=>{
+        const { current_page, data, per_page, total } = res.data
+        this.modelsList = data;
+        data.forEach((item) => {
+          this.allModels.push(item.id);
+        });
+        console.log(this.allModels);
 
-      this.total = res.data.total;
-      this.pageSize = res.data.per_page;
-      this.currentPage = res.data.current_page;
+        this.total = total;
+        this.pageSize = parseFloat(per_page);
+        this.currentPage = current_page;
+      })
     },
     // 发送内容
     sendContentID() {

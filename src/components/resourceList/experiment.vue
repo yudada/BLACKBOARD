@@ -36,7 +36,9 @@
     </span>
   </div>
 </template>
+
 <script>
+import { experimentsLists } from '@/api/components'
 export default {
   props: ['hidenBtn','contentId','classWork'],
   name: 'models',
@@ -78,20 +80,22 @@ export default {
     },
     // 获取实验列表
     async getExperimentsList() {
-      const { data: res } = await this.$http.post(`api/experiments/lists`, {
+      let params = {
         limit: this.pageSize,
         page: this.currentPage,
         expName: this.expName
-      });
-      if (res.statusCode !== 200) return this.$message.error(res.msg);
-      this.experimentsList = res.data.data;
-      res.data.data.forEach((item) => {
-        this.allExprimrnts.push(item.id);
-      });
+      }
+      experimentsLists(params).then((res)=>{
+        const { current_page, data, per_page, total } = res.data
+        this.experimentsList = data;
+        data.forEach((item) => {
+          this.allExprimrnts.push(item.id);
+        });
 
-      this.total = res.data.total;
-      this.pageSize = res.data.per_page;
-      this.currentPage = res.data.current_page;
+        this.total = total;
+        this.pageSize = parseFloat(per_page);
+        this.currentPage = current_page;
+      })
     },
     // 发送内容
     sendContentID() {

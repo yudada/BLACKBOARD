@@ -14,7 +14,7 @@
             class="search"
               slot="append"
               icon="el-icon-search"
-              @click="getStudentList"></el-button>
+              @click="getStudentList" />
           </el-input>
         </el-col>
       </el-row>
@@ -24,24 +24,19 @@
           <el-card shadow="always">
             <el-table :data="studentList" style="width: 100%" v-loading="loading" stripe border>
               <el-table-column type="index"  label="序号" width="50px" align="center" />
+              <el-table-column prop="stuName" label="姓名" />
               <el-table-column prop="className" label="班级" />
               <el-table-column prop="stuNum" label="学号" />
-              <el-table-column prop="stuName" label="姓名" />
               <el-table-column prop="sex" label="性别" :formatter="formatterCellval" />
               <el-table-column prop="exercise" label="作业行为" :formatter="formatterCellval" />
               <el-table-column prop="reading" label="阅读行为" :formatter="formatterCellval" />
               <el-table-column prop="comprehensive" label="综合行为" :formatter="formatterCellval" />
               <el-table-column prop="weekRemarks" label="本周评语" :formatter="formatterCellval" />
               <el-table-column prop="monthRemarks" label="本月评语" :formatter="formatterCellval" />
-              <!-- <el-table-column label="学习报告" :formatter="formatterCellval">
-                <template>
-                  <el-button type="text">查看</el-button>
-                </template>
-              </el-table-column> -->
               <el-table-column label="编辑信息" prop="monthRemarks" width="120">
                 <template slot-scope="scope">
-                  <el-button type="primary" icon="el-icon-view" size="mini" circle @click="editStudentPage(scope.row.sid)"></el-button>
-                  <el-button type="danger" size="mini" @click="removeById(scope.row.sid)">删除</el-button>
+                  <el-button type="text" @click="editStudentPage(scope.row.sid)">查看</el-button>
+                  <el-button type="text" class="delete_btn" @click="removeById(scope.row.sid)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -62,6 +57,7 @@
 </template>
 
 <script>
+import { studentDelete, studentLists } from '@/api/studentManage'
 import Breadcrumb from '@/components/breadcrumb.vue'
 export default {
   components: { Breadcrumb },
@@ -71,7 +67,6 @@ export default {
         title: '学生管理',
         childTitle: '学生列表'
       },
-      classInfo: {},
       studentList: [],
       studentList: [],
       // 分页信息
@@ -83,30 +78,23 @@ export default {
     };
   },
   created() {
-    this.getClassInfo();
+    this.getStudentList();
   },
   methods: {
-    // 获取班级信息
-    async getClassInfo() {
-      const { data: res } = await this.$http.post(`api/student/create`)
-      if (res.statusCode !== 200) return this.$message.error(res.msg)
-      this.classInfo = res.data
-      console.log(res.data);
-
-      this.getStudentList();
-    },
     // 获取学生列表
     async getStudentList() {
-      const { data: res } = await this.$http.post(`api/student/lists`, { limit: this.pageSize})
-      if (res.statusCode !== 200) return this.$message.error(res.msg)
-      this.studentList = res.data.data
-      this.total = res.data.total;
-      this.currentPage = res.data.current_page;
-      this.pageSize = res.data.per_page;
+      let params = {
+        limit: this.pageSize
+      }
+      studentLists(params).then((res)=>{
+        const { current_page, data, per_page, total } = res.data
+        this.studentList = data
+        this.total = total;
+        this.currentPage = current_page;
+        this.pageSize = parseFloat(per_page);
 
-      this.loading = false
-
-      console.log(res.data);
+        this.loading = false
+      })
     },
     editStudentPage(sid) {
       this.$router.push({path:'./profile', query: {sid:sid}})
@@ -135,12 +123,10 @@ export default {
       if (confirmResult !== 'confirm') {
         return 
       }
-      console.log(confirmResult);
-      const { data: res } = await this.$http.delete(`api/student/${sid}`)
-      if(res.statusCode !== 200) return this.$message.error('删除失败！')
-
+      studentDelete(sid).then((res)=>{
       this.$message.success('删除成功！')
       this.getStudentList();
+      })
     },
     // 表格无数据显示占位符
     formatterCellval(row, column, cellValue, index) {

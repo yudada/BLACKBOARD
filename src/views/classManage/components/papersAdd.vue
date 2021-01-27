@@ -169,6 +169,7 @@
 
 <script>
 import { papersAdd, parperDetail, papersEdit } from '@/api/classManage'
+import { wisdomBookList } from '@/api/wisdomBook'
 import Exercise from '@/components/resourceList/exercise'
 import SelectQue from '@/components/dialogContent/selectQue.vue'
 import Breadcrumb from '@/components/breadcrumb.vue'
@@ -309,21 +310,21 @@ export default {
     },
     // 获取课本列表
     async getBookInfo() {
-      const { data: res } = await this.$http.get('api/textbook/lists')
-      if (res.statusCode !== 200)
-        return this.$message.error('获取课本列表失败！')
-      this.bookList = res.data
+      wisdomBookList().then(res=>{
+        const { data } = res
+        this.bookList = data
+      })
     },
     // 获取试卷详情
     getParpersDetail() {
       parperDetail(this.parperId).then((res) => {
         this.papersForm = res.data
         this.papersForm.exaQStructure.map((item) => {
-          if (item.type === this.changeLang.en) item.type = this.changeLang.cn
+          this.changeLang.map((v, i)=>{
+            if(item.type === v.en) item.type = v.cn
+          })
           this.typeList.map((item2) => {
-            if (item.type === item2.title) {
-              item2.select = item.select
-            }
+            if (item.type === item2.title) item2.select = item.select
           })
         })
       })
@@ -349,7 +350,9 @@ export default {
         })
       })
       this.papersForm.exaQStructure.map((item) => {
-        if (item.type === this.changeLang.cn) item.type = this.changeLang.en
+        this.changeLang.map((v, i)=>{
+          if(item.type === v.cn) item.type = v.en
+        })
       })
       this.$refs.papersFormRef.validate(async (valid) => {
         if (!valid) return this.$message.error('请填写必要的表单项！')

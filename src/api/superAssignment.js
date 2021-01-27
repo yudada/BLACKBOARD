@@ -78,3 +78,12 @@ export function personDetail(id, type) {
     params: {type: type}
   })
 }
+
+// 练习作业完成情况
+export function exercisesDoneDetail(id) {
+  return request({
+    url: `api/exercises/detail/${id}`,
+    method: 'post'
+  })
+}
+
