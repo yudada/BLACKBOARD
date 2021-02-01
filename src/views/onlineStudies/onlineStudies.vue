@@ -198,6 +198,8 @@ export default {
   .header-title {
     display: flex;
     justify-content: space-between;
+    height: 1.5rem;
+    overflow: auto;
     i {
       margin-right: 10px;
     }

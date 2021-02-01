@@ -43,9 +43,6 @@
 <script>
 export default {
   props: ['isOpenDialog', 'catalogInfo'],
-  data() {
-    return {}
-  },
   methods: {
     handleClose() {
       this.$emit('dialog', false)
@@ -57,7 +54,7 @@ export default {
 <style lang="scss">
 .catalog-dialog {
   .el-dialog__body {
-    height: 70vh;
+    max-height: 70vh;
     overflow: scroll;
     .title_catalog {
       height: 100%;

@@ -159,10 +159,9 @@ export default {
 
 <style lang="scss">
 .content-diolog {
-  height: 70vh;
   .el-dialog__body {
-    height: calc(100% - 100px);
-    overflow: overlay;
+    max-height: 60vh;
+    overflow: scroll;
   }
 }
 </style>

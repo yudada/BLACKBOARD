@@ -33,7 +33,7 @@ export default {
           num: '30' + ' ' + '天',
           title: '打卡率',
           color: '#CA8411',
-          percentage: 90,
+          percentage: 30,
         },
         {
           id: 2,
@@ -72,8 +72,10 @@ export default {
       margin: 0.5rem;
     }
     .num_people {
-      font-size: 25px;
+      font-size: 1.5rem;
       font-weight: 600;
+      height: 2rem;
+      overflow: auto;
     }
     .num_title {
       font-size: 14px;
