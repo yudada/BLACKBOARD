@@ -292,7 +292,7 @@ export default {
 <style lang="scss">
 .select-dialog {
   max-height: 84vh;
-  overflow: overlay;
+  overflow: scroll;
 }
 .wisdomBook_main {
   .el-col-5 {

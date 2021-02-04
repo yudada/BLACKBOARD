@@ -407,7 +407,7 @@ export default {
 <style lang="scss">
 .content-diolog {
   max-height: 88vh;
-  overflow: overlay;
+  overflow: scroll;
   .el-dialog__body {
     padding: 0;
   }

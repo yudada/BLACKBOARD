@@ -95,7 +95,7 @@ export default {
 }
 .el-card {
   height: 100%;
-  overflow: overlay;
+  overflow: scroll;
   .el-card__body {
     height: 100%;
   }

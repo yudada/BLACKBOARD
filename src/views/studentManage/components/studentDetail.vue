@@ -232,6 +232,6 @@ export default {
 <style lang="scss">
 .info_dialog {
   max-height: 88vh;
-  overflow: overlay;
+  overflow: scroll;
 }
 </style>

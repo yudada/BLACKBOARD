@@ -433,10 +433,10 @@ export default {
 <style lang="scss">
 .addque-dialog {
   max-height: 88vh;
-  overflow: overlay;
+  overflow: scroll;
   .el-dialog__body {
     padding: 0;
-    overflow: overlay;
+    overflow: scroll;
   }
 }
 </style>

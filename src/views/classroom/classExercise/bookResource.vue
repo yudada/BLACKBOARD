@@ -29,11 +29,6 @@
                       :src="item.modCoverimg"
                       alt="模型图"
                     />
-                    <img
-                      v-if="item.modImage"
-                      :src="item.modImage"
-                      alt="模型图"
-                    />
                   </div>
                   <span>{{ item.modName }}</span>
                 </div>
@@ -183,6 +178,10 @@ export default {
       img {
         width: 100%;
         cursor: pointer;
+        transition: all 1.5s;
+      }
+      img:hover {
+        transform: scale(1.2);
       }
     }
     span {

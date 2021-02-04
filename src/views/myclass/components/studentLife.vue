@@ -49,7 +49,7 @@ export default {
   height: 100%;
   .el-card__body {
     height: calc(100% - 100px);
-    overflow: overlay;
+    overflow: scroll;
   }
 }
 </style>
