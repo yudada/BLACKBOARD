@@ -100,7 +100,7 @@ export default {
     min-height: 100%;
     background-color: #25202d;
     padding: 10px 0;
-    z-index: 1;
+    z-index: 2;
     a {
       color: inherit;
       text-decoration: none;
