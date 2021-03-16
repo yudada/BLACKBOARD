@@ -155,6 +155,12 @@
               <el-radio :label="1">发布显示</el-radio>
             </el-radio-group>
           </el-form-item>
+          <el-form-item label="是否收藏" prop="question_user">
+            <el-radio-group v-model="questionForm.question_user">
+              <el-radio :label="0">否</el-radio>
+              <el-radio :label="1">是</el-radio>
+            </el-radio-group>
+          </el-form-item>
           <el-form-item>
             <el-button @click="onSubmit" class="cn_btn">{{btnText}}</el-button>
             <el-button>取消</el-button>
@@ -202,6 +208,7 @@ export default {
         queAnswer: '',
         queKnowledge: [],
         queYear: '',
+        question_user: 0
       },
       optiongsContent: {},
       questionFormRules: {

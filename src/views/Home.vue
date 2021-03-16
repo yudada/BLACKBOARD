@@ -58,6 +58,7 @@ export default {
         { path: '/models-detail' },
         { path: '/class-exercise-detail' },
         { path: '/exercise-list' },
+        { path: '/personal-resources' },
         { path: '/exercise-detail' },
       ],
     }

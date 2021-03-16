@@ -1,10 +1,10 @@
 <template>
   <el-header>
     <div class="header_logo">
-      <div @click="goHome">
+      <div @click="goHome" class="header_icon">
         <span v-if="school.schoolName">{{ school.schoolName }}</span>
       </div>
-      <i class="el-icon-s-fold" @click="toggleCollapse"></i>
+      <i class="el-icon-s-fold header_icon" @click="toggleCollapse"></i>
     </div>
 
     <div class="header_search">
@@ -276,6 +276,10 @@ export default {
   }
   .header_icon {
     padding: 5px 10px;
+  }
+  .header_icon:hover {
+    background: rgba(0,0,0,.05);
+    cursor: pointer;
   }
 }
 </style>

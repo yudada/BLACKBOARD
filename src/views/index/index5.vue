@@ -56,7 +56,7 @@
                   <span>{{ scope.row.name }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="参于人数	">
+              <el-table-column label="参与人数">
                 <template slot-scope="scope">
                   <span>{{ scope.row.peoplenum }}</span>
                 </template>

@@ -122,6 +122,14 @@ const routes = [
             }
           },
           {
+            path: '/personal-resources',
+            component: () => import('../views/classroom/classExercise/personalResources.vue'),
+            meta: {
+              title: '我的资源',
+              keepAlive: true
+            }
+          },
+          {
             path: '/exercise',
             component: () => import('../views/classroom/classExercise/exercise.vue'),
             meta: {

@@ -24,6 +24,7 @@ export default new Vuex.Store({
     groupNumChange: false,
     groupArr: [],
     pageCache: [],
+    upImgURL: ''
   },
   mutations: {
     setTeacherInfo: function (state, data) {

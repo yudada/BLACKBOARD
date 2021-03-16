@@ -1,5 +1,5 @@
 <template>
-  <div class="footer">
+  <div class="footer" :class="{ isCollapse: !isCollapse }">
     <div class="btn-list">
       <el-button @click="outClassRoom" class="out">
         <i class="el-icon-switch-button"></i> 退出教室
@@ -39,6 +39,9 @@
       <el-dropdown placement="top">
         <el-button> <i class="el-icon-arrow-up" /> 教学资源 </el-button>
         <el-dropdown-menu slot="dropdown">
+          <!-- <el-dropdown-item @click.native="goPage('personal-resources')">
+            我的资源
+          </el-dropdown-item> -->
           <el-dropdown-item @click.native="goPage('book-resource')">
             资源列表
           </el-dropdown-item>
@@ -103,8 +106,19 @@ export default {
       groupValue: 0,
     }
   },
+  watch: {
+    isCollapse: function (n, o) {
+      console.log(n)
+    },
+  },
   computed: {
-    ...mapState(['markList', 'checkedBox', 'studentList','groupNumChange']),
+    ...mapState([
+      'markList',
+      'checkedBox',
+      'studentList',
+      'groupNumChange',
+      'isCollapse',
+    ]),
     isSeat: function () {
       return this.$route.path === '/student-seat' ? true : false
     },
@@ -118,7 +132,7 @@ export default {
       'setMarkList',
       'setGroupNum',
       'setGroupNumChange',
-      'setIsGroup'
+      'setIsGroup',
     ]),
     goPage(path) {
       this.$router.push('/' + path).catch((err) => {
@@ -126,18 +140,18 @@ export default {
       })
     },
     selectGroupNum(num) {
-      console.log(this.$store.state.groupNum);
+      console.log(this.$store.state.groupNum)
       if (num <= 1) {
-      if(!this.$store.state.groupNum) return this.$message.info('暂无分组')
+        if (!this.$store.state.groupNum) return this.$message.info('暂无分组')
         this.$store.state.groupNum = ''
         this.setIsGroup(false)
-        cancelStudentGroup().then(res=>{
+        cancelStudentGroup().then((res) => {
           this.$message.success(res.msg)
         })
       } else {
         this.setIsGroup(true)
         this.setGroupNum(num)
-        if(this.groupNumChange) {
+        if (this.groupNumChange) {
           this.setGroupNumChange(false)
         } else {
           this.setGroupNumChange(true)
@@ -254,5 +268,9 @@ export default {
   .tag-view-float {
     margin-right: 10px;
   }
+}
+.isCollapse {
+  transform: translateX(-200px);
+  background-color: #fff;
 }
 </style>

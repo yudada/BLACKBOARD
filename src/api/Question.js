@@ -36,10 +36,19 @@ export function libraryLists(data) {
 }
 
 // 删除题目
-export function libraryDelete(id) {
+export function setIsCollect(id) {
   return request({
     url: `api/library/${id}`,
     method: 'delete'
+  })
+}
+
+// 个人题库收藏
+export function collectquestions(data) {
+  return request({
+    url: `api/library/user`,
+    method: 'post',
+    params: data
   })
 }
 

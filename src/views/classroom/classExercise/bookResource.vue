@@ -1,6 +1,6 @@
 <template>
   <div class="book-res">
-    <el-card>
+    <el-card style="min-height: calc(100vh - 160px)">
       <el-tabs v-model="activeName" type="card" :stretch="true">
         <el-tab-pane label="模型资源" name="one">
           <div>

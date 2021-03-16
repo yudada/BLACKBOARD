@@ -1,6 +1,6 @@
 <template>
   <div class="book-res">
-    <el-card>
+    <el-card style="min-height: calc(100vh - 160px)">
       <div slot="header">
         <span>课堂练习</span>
         <el-button style="float: right; padding: 3px 0" type="text" @click="goList">课堂练习列表</el-button>

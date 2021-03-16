@@ -129,3 +129,37 @@ export function resourceModelsList(data) {
     params: data
   })
 }
+
+// 我的资源列表
+export function resourceOfMy(data) {
+  return request({
+    url: `api/resource/lists`,
+    method: 'post',
+    params: data
+  })
+}
+
+// 获取资源分类
+export function resourceOfClassify() {
+  return request({
+    url: `api/resource/create`,
+    method: 'post'
+  })
+}
+
+// 删除资源
+export function resourceOfDelete(id) {
+  return request({
+    url: `api/resource/${id}`,
+    method: 'delete'
+  })
+}
+
+// 我的资源列表
+export function resourceOfAdd(data) {
+  return request({
+    url: `api/resource/store`,
+    method: 'post',
+    params: data
+  })
+}
