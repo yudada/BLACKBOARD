@@ -39,9 +39,9 @@
       <el-dropdown placement="top">
         <el-button> <i class="el-icon-arrow-up" /> 教学资源 </el-button>
         <el-dropdown-menu slot="dropdown">
-          <!-- <el-dropdown-item @click.native="goPage('personal-resources')">
+          <el-dropdown-item @click.native="goPage('personal-resources')">
             我的资源
-          </el-dropdown-item> -->
+          </el-dropdown-item>
           <el-dropdown-item @click.native="goPage('book-resource')">
             资源列表
           </el-dropdown-item>
