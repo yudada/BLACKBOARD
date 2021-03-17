@@ -8,79 +8,91 @@
       top="7vh"
       :before-close="handleClose"
       :append-to-body="true"
+      :destroy-on-close="true"
       custom-class="picture-gif-dialog"
     >
-      <el-form ref="form" :model="modelUp" label-width="80px">
-        <el-form-item label="图片名称">
+      <!-- 名称 -->
+      <el-form ref="ruleForm" :model="gifUp" :rules="rules" label-width="100px">
+        <el-form-item prop="name" label="名称">
           <el-input
             style="width: 60%"
-            v-model="modelUp.name"
-            placeholder="请输入图片名称"
+            v-model="gifUp.name"
+            placeholder="请输入名称"
           />
         </el-form-item>
-        <el-form-item label="上传图片">
+        <!-- 上传GIF图片 -->
+        <el-form-item prop="materialPath" label="上传GIF图片">
           <el-upload
             class="upload-demo"
-            action="https://jsonplaceholder.typicode.com/posts/"
+            :class="{ disUoloadSty: gifUp.materialPath }"
+            :action="actionGif"
             :accept="acceptImg"
-            :on-preview="handlePreview"
+            :headers="headers"
             :on-remove="handleRemove"
-            :file-list="imgList"
-            list-type="fileList"
+            :on-success="handleSuccess"
+            list-type="picture-card"
             :before-upload="beforeImgUpload"
           >
-            <el-button size="small" type="primary">上传图片</el-button>
-            <div slot="tip" class="el-upload__tip">支持 5MB 以内的gif图片</div>
+            <el-button type="text">上传图片</el-button>
+            <div v-show="!gifUp.materialPath" slot="tip" class="el-upload__tip">
+              支持 5MB 以内的gif图片
+            </div>
           </el-upload>
         </el-form-item>
-        <el-form-item label="总帧数">
-          <el-input style="width: 60%" v-model="modelUp.fpsAll" />
-        </el-form-item>
-        <el-form-item label="总时长">
-          <el-input style="width: 60%" v-model="modelUp.durationTime" />
-        </el-form-item>
-        <el-form-item label="单帧时长">
-          <el-input style="width: 60%" v-model="modelUp.fps" />
-        </el-form-item>
-        <el-form-item label="播放方式">
-          <el-radio-group v-model="modelUp.autoPaly">
-            <el-radio :label="0">自动播放</el-radio>
-            <el-radio :label="1">点击播放</el-radio>
-          </el-radio-group>
-        </el-form-item>
+        <!-- 分类标签 -->
         <el-form-item label="分类标签">
+          <el-tag
+            :key="tag"
+            v-for="tag in dynamicTags"
+            closable
+            :disable-transitions="false"
+            @close="handleCloseTag(tag)"
+            style="margin: 0 0.5rem"
+          >
+            {{ tag }}
+          </el-tag>
           <el-input
-            style="width: 60%"
-            v-model="modelUp.classify"
-            placeholder="最多支持3个"
-          />
+            class="input-new-tag"
+            v-if="inputVisible"
+            v-model="inputValue"
+            ref="saveTagInput"
+            size="small"
+            @keyup.enter.native="handleInputConfirm"
+            @blur="handleInputConfirm"
+          >
+          </el-input>
+          <el-button
+            v-else
+            class="button-new-tag"
+            size="small"
+            @click="showInput"
+            v-show="dynamicTags.length < 3"
+            >+ 新标签</el-button
+          >
         </el-form-item>
+        <!-- 跳转链接 -->
         <el-form-item label="跳转链接">
           <el-input
             style="width: 60%"
-            v-model="modelUp.http"
-            placeholder="最多支持3个"
+            v-model="gifUp.url"
+            placeholder="http//:"
           />
         </el-form-item>
+        <!-- 描述 -->
         <el-form-item label="描述">
           <el-input
             type="textarea"
             :rows="5"
             :maxlength="300"
             :show-word-limit="true"
-            v-model="modelUp.describe"
+            v-model="gifUp.description"
             placeholder="最多支持3个"
           />
         </el-form-item>
+        <!-- 提交 -->
         <el-form-item class="el-form-last">
-          <el-button size="medium" @click="dialogVisible = false"
-            >取 消</el-button
-          >
-          <el-button
-            size="medium"
-            type="primary"
-            @click="dialogVisible = false"
-          >
+          <el-button size="medium" @click="handleClose"> 取 消 </el-button>
+          <el-button size="medium" type="primary" @click="upResource">
             确 定
           </el-button>
         </el-form-item>
@@ -90,32 +102,52 @@
 </template>
 
 <script>
+import { resourceOfAdd } from '@/api/classRoom'
 export default {
   props: ['visible'],
   data() {
     return {
       dialogVisible: false,
-      modelUp: {
-        name: '',
-        img: '',
-        classify: '',
-        http: 'http//:',
-        describe: '',
-        fpsAll: '',
-        fps: '',
-        durationTime: '',
-        autoPaly: 0
+      headers: {
+        Authorization: window.sessionStorage.getItem('token'),
       },
-      imgList: [
-        {
-          name: 'food.jpeg',
-          url:
-            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
-        },
-      ],
+      gifUp: {
+        type: 2,
+        name: '',
+        materialPath: '',
+        url: '',
+        description: '',
+        label: '',
+      },
+      rules: {
+        name: [
+          { required: true, message: '请输入名称', trigger: 'blur' },
+          {
+            min: 1,
+            max: 25,
+            message: '长度在 1 到 25 个字符',
+            trigger: 'blur',
+          },
+        ],
+        materialPath: [
+          { required: true, message: '请添加Gif图片', trigger: 'blur' },
+        ],
+      },
       acceptImg: '.gif,.GIF',
       isMulitple: false,
+      // 分类标签
+      dynamicTags: [],
+      inputVisible: false,
+      inputValue: '',
     }
+  },
+  computed: {
+    actionGif: function () {
+      const isDev = process.env.NODE_ENV === 'development'
+      return isDev
+        ? 'api/api/common/uploadGif'
+        : 'https://api.vrbook.vip/api/common/uploadGif'
+    },
   },
   watch: {
     visible: function (n, o) {
@@ -125,26 +157,63 @@ export default {
     },
   },
   methods: {
+    // 分类标签
+    handleCloseTag(tag) {
+      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1)
+    },
+    showInput() {
+      this.inputVisible = true
+      this.$nextTick((_) => {
+        this.$refs.saveTagInput.$refs.input.focus()
+      })
+    },
+    handleInputConfirm() {
+      let inputValue = this.inputValue
+      if (inputValue) {
+        this.dynamicTags.push(inputValue)
+        this.gifUp.label += inputValue + ','
+      }
+      this.inputVisible = false
+      this.inputValue = ''
+    },
+    // 关闭弹框
     handleClose() {
       this.dialogVisible = false
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList)
-    },
-    handlePreview(file) {
-      console.log(file)
+    handleRemove(file) {
+      if (file.status === 'ready') return
+      this.gifUp.materialPath = ''
     },
     beforeImgUpload(file) {
-      const isJPG = file.type === 'gif'
-      const isLt2M = file.size / 1024 / 1024 < 5
+      const isGJF = file.type === 'image/gif'
+      const isLt5M = file.size / 1024 / 1024 < 5
 
-      if (!isJPG) {
+      if (!isGJF) {
         this.$message.error('上传图片图片只能是 gif 格式!')
       }
-      if (!isLt2M) {
-        this.$message.error('上传图片图片大小不能超过 2MB!')
+      if (!isLt5M) {
+        this.$message.error('上传图片图片大小不能超过 5MB!')
       }
-      return isJPG && isLt2M
+      return isGJF && isLt5M
+    },
+    handleSuccess(response, file) {
+      console.log(file)
+      const { path } = response.data
+      this.gifUp.materialPath = path
+    },
+    upResource() {
+      console.log(this.gifUp)
+      this.$refs.ruleForm.validate(async (valid) => {
+        if (!valid) return
+        await resourceOfAdd(this.gifUp).then((res) => {
+          console.log(res)
+          this.$message.success(res.msg)
+          this.dialogVisible = false
+          this.$nextTick(() => {
+            this.$emit('handleChange')
+          })
+        })
+      })
     },
   },
 }
@@ -159,6 +228,11 @@ export default {
   }
   .el-form-last {
     text-align: end;
+  }
+  .disUoloadSty {
+    .el-upload--picture-card {
+      display: none;
+    }
   }
 }
 </style>

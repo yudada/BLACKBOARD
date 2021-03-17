@@ -8,33 +8,53 @@
       top="7vh"
       :before-close="handleClose"
       :append-to-body="true"
+      :destroy-on-close="true"
       custom-class="audio-dialog"
     >
-      <el-form ref="form" :model="audioUp" label-width="80px">
-        <el-form-item label="音频名称">
+      <el-form
+        ref="ruleForm"
+        :model="audioUp"
+        :rules="rules"
+        label-width="100px"
+      >
+        <el-form-item prop="name" label="音频名称">
           <el-input
             style="width: 60%"
             v-model="audioUp.name"
             placeholder="请输入音频名称"
           />
         </el-form-item>
-        <el-form-item label="上传音频">
+        <el-form-item prop="materialPath" label="上传音频">
           <el-upload
             class="upload-demo"
-            action="https://jsonplaceholder.typicode.com/posts/"
+            list-type="fileList"
+            :class="{ disUoloadSty: audioUp.materialPath }"
+            :action="actionAudio"
             :accept="acceptAudio"
+            :headers="headers"
             :on-preview="handlePreview"
             :on-remove="handleRemove"
-            :file-list="audioList"
-            list-type="picture"
+            :on-success="handleSuccess"
             :before-upload="beforeAudioUpload"
+            :limit="1"
           >
             <el-button size="small" type="primary">上传音频</el-button>
-            <div slot="tip" class="el-upload__tip">支持2MB以内的音频</div>
+            <div
+              v-show="!audioUp.materialPath"
+              slot="tip"
+              class="el-upload__tip"
+            >
+              支持20MB以内的音频文件
+            </div>
           </el-upload>
-        </el-form-item>
-        <el-form-item label="歌手名">
-          <el-input style="width: 60%" v-model="audioUp.singer" />
+          <div style="margin-top: 0.5rem" v-if="previewVisible">
+            <audio
+              style="outline: none"
+              :src="audioUp.materialPath"
+              autoplay
+              controls
+            />
+          </div>
         </el-form-item>
         <el-form-item label="音频分类">
           <el-select v-model="audioUp.classify" placeholder="请选择">
@@ -54,19 +74,13 @@
             :rows="5"
             :maxlength="300"
             :show-word-limit="true"
-            v-model="audioUp.describe"
-            placeholder="最多支持3个"
+            v-model="audioUp.description"
+            placeholder="在此输入..."
           />
         </el-form-item>
         <el-form-item class="el-form-last">
-          <el-button size="medium" @click="dialogVisible = false"
-            >取 消</el-button
-          >
-          <el-button
-            size="medium"
-            type="primary"
-            @click="dialogVisible = false"
-          >
+          <el-button size="medium" @click="handleClose">取 消</el-button>
+          <el-button size="medium" type="primary" @click="upResource">
             确 定
           </el-button>
         </el-form-item>
@@ -82,24 +96,43 @@ export default {
   data() {
     return {
       dialogVisible: false,
+      previewVisible: false,
+      headers: {
+        Authorization: window.sessionStorage.getItem('token'),
+      },
       audioUp: {
         type: 3,
         name: '',
+        coverImg: '',
         materialPath: '',
-        singer: '',
         classify: '',
-        describe: '',
+        description: ''
       },
-      audioList: [
-        {
-          name: 'food.jpeg',
-          url:
-            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
-        },
-      ],
-      acceptAudio: '.mp3,.MP3',
+      rules: {
+        name: [
+          { required: true, message: '请输入名称！', trigger: 'blur' },
+          {
+            min: 1,
+            max: 25,
+            message: '长度在 1 到 25 个字符',
+            trigger: 'blur',
+          },
+        ],
+        materialPath: [
+          { required: true, message: '请添加音频文件！', trigger: 'blur' },
+        ],
+      },
+      acceptAudio: '.mp3,.MP3,flac,.FLAC',
       options: [],
     }
+  },
+  computed: {
+    actionAudio: function () {
+      const isDev = process.env.NODE_ENV === 'development'
+      return isDev
+        ? 'api/api/common/uploadMp3'
+        : 'https://api.vrbook.vip/api/common/uploadMp3'
+    },
   },
   watch: {
     visible: function (n, o) {
@@ -123,12 +156,20 @@ export default {
     },
     handleRemove(file, fileList) {
       console.log(file, fileList)
+      if (file.status === 'ready') return
+      this.audioUp.materialPath = ''
+      this.previewVisible = false
+    },
+    handleSuccess(response, file) {
+      console.log(file)
+      const { path } = response.data
+      this.audioUp.materialPath = path
     },
     handlePreview(file) {
-      console.log(file)
+      this.previewVisible = true
     },
     beforeAudioUpload(file) {
-      const isJPG = file.type === 'mp3'
+      const isJPG = file.type === 'audio/mpeg'
       const isLt2M = file.size / 1024 / 1024 < 20
 
       if (!isJPG) {
@@ -138,6 +179,20 @@ export default {
         this.$message.error('上传音频大小不能超过 20MB!')
       }
       return isJPG && isLt2M
+    },
+    upResource() {
+      console.log(this.audioUp)
+      this.$refs.ruleForm.validate(async (valid) => {
+        if (!valid) return
+        await resourceOfAdd(this.audioUp).then((res) => {
+          console.log(res)
+          this.$message.success(res.msg)
+          this.dialogVisible = false
+          this.$nextTick(() => {
+            this.$emit('handleChange')
+          })
+        })
+      })
     },
   },
 }
@@ -152,6 +207,11 @@ export default {
   }
   .el-form-last {
     text-align: end;
+  }
+  .disUoloadSty {
+    .el-upload--fileList {
+      display: none;
+    }
   }
 }
 </style>

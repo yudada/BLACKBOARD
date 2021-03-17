@@ -2,96 +2,118 @@
   <div>
     <!-- 上传资源弹框 -->
     <el-dialog
+      title="上传图片"
       :visible.sync="dialogVisible"
       width="50%"
       top="7vh"
       :before-close="handleClose"
       :append-to-body="true"
+      :destroy-on-close="true"
       custom-class="picture-dialog"
     >
-      <div slot="title">
-        <div class="dialog-title">
-          <span
-            @click="isMulitple = false"
-            :class="{ isMulitple: isMulitple }"
-            style="padding-right: 0.5rem; border-right: 1px solid #999"
-          >
-            上传图片
-          </span>
-          <span
-            @click="isMulitple = true"
-            :class="{ isMulitple: !isMulitple }"
-            style="padding-left: 0.5rem"
-            >批量上传</span
-          >
-        </div>
-      </div>
-      <el-form ref="form" :model="imageUp" label-width="80px">
-        <el-form-item label="图片名称">
+      <el-form
+        ref="ruleForm"
+        :model="imageUp"
+        :rules="rules"
+        label-width="80px"
+      >
+        <!-- 图片名称 -->
+        <el-form-item prop="name" label="名称">
           <el-input
             style="width: 60%"
             v-model="imageUp.name"
-            placeholder="请输入图片名称"
+            placeholder="请输入名称"
           />
         </el-form-item>
-        <el-form-item label="上传图片">
+        <!-- 上传图片 -->
+        <el-form-item prop="imageArr" label="上传图片">
           <el-upload
             class="upload-demo"
-            action="api/api/interactive/uploadAttach"
+            list-type="picture-card"
+            :action="actionImg"
+            :headers="headers"
             :accept="acceptImg"
             :on-preview="handlePreview"
             :on-remove="handleRemove"
-            :file-list="imgList"
-            list-type="picture"
             :before-upload="beforeImgUpload"
-            :headers="headers"
-            :on-change="handleChange"
-            :on-success="handleSuccess"
+            :on-success="handleSuccessMulitple"
             multiple
           >
-            <el-button size="small" type="primary">上传图片</el-button>
+            <el-button type="text">添加素材</el-button>
             <div slot="tip" class="el-upload__tip">
               支持2MB以内的jpg/png图片
             </div>
           </el-upload>
         </el-form-item>
+        <!-- 分类标签 -->
         <el-form-item label="分类标签">
+          <el-tag
+            :key="tag"
+            v-for="tag in dynamicTags"
+            closable
+            :disable-transitions="false"
+            @close="handleCloseTag(tag)"
+            style="margin: 0 0.5rem"
+          >
+            {{ tag }}
+          </el-tag>
           <el-input
-            style="width: 60%"
-            v-model="imageUp.classify"
-            placeholder="最多支持3个"
-          />
+            class="input-new-tag"
+            v-if="inputVisible"
+            v-model="inputValue"
+            ref="saveTagInput"
+            size="small"
+            @keyup.enter.native="handleInputConfirm"
+            @blur="handleInputConfirm"
+          >
+          </el-input>
+          <el-button
+            v-else
+            class="button-new-tag"
+            size="small"
+            @click="showInput"
+            v-show="dynamicTags.length < 3"
+            >+ 新标签</el-button
+          >
         </el-form-item>
+        <!-- 跳转链接 -->
         <el-form-item label="跳转链接">
           <el-input
             style="width: 60%"
-            v-model="imageUp.http"
-            placeholder="最多支持3个"
+            v-model="imageUp.url"
+            placeholder="http//:"
           />
         </el-form-item>
+        <!-- 描述 -->
         <el-form-item label="描述">
           <el-input
             type="textarea"
             :rows="5"
             :maxlength="300"
             :show-word-limit="true"
-            v-model="imageUp.describe"
-            placeholder="最多支持3个"
+            v-model="imageUp.description"
           />
         </el-form-item>
+        <!-- 提交 -->
         <el-form-item class="el-form-last">
-          <el-button size="medium" @click="dialogVisible = false">
+          <el-button size="medium" @click="handleClose">
             取 消
           </el-button>
-          <el-button
-            size="medium"
-            type="primary"
-            @click="upResource"
-          >
-            确 定
+          <el-button size="medium" type="primary" @click="upResource">
+            确 认 上 传
           </el-button>
         </el-form-item>
       </el-form>
+    </el-dialog>
+    <!-- 图片预览 -->
+    <el-dialog
+      :visible.sync="previewDialogVisible"
+      width="70%"
+      top="5vh"
+      :append-to-body="true"
+      custom-class="preview-dialog"
+    >
+      <img :src="previewImage" alt="" />
     </el-dialog>
   </div>
 </template>
@@ -106,17 +128,35 @@ export default {
       imageUp: {
         type: 1,
         name: '',
-        img: '',
-        classify: '',
-        http: 'http//:',
-        describe: '',
+        url: '',
+        description: '',
+        label: '',
+        imageArr: [],
       },
-      imgList: [],
+      rules: {
+        name: [
+          { required: true, message: '请输入名称！', trigger: 'blur' },
+          {
+            min: 1,
+            max: 25,
+            message: '长度在 1 到 25 个字符',
+            trigger: 'blur',
+          },
+        ],
+        imageArr: [
+          { required: true, message: '请添加图片！', trigger: 'blur' }
+        ],
+      },
       acceptImg: '.jpg,.JPG,.PNG,.png',
-      isMulitple: false,
       headers: {
         Authorization: window.sessionStorage.getItem('token'),
       },
+      previewDialogVisible: false,
+      previewImage: '',
+      // 分类标签
+      dynamicTags: [],
+      inputVisible: false,
+      inputValue: '',
     }
   },
   watch: {
@@ -130,30 +170,24 @@ export default {
     actionImg: function () {
       const isDev = process.env.NODE_ENV === 'development'
       return isDev
-        ? 'api/api/interactive/uploadAttach'
-        : 'https://api.vrbook.vip/api/interactive/uploadAttach'
+        ? 'api/api/common/uploadImg'
+        : 'https://api.vrbook.vip/api/common/uploadImg'
     },
   },
   methods: {
     handleClose() {
       this.dialogVisible = false
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList)
-    },
     handlePreview(file) {
-      // console.log(file)
+      this.previewImage = file.url
+      this.previewDialogVisible = true
     },
-    handleChange(file) {
-      console.log(file)
-      const { name, url } = file
-      this.imgList.push({
-        name: name,
-        url: url,
-      })
+    handleRemove(file) {
+      if (file.status === 'ready') return
+      this.imageUp.imageArr.splice(this.imageUp.imageArr.indexOf(file.url), 1)
     },
-    handleSuccess(response) {
-      console.log(response)
+    handleSuccessMulitple(response) {
+      this.imageUp.imageArr.push(response.data.path)
     },
     beforeImgUpload(file) {
       const isJPG = file.type === 'image/jpeg'
@@ -166,13 +200,40 @@ export default {
       if (!isLt2M) {
         this.$message.error('上传图片图片大小不能超过 2MB!')
       }
-      return isPNG && isJPG && isLt2M
+      return (isPNG || isJPG) && isLt2M
+    },
+    handleCloseTag(tag) {
+      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1)
+    },
+    showInput() {
+      this.inputVisible = true
+      this.$nextTick((_) => {
+        this.$refs.saveTagInput.$refs.input.focus()
+      })
+    },
+    handleInputConfirm() {
+      let inputValue = this.inputValue
+      if (inputValue) {
+        this.dynamicTags.push(inputValue)
+        this.imageUp.label += inputValue + ' '
+      }
+      this.inputVisible = false
+      this.inputValue = ''
     },
     upResource() {
-      resourceOfAdd(this.imageUp).then(res=>{
-        console.log(res);
+      console.log(this.imageUp)
+      this.$refs.ruleForm.validate(async (valid) => {
+        if (!valid) return
+        await resourceOfAdd(this.imageUp).then((res) => {
+          console.log(res)
+          this.$message.success(res.msg)
+          this.dialogVisible = false
+          this.$nextTick(()=>{
+            this.$emit('handleChange')
+          })
+        })
       })
-    }
+    },
   },
 }
 </script>
@@ -196,6 +257,22 @@ export default {
   }
   .el-form-last {
     text-align: end;
+  }
+  .disUoloadSty {
+    .el-upload--picture-card {
+      display: none;
+    }
+  }
+}
+.preview-dialog {
+  .el-dialog__body {
+    padding: 0.5rem;
+  }
+  img {
+    width: 100%;
+  }
+  .input-new-tag {
+    width: 10rem !important;
   }
 }
 </style>
