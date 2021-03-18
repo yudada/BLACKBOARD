@@ -155,7 +155,6 @@ export default {
       this.dialogVisible = false
     },
     handleRemove(file, fileList) {
-      console.log(file, fileList)
       if (file.status === 'ready') return
       this.audioUp.materialPath = ''
       this.previewVisible = false
@@ -207,11 +206,6 @@ export default {
   }
   .el-form-last {
     text-align: end;
-  }
-  .disUoloadSty {
-    .el-upload--fileList {
-      display: none;
-    }
   }
 }
 </style>

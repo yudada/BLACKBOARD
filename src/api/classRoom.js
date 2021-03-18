@@ -130,6 +130,15 @@ export function resourceModelsList(data) {
   })
 }
 
+// 课堂练习-模型收藏/取消
+export function modelCollect(data) {
+  return request({
+    url: `api/models/collect`,
+    method: 'post',
+    params: data
+  })
+}
+
 // 我的资源列表
 export function resourceOfMy(data) {
   return request({

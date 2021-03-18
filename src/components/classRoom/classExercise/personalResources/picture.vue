@@ -63,6 +63,7 @@
             v-model="inputValue"
             ref="saveTagInput"
             size="small"
+            style="width: 5rem"
             @keyup.enter.native="handleInputConfirm"
             @blur="handleInputConfirm"
           >
@@ -96,9 +97,7 @@
         </el-form-item>
         <!-- 提交 -->
         <el-form-item class="el-form-last">
-          <el-button size="medium" @click="handleClose">
-            取 消
-          </el-button>
+          <el-button size="medium" @click="handleClose"> 取 消 </el-button>
           <el-button size="medium" type="primary" @click="upResource">
             确 认 上 传
           </el-button>
@@ -144,7 +143,7 @@ export default {
           },
         ],
         imageArr: [
-          { required: true, message: '请添加图片！', trigger: 'blur' }
+          { required: true, message: '请添加图片！', trigger: 'blur' },
         ],
       },
       acceptImg: '.jpg,.JPG,.PNG,.png',
@@ -204,6 +203,12 @@ export default {
     },
     handleCloseTag(tag) {
       this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1)
+      this.$nextTick(()=>{
+        this.imageUp.label = ''
+        this.dynamicTags.map(v=>{
+          this.imageUp.label += v + ' '
+        })
+      })
     },
     showInput() {
       this.inputVisible = true
@@ -213,7 +218,7 @@ export default {
     },
     handleInputConfirm() {
       let inputValue = this.inputValue
-      if (inputValue) {
+      if (inputValue && this.dynamicTags.length < 3) {
         this.dynamicTags.push(inputValue)
         this.imageUp.label += inputValue + ' '
       }
@@ -228,7 +233,7 @@ export default {
           console.log(res)
           this.$message.success(res.msg)
           this.dialogVisible = false
-          this.$nextTick(()=>{
+          this.$nextTick(() => {
             this.$emit('handleChange')
           })
         })
@@ -257,11 +262,6 @@ export default {
   }
   .el-form-last {
     text-align: end;
-  }
-  .disUoloadSty {
-    .el-upload--picture-card {
-      display: none;
-    }
   }
 }
 .preview-dialog {

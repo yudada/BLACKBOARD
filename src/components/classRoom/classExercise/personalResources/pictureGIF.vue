@@ -12,7 +12,7 @@
       custom-class="picture-gif-dialog"
     >
       <!-- 名称 -->
-      <el-form ref="ruleForm" :model="gifUp" :rules="rules" label-width="100px">
+      <el-form ref="ruleForm" :model="gifUp" :rules="rules" label-width="120px">
         <el-form-item prop="name" label="名称">
           <el-input
             style="width: 60%"
@@ -57,6 +57,7 @@
             v-model="inputValue"
             ref="saveTagInput"
             size="small"
+            style="width: 5rem"
             @keyup.enter.native="handleInputConfirm"
             @blur="handleInputConfirm"
           >
@@ -160,6 +161,12 @@ export default {
     // 分类标签
     handleCloseTag(tag) {
       this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1)
+      this.$nextTick(()=>{
+        this.imageUp.label = ''
+        this.dynamicTags.map(v=>{
+          this.imageUp.label += v + ' '
+        })
+      })
     },
     showInput() {
       this.inputVisible = true
@@ -169,9 +176,9 @@ export default {
     },
     handleInputConfirm() {
       let inputValue = this.inputValue
-      if (inputValue) {
+      if (inputValue && this.dynamicTags.length < 3) {
         this.dynamicTags.push(inputValue)
-        this.gifUp.label += inputValue + ','
+        this.gifUp.label += inputValue + ' '
       }
       this.inputVisible = false
       this.inputValue = ''
@@ -228,11 +235,6 @@ export default {
   }
   .el-form-last {
     text-align: end;
-  }
-  .disUoloadSty {
-    .el-upload--picture-card {
-      display: none;
-    }
   }
 }
 </style>

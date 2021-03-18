@@ -9,7 +9,7 @@
       :before-close="handleClose"
       :append-to-body="true"
       :destroy-on-close="true"
-      custom-class="video-dialog"
+      v-if="dialogVisible"
     >
       <el-form
         ref="ruleForm"
@@ -65,7 +65,7 @@
           >
             <el-button type="text">上传图片</el-button>
             <div v-show="!videoUp.coverImg" slot="tip" class="el-upload__tip">
-              支持 2MB 以内的jpe/png图片
+              支持 2MB 以内的jpg/png图片
             </div>
           </el-upload>
         </el-form-item>
@@ -86,6 +86,7 @@
             v-model="inputValue"
             ref="saveTagInput"
             size="small"
+            style="width: 5rem"
             @keyup.enter.native="handleInputConfirm"
             @blur="handleInputConfirm"
           >
@@ -124,9 +125,9 @@
         :append-to-body="true"
         custom-class="preview-video-dialog"
       >
-        <video :src="videoUp.materialPath" autoplay controls></video>
+        <video :src="videoUp.materialPath" width="100%" autoplay controls></video>
       </el-dialog>
-      <!-- 视频预览 -->
+      <!-- 封面预览 -->
       <el-dialog
         :visible.sync="previewDialogVisible"
         width="70%"
@@ -159,6 +160,7 @@ export default {
         materialPath: '',
         classify: '',
         description: '',
+        label: ''
       },
       rules: {
         name: [
@@ -210,6 +212,12 @@ export default {
     // 分类标签
     handleCloseTag(tag) {
       this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1)
+      this.$nextTick(()=>{
+        this.imageUp.label = ''
+        this.dynamicTags.map(v=>{
+          this.imageUp.label += v + ' '
+        })
+      })
     },
     showInput() {
       this.inputVisible = true
@@ -219,9 +227,9 @@ export default {
     },
     handleInputConfirm() {
       let inputValue = this.inputValue
-      if (inputValue) {
+      if (inputValue && this.dynamicTags.length < 3) {
         this.dynamicTags.push(inputValue)
-        this.videoUp.label += inputValue + ','
+        this.videoUp.label += inputValue + ' '
       }
       this.inputVisible = false
       this.inputValue = ''
@@ -313,14 +321,12 @@ export default {
   .el-form-last {
     text-align: end;
   }
-  .disUoloadSty {
-    .el-upload--picture-card {
-      display: none;
-    }
-  }
 }
 .preview-video-dialog {
-  padding: 1rem;
+  width: max-content !important;
+  .el-dialog__body {
+    padding: 1rem;
+  }
 }
 .preview-image-dialog {
   .el-dialog__body {
