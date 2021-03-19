@@ -110,7 +110,7 @@
       width="70%"
       top="5vh"
       :append-to-body="true"
-      custom-class="preview-dialog"
+      custom-class="preview-picture-dialog"
     >
       <img :src="previewImage" alt="" />
     </el-dialog>
@@ -264,9 +264,10 @@ export default {
     text-align: end;
   }
 }
-.preview-dialog {
+.preview-picture-dialog {
   .el-dialog__body {
-    padding: 0.5rem;
+    padding: 0;
+    background: black;
   }
   img {
     width: 100%;

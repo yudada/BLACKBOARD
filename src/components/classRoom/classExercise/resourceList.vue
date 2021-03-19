@@ -25,7 +25,12 @@
     </div>
     <!-- 列表显示 -->
     <template v-if="isList">
-      <el-table :data="tableData" stripe v-loading="loading">
+      <el-table
+        @row-click="rowClick"
+        :data="tableData"
+        stripe
+        v-loading="loading"
+      >
         <el-table-column
           type="index"
           label="序号"
@@ -50,6 +55,7 @@
           label="分类"
           min-width="10%"
           :formatter="formatterValue"
+          v-show="activeName === 'audio'"
         />
         <el-table-column
           prop="description"
@@ -99,54 +105,7 @@
     </template>
     <!-- 缩列图显示 -->
     <template v-else>
-      <div class="resource-picture">
-        <div
-          v-for="item in data"
-          :key="item.id"
-          :class="{ 'resource-picture-item': item.type === 1 }"
-        >
-          <div v-if="item.type === 4" class="resource-item-pic">
-            <img
-              @click="handlePreviewImage(item.materialPath,item.name)"
-              :src="item.coverImg"
-              :alt="item.description"
-            />
-          </div>
-          <div v-else-if="item.type === 2" class="resource-item-pic">
-            <img
-              @click="handlePreviewImage(item.materialPath,item.name)"
-              :src="item.materialPath"
-              alt=""
-            />
-          </div>
-          <div v-else-if="item.type === 1">
-            <span>{{ item.name }}</span>
-            <div style="display: flex; flex-wrap: wrap">
-              <div
-                v-for="pic in item.imageArr"
-                :key="pic"
-                class="resource-item-pic"
-                @click="handlePreviewImage(pic,item.name)"
-              >
-                <img :src="pic" alt="" />
-              </div>
-            </div>
-          </div>
-          <span v-show="item.type !== 1">{{ item.name }}</span>
-        </div>
-      </div>
-      <!-- 图片预览 -->
-      <el-dialog
-        width="70%"
-        top="5vh"
-        :title="previewTitle"
-        :visible.sync="previewDialogVisible"
-        :append-to-body="true"
-        custom-class="preview-dialog"
-      >
-        <img v-if="activeName !== 'video'" :src="previewImage" alt="" />
-        <video v-else :src="previewImage" autoplay controls width="100%" />
-      </el-dialog>
+      <Thumbnail-list :tableData="tableData" :activeName="activeName" />
     </template>
   </div>
 </template>
@@ -154,14 +113,13 @@
 <script>
 import _ from 'lodash'
 import { resourceOfDelete } from '@/api/classRoom'
+import ThumbnailList from './personalResources/thumbnailList.vue'
 export default {
+  components: { ThumbnailList },
   props: ['data', 'loading', 'query', 'activeName'],
   data() {
     return {
       isList: false,
-      previewDialogVisible: false,
-      previewImage: '',
-      previewTitle: '预览',
       isPlayAudio: false,
       previewAudio: '',
       tableData: [],
@@ -174,7 +132,7 @@ export default {
     activeName: function (n, o) {
       if (n !== 'audio') this.isPlayAudio = false
       this.previewAudio = ''
-      if(n === 'audio' || n === 'video') return this.isList = true
+      if (n === 'audio') return (this.isList = true)
       this.isList = false
     },
   },
@@ -188,10 +146,10 @@ export default {
     },
     // 分页
     handleSizeChange(val) {
-      this.$emit('changePage', val, this.query.pageSize)
+      this.$emit('changePageSie', val)
     },
     handleCurrentChange(val) {
-      this.$emit('changePage', this.query.pageSize, val)
+      this.$emit('changeCurrentChange', val)
     },
     // 表格数据处理
     formatterValue(row, column, cellValue, index) {
@@ -220,11 +178,6 @@ export default {
         this.$emit('refreshData')
       })
     },
-    handlePreviewImage(url,name) {
-      this.previewImage = url
-      this.previewTitle = name
-      this.previewDialogVisible = true
-    },
     handlePlay(id) {
       const tableData = _.cloneDeep(this.tableData)
       tableData.map((v, i) => {
@@ -235,6 +188,9 @@ export default {
         }
       })
       this.tableData = tableData
+    },
+    rowClick(row, column, event) {
+      console.log(row, column, event)
     },
   },
 }
@@ -257,45 +213,6 @@ export default {
 }
 .resources-play {
   justify-content: space-between;
-}
-.resource-picture {
-  display: flex;
-  flex-wrap: wrap;
-  text-align: center;
-  .resource-item-pic {
-    width: 20vh;
-    height: 20vh;
-    margin: 1rem;
-    text-align: center;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: black;
-    img {
-      width: 100%;
-      cursor: pointer;
-      transition: all 1.5s;
-    }
-    img:hover {
-      transform: scale(1.2);
-    }
-  }
-  .resource-picture-item {
-    width: 100%;
-    box-sizing: border-box;
-    text-align: start;
-    margin: 0;
-    padding-top: 0.5rem;
-    border-bottom: 1px solid #ede4e4;
-  }
-  .preview-dialog {
-    width: max-content !important;
-    max-width: 70%;
-    img {
-      width: 100%;
-    }
-  }
 }
 ::v-deep .el-table {
   width: 100%;

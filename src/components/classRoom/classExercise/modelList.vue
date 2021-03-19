@@ -19,7 +19,7 @@
           type="text"
           :icon="item.is_collect === 1 ? 'el-icon-star-on' : 'el-icon-star-off'"
           :title="item.is_collect === 1 ? '取消收藏' : '收藏'"
-          @click="setModelCollect(item.is_collect,item.id)"
+          @click="setModelCollect(item.is_collect, item.id)"
         >
         </el-button>
       </div>
@@ -34,7 +34,7 @@
       :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"
-      v-show="total > pageSize"
+      v-show="modelsList.length > pageSize"
     >
     </el-pagination>
     <!-- 模型浏览对话框 -->
@@ -62,17 +62,17 @@ export default {
   },
   methods: {
     handleSizeChange(val) {
-      this.$emit('changePage', this.currentPage, val)
+      this.$emit('changePageSie', val)
     },
     handleCurrentChange(val) {
-      this.$emit('changePage', val, this.pageSize)
+      this.$emit('changeCurrentChange', val)
     },
     modelDialogVisible(item) {
       this.dialogVisible = true
       this.dialogContent = item
     },
     setModelCollect(n, id) {
-      console.log(n === 1 ? 2 : 1);
+      console.log(n === 1 ? 2 : 1)
       modelCollect({ type: n === 1 ? 2 : 1, model_id: id }).then((res) => {
         this.$message.success(res.msg)
         this.$emit('handleClick')
@@ -94,6 +94,7 @@ export default {
       align-items: center;
       margin: 0.5rem;
       border: 1px solid rgba(167, 180, 201, 0.2);
+      cursor: pointer;
       .model-img {
         width: 100%;
         height: 0;
@@ -101,7 +102,6 @@ export default {
         padding-bottom: 100%;
         img {
           width: 100%;
-          cursor: pointer;
           transition: all 1.5s;
         }
         img:hover {

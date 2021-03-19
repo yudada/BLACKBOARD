@@ -19,8 +19,8 @@
             :pageSize="pageSize"
             :total="total"
             :modelsList="modelsList"
-            @getModels="getModels"
-            @changePage="changePage"
+            @changePageSie="changePageSize"
+            @changeCurrentChange="changePageCurrentChange"
           />
         </el-tab-pane>
         <el-tab-pane label="精选题库" name="two">
@@ -82,9 +82,12 @@ export default {
     this.getWisdomBookList()
   },
   methods: {
-    changePage(pageSize, currentPage) {
-      this.currentPage = currentPage
+    changePageSize(pageSize) {
       this.pageSize = pageSize
+      this.getModels()
+    },
+    changePageCurrentChange(currentPage) {
+      this.currentPage = currentPage
       this.getModels()
     },
     // 模型

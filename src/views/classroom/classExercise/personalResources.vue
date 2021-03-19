@@ -23,7 +23,8 @@
               :data="resourceData"
               :query="query"
               :activeName="activeName"
-              @changePage="changePage"
+              @changePageSie="changePageSize"
+              @changeCurrentChange="changePageCurrentChange"
               @refreshData="handleClick"
               v-if="activeName !== 'model'"
             />
@@ -33,7 +34,8 @@
               :total="query.total"
               :modelsList="resourceData"
               @getModels="handleClick"
-              @changePage="changePage"
+              @changePageSie="changePageSize"
+              @changeCurrentChange="changePageCurrentChange"
               v-else
             />
           </div>
@@ -109,7 +111,6 @@ export default {
     async getMyResource(n) {
       if (n === 0) {
         await resourceModelsList({ limit: this.query.pageSize }).then((res) => {
-          console.log(res)
           this.loading = false
           const { data, current_page, per_page, total } = res.data
           const resourceData = []
@@ -135,8 +136,13 @@ export default {
       }
       console.log(this.resourceData)
     },
-    changePage(pageSize, currentPage) {
+    changePageSize(pageSize) {
       this.query.pageSize = pageSize
+      this.$nextTick(() => {
+        this.handleClick()
+      })
+    },
+    changePageCurrentChange(currentPage) {
       this.query.currentPage = currentPage
       this.$nextTick(() => {
         this.handleClick()
