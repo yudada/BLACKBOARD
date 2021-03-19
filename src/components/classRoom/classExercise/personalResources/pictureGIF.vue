@@ -8,7 +8,6 @@
       top="7vh"
       :before-close="handleClose"
       :append-to-body="true"
-      :destroy-on-close="true"
       custom-class="picture-gif-dialog"
     >
       <!-- 名称 -->
@@ -35,7 +34,7 @@
           >
             <el-button type="text">上传图片</el-button>
             <div v-show="!gifUp.materialPath" slot="tip" class="el-upload__tip">
-              支持 5MB 以内的gif图片
+              支持 15MB 以内的gif图片
             </div>
           </el-upload>
         </el-form-item>
@@ -104,6 +103,7 @@
 
 <script>
 import { resourceOfAdd } from '@/api/classRoom'
+import { deleteResource } from '@/api/index'
 export default {
   props: ['visible'],
   data() {
@@ -161,9 +161,9 @@ export default {
     // 分类标签
     handleCloseTag(tag) {
       this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1)
-      this.$nextTick(()=>{
+      this.$nextTick(() => {
         this.imageUp.label = ''
-        this.dynamicTags.map(v=>{
+        this.dynamicTags.map((v) => {
           this.imageUp.label += v + ' '
         })
       })
@@ -188,23 +188,27 @@ export default {
       this.dialogVisible = false
     },
     handleRemove(file) {
+      console.log(file);
       if (file.status === 'ready') return
       this.gifUp.materialPath = ''
+      const { path } = file.response.data
+      deleteResource({url: path}).then(res=>{
+        console.log(res);
+      })
     },
     beforeImgUpload(file) {
       const isGJF = file.type === 'image/gif'
-      const isLt5M = file.size / 1024 / 1024 < 5
+      const isLt5M = file.size / 1024 / 1024 < 15
 
       if (!isGJF) {
         this.$message.error('上传图片图片只能是 gif 格式!')
       }
       if (!isLt5M) {
-        this.$message.error('上传图片图片大小不能超过 5MB!')
+        this.$message.error('上传图片图片大小不能超过 15MB!')
       }
       return isGJF && isLt5M
     },
     handleSuccess(response, file) {
-      console.log(file)
       const { path } = response.data
       this.gifUp.materialPath = path
     },
@@ -218,6 +222,14 @@ export default {
           this.dialogVisible = false
           this.$nextTick(() => {
             this.$emit('handleChange')
+            this.gifUp = {
+              type: 2,
+              name: '',
+              materialPath: '',
+              url: '',
+              description: '',
+              label: '',
+            }
           })
         })
       })

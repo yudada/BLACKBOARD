@@ -102,3 +102,12 @@ export function teacherSubject() {
     method: 'post'
   })
 }
+
+// 删除上传资源
+export function deleteResource(data) {
+  return request({
+    url: `api/common/unlinks`,
+    method: 'post',
+    params: data
+  })
+}

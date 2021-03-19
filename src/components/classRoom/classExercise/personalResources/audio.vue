@@ -8,7 +8,6 @@
       top="7vh"
       :before-close="handleClose"
       :append-to-body="true"
-      :destroy-on-close="true"
       custom-class="audio-dialog"
     >
       <el-form
@@ -44,7 +43,7 @@
               slot="tip"
               class="el-upload__tip"
             >
-              支持20MB以内的音频文件
+              支持100MB以内的音频文件
             </div>
           </el-upload>
           <div style="margin-top: 0.5rem" v-if="previewVisible">
@@ -91,6 +90,7 @@
 
 <script>
 import { resourceOfClassify, resourceOfAdd } from '@/api/classRoom'
+import { deleteResource } from '@/api/index'
 export default {
   props: ['visible'],
   data() {
@@ -106,7 +106,7 @@ export default {
         coverImg: '',
         materialPath: '',
         classify: '',
-        description: ''
+        description: '',
       },
       rules: {
         name: [
@@ -158,6 +158,10 @@ export default {
       if (file.status === 'ready') return
       this.audioUp.materialPath = ''
       this.previewVisible = false
+      const { path } = file.response.data
+      deleteResource({url: path}).then(res=>{
+        console.log(res);
+      })
     },
     handleSuccess(response, file) {
       console.log(file)
@@ -169,13 +173,13 @@ export default {
     },
     beforeAudioUpload(file) {
       const isJPG = file.type === 'audio/mpeg'
-      const isLt2M = file.size / 1024 / 1024 < 20
+      const isLt2M = file.size / 1024 / 1024 < 100
 
       if (!isJPG) {
         this.$message.error('上传音频只能是 mp3 格式!')
       }
       if (!isLt2M) {
-        this.$message.error('上传音频大小不能超过 20MB!')
+        this.$message.error('上传音频大小不能超过 100MB!')
       }
       return isJPG && isLt2M
     },
@@ -189,6 +193,14 @@ export default {
           this.dialogVisible = false
           this.$nextTick(() => {
             this.$emit('handleChange')
+            this.audioUp = {
+              type: 3,
+              name: '',
+              coverImg: '',
+              materialPath: '',
+              classify: '',
+              description: '',
+            }
           })
         })
       })

@@ -8,7 +8,6 @@
       top="7vh"
       :before-close="handleClose"
       :append-to-body="true"
-      :destroy-on-close="true"
       custom-class="picture-dialog"
     >
       <el-form
@@ -41,7 +40,7 @@
           >
             <el-button type="text">添加素材</el-button>
             <div slot="tip" class="el-upload__tip">
-              支持2MB以内的jpg/png图片
+              支持10MB以内的jpg/png图片
             </div>
           </el-upload>
         </el-form-item>
@@ -119,6 +118,7 @@
 
 <script>
 import { resourceOfAdd } from '@/api/classRoom'
+import { deleteResource } from '@/api/index'
 export default {
   props: ['visible'],
   data() {
@@ -184,6 +184,10 @@ export default {
     handleRemove(file) {
       if (file.status === 'ready') return
       this.imageUp.imageArr.splice(this.imageUp.imageArr.indexOf(file.url), 1)
+      const { path } = file.response.data
+      deleteResource({url: path}).then(res=>{
+        console.log(res);
+      })
     },
     handleSuccessMulitple(response) {
       this.imageUp.imageArr.push(response.data.path)
@@ -191,21 +195,21 @@ export default {
     beforeImgUpload(file) {
       const isJPG = file.type === 'image/jpeg'
       const isPNG = file.type === 'image/png'
-      const isLt2M = file.size / 1024 / 1024 < 2
+      const isLt2M = file.size / 1024 / 1024 < 10
 
       if (!isJPG && !isPNG) {
         this.$message.error('上传图片图片只能是 JPG 或者 PNG 格式!')
       }
       if (!isLt2M) {
-        this.$message.error('上传图片图片大小不能超过 2MB!')
+        this.$message.error('上传图片图片大小不能超过 10MB!')
       }
       return (isPNG || isJPG) && isLt2M
     },
     handleCloseTag(tag) {
       this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1)
-      this.$nextTick(()=>{
+      this.$nextTick(() => {
         this.imageUp.label = ''
-        this.dynamicTags.map(v=>{
+        this.dynamicTags.map((v) => {
           this.imageUp.label += v + ' '
         })
       })
@@ -235,6 +239,14 @@ export default {
           this.dialogVisible = false
           this.$nextTick(() => {
             this.$emit('handleChange')
+            this.imageUp = {
+              type: 1,
+              name: '',
+              url: '',
+              description: '',
+              label: '',
+              imageArr: [],
+            }
           })
         })
       })

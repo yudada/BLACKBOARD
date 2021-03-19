@@ -47,7 +47,8 @@ service.interceptors.response.use(
             Message({
                 message: res.msg || 'Error',
                 type: 'error',
-                durantion: 5 * 1000
+                durantion: 3 * 1000,
+                showClose: true
             })
             if (res.statusCode === 501) {
                 MessageBox.confirm('登录超时，请重新登录！', {
@@ -72,7 +73,8 @@ service.interceptors.response.use(
         Message({
             message: error.message,
             type: 'error',
-            durantion: 5 * 1000
+            durantion: 3 * 1000,
+            showClose: true
         })
         NProgress.done();
         return Promise.reject(error)

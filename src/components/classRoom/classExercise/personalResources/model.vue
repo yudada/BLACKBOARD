@@ -7,7 +7,6 @@
       width="50%"
       top="7vh"
       :before-close="handleClose"
-      :append-to-body="true"
       custom-class="model-dialog"
     >
       <el-form ref="form" :model="modelUp" label-width="80px">

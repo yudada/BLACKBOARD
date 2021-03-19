@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="visible === 'video'">
     <!-- 上传资源弹框 -->
     <el-dialog
       title="上传视频"
@@ -8,8 +8,6 @@
       top="7vh"
       :before-close="handleClose"
       :append-to-body="true"
-      :destroy-on-close="true"
-      v-if="dialogVisible"
     >
       <el-form
         ref="ruleForm"
@@ -125,7 +123,12 @@
         :append-to-body="true"
         custom-class="preview-video-dialog"
       >
-        <video :src="videoUp.materialPath" width="100%" autoplay controls></video>
+        <video
+          :src="videoUp.materialPath"
+          width="100%"
+          autoplay
+          controls
+        ></video>
       </el-dialog>
       <!-- 封面预览 -->
       <el-dialog
@@ -143,6 +146,7 @@
 
 <script>
 import { resourceOfAdd } from '@/api/classRoom'
+import { deleteResource } from '@/api/index'
 export default {
   props: ['visible'],
   data() {
@@ -160,7 +164,7 @@ export default {
         materialPath: '',
         classify: '',
         description: '',
-        label: ''
+        label: '',
       },
       rules: {
         name: [
@@ -212,9 +216,9 @@ export default {
     // 分类标签
     handleCloseTag(tag) {
       this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1)
-      this.$nextTick(()=>{
+      this.$nextTick(() => {
         this.imageUp.label = ''
-        this.dynamicTags.map(v=>{
+        this.dynamicTags.map((v) => {
           this.imageUp.label += v + ' '
         })
       })
@@ -244,6 +248,10 @@ export default {
       if (file.status === 'ready') return
       this.videoUp.materialPath = ''
       this.previewVisible = false
+      const { path } = file.response.data
+      deleteResource({url: path}).then(res=>{
+        console.log(res);
+      })
     },
     handleSuccess(response, file) {
       console.log(file)
@@ -303,6 +311,15 @@ export default {
           this.dialogVisible = false
           this.$nextTick(() => {
             this.$emit('handleChange')
+            this.videoUp = {
+              type: 4,
+              name: '',
+              coverImg: '',
+              materialPath: '',
+              classify: '',
+              description: '',
+              label: '',
+            }
           })
         })
       })

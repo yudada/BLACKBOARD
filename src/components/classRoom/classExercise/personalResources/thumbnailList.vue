@@ -2,7 +2,7 @@
   <div class="resource-thumbnail-list">
     <div class="resource-picture">
       <div
-        v-for="item in tableData"
+        v-for="(item, i) in tableData"
         :key="item.id"
         :class="{ 'resource-picture-item': item.type === 1 }"
       >
@@ -10,14 +10,14 @@
           <img :src="item.coverImg" :alt="item.description" />
           <div
             class="resource-item-video"
-            @click="handlePreviewImage(item.materialPath, item.name)"
+            @click="handlePreviewImage(item.materialPath, item.name, i)"
           >
             <i class="el-icon-video-play"></i>
           </div>
         </div>
         <div v-else-if="item.type === 2" class="resource-item-pic">
           <img
-            @click="handlePreviewImage(item.materialPath, item.name)"
+            @click="handlePreviewImage(item.materialPath, item.name, i)"
             :src="item.materialPath"
             :alt="item.description"
           />
@@ -26,10 +26,10 @@
           <span>{{ item.name }}</span>
           <div style="display: flex; flex-wrap: wrap">
             <div
-              v-for="pic in item.imageArr"
+              v-for="(pic, m) in item.imageArr"
               :key="pic"
               class="resource-item-pic"
-              @click="handlePreviewImage(pic, item.name)"
+              @click="handlePreviewImage(pic, item.name, i, m)"
             >
               <img :src="pic" alt="" />
             </div>
@@ -52,15 +52,40 @@
       :custom-class="
         activeName === 'video' ? 'preview-dialog' : 'preview-dialog-image'
       "
+      :destroy-on-close="true"
+      @open="onTouchMove(true)"
+      @close="onTouchMove(false)"
     >
-      <img v-if="activeName !== 'video'" :src="previewImage" alt="" />
-      <video
-        v-else
-        :src="previewImage"
-        autoplay
-        controls
-        style="max-width: 100%;"
-      />
+      <div
+        @touchstart="touchstart($event)"
+        @touchend="touchend($event)"
+        style="width: 100%; height: 100%"
+      >
+        <img v-if="activeName !== 'video'" :src="previewImage" alt="" />
+        <video
+          v-else
+          :src="previewImage"
+          autoplay
+          controls
+          style="max-width: 100%"
+        />
+        <div
+          class="dialog-image-previous"
+          @keyup.page-up="previousPreview"
+          @click="previousPreview"
+          v-if="activeName !== 'video'"
+        >
+          <i class="el-icon-back"></i>
+        </div>
+        <div
+          class="dialog-image-next"
+          @keyup.page-down="nextPreview"
+          @click="nextPreview"
+          v-if="activeName !== 'video'"
+        >
+          <i class="el-icon-right"></i>
+        </div>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -73,13 +98,99 @@ export default {
       previewDialogVisible: false,
       previewImage: '',
       previewTitle: '预览',
+      index: 0,
+      index2: 0,
+      touchStart: 0,
     }
   },
   methods: {
-    handlePreviewImage(url, name) {
+    handlePreviewImage(url, name, index, index2) {
+      console.log(this.tableData[index])
+      this.index = index
+      this.index2 = index2
       this.previewImage = url
       this.previewTitle = name
       this.previewDialogVisible = true
+    },
+    previousPreview() {
+      let index = this.index
+      let index2 = this.index2
+      let tableData = this.tableData
+      if (this.activeName !== 'picture') {
+        if (this.index === 0) return
+        this.index--
+        this.previewImage = tableData[index].materialPath
+        this.previewTitle = tableData[index].name
+        this.previewDialogVisible = true
+      } else {
+        if (index2 > 0) {
+          index2--
+          this.index2 = index2
+          this.previewImage = tableData[index].imageArr[index2]
+          this.previewTitle = tableData[index].name
+        } else {
+          if (index > 0) {
+            index--
+            index2 = this.index2 = tableData[index].imageArr.length - 1
+            this.index = index
+            this.previewImage = tableData[index].imageArr[index2]
+            this.previewTitle = tableData[index].name
+          }
+        }
+      }
+    },
+    nextPreview() {
+      let index = this.index
+      let index2 = this.index2
+      let tableData = this.tableData
+      if (this.activeName !== 'picture') {
+        if (this.index === tableData.length - 1) return
+        index++
+        this.index = index
+        this.previewImage = tableData[index].materialPath
+        this.previewTitle = tableData[index].name
+      } else {
+        if (index2 < tableData[index].imageArr.length - 1) {
+          index2++
+          this.index2 = index2
+          this.previewImage = tableData[index].imageArr[index2]
+          this.previewTitle = tableData[index].name
+        } else {
+          if (index !== tableData.length - 1) {
+            index2 = this.index2 = 0
+            index++
+            this.index = index
+            this.previewImage = tableData[index].imageArr[index2]
+            this.previewTitle = tableData[index].name
+          }
+        }
+      }
+    },
+    touchstart(e) {
+      this.touchStart = e.changedTouches[0].clientX
+    },
+    touchend(e) {
+      let start = this.touchStart
+      let end = e.changedTouches[0].clientX
+      if (start > end) {
+        this.nextPreview()
+      } else {
+        this.previousPreview()
+      }
+    },
+    onTouchMove(inFlag) {
+      if (inFlag) {
+        document.addEventListener('touchmove', this.onHandler, {
+          passive: false,
+        })
+      } else {
+        document.removeEventListener('touchmove', this.onHandler, {
+          passive: false,
+        })
+      }
+    },
+    onHandler(e) {
+      e.preventDefault()
     },
   },
 }
@@ -143,9 +254,12 @@ export default {
   width: fit-content;
   max-width: 80%;
   .el-dialog__body {
-    display: flex;
     padding: 0;
     max-height: 80vh;
+    position: relative;
+    div {
+      display: flex;
+    }
     video {
       outline: none;
     }
@@ -162,6 +276,45 @@ export default {
       width: auto;
       max-width: 100%;
       height: 100%;
+    }
+    .dialog-image-previous {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 25%;
+      text-align: start;
+      transform: translateY(-100%);
+      font-size: 3rem;
+      margin: 2rem;
+      cursor: pointer;
+      color: #a39898c7;
+
+      i {
+        opacity: 0;
+        transition: all 0.5s;
+      }
+    }
+    .dialog-image-next {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      width: 25%;
+      text-align: end;
+      transform: translateY(-100%);
+      font-size: 3rem;
+      margin: 2rem;
+      cursor: pointer;
+      color: #a39898c7;
+      i {
+        opacity: 0;
+        transition: all 0.5s;
+      }
+    }
+    .dialog-image-next:hover,
+    .dialog-image-previous:hover {
+      i {
+        opacity: 1;
+      }
     }
   }
 }

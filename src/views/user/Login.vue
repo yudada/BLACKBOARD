@@ -51,6 +51,7 @@
 
 <script>
 import { login } from '@/api/user'
+import { userInfo } from '@/api/index'
 export default {
   data() {
     return {
@@ -100,10 +101,14 @@ export default {
     login() {
       this.$refs.loginFormRef.validate(async (valid) => {
         if (!valid) return this.$message.error('请填写必要项！')
-        login(this.loginForm).then((res) => {
+        await login(this.loginForm).then((res) => {
           const { data } = res
           if (res.statusCode !== 200) return
-          this.$message.success('登录成功！')
+          this.$message({
+            type: 'success',
+            message: '登陆成功！',
+            showClose: true
+          })
           window.sessionStorage.setItem('token', data.token)
           if (this.loginForm.checked === true) {
             this.setCookie(
@@ -114,7 +119,15 @@ export default {
           } else {
             this.clearCookie()
           }
-          this.$router.push('/home')
+          userInfo().then(res=>{
+            console.log(res);
+            const { teaPositionId, teaIsAdmin } = res.data.userInfo
+            if(teaPositionId === 1 || teaIsAdmin === 1 ) {
+              this.$router.push('/home')
+            } else {
+              this.$router.push('/classroom')
+            }
+          })
         })
       })
     },
