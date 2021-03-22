@@ -6,7 +6,7 @@
         type="primary"
         size="medium"
         class="up-resource"
-        @click="upResource"
+        @click="upResource(false)"
       >
         上传资源
       </el-button>
@@ -26,6 +26,7 @@
               @changePageSie="changePageSize"
               @changeCurrentChange="changePageCurrentChange"
               @refreshData="handleClick"
+              @editById="editById"
               v-if="activeName !== 'model'"
             />
             <Model-list
@@ -40,16 +41,16 @@
             />
           </div>
           <div v-if="m.name === 'picture'">
-            <Picture :visible="opDialog" @handleChange="handleClick" />
+            <Picture :media="media" :visible="opDialog" @handleChange="handleClick" />
           </div>
           <div v-if="m.name === 'pictureGif'">
-            <Picture-gif :visible="opDialog" @handleChange="handleClick" />
+            <Picture-gif :media="media" :visible="opDialog" @handleChange="handleClick" />
           </div>
           <div v-if="m.name === 'video'">
-            <Video :visible="opDialog" @handleChange="handleClick" />
+            <Video :media="media" :visible="opDialog" @handleChange="handleClick" />
           </div>
           <div v-if="m.name === 'audio'">
-            <Audio :visible="opDialog" @handleChange="handleClick" />
+            <Audio :media="media" :visible="opDialog" @handleChange="handleClick" />
           </div>
         </el-tab-pane>
       </el-tabs>
@@ -59,7 +60,11 @@
 
 <script>
 import _ from 'lodash'
-import { resourceOfMy, resourceModelsList } from '@/api/classRoom'
+import {
+  resourceOfMy,
+  resourceModelsList,
+  resourceOfDetail,
+} from '@/api/classRoom'
 import Picture from '@/components/classRoom/classExercise/personalResources/picture.vue'
 import Video from '@/components/classRoom/classExercise/personalResources/video.vue'
 import Audio from '@/components/classRoom/classExercise/personalResources/audio.vue'
@@ -71,7 +76,7 @@ export default {
   components: { Picture, Video, Audio, PictureGif, ResourceList, ModelList },
   data() {
     return {
-      activeName: 'model',
+      activeName: 'picture',
       categoryList: [
         // { id: 0, name: 'all', title: '全部' },
         { id: 0, name: 'model', title: '模型' },
@@ -88,13 +93,15 @@ export default {
         pageSize: 20,
         currentPage: 1,
       },
+      media: {}
     }
   },
   mounted() {
     this.handleClick()
   },
   methods: {
-    upResource() {
+    upResource(b) {
+      if(!b) {this.media.isEdit = b}
       this.opDialog = ''
       this.$nextTick(() => {
         this.opDialog = this.activeName
@@ -146,6 +153,35 @@ export default {
       this.query.currentPage = currentPage
       this.$nextTick(() => {
         this.handleClick()
+      })
+    },
+    editById(id) {
+      resourceOfDetail(id).then((res) => {
+        console.log(res)
+        const {
+          name,
+          materialPath,
+          coverImg,
+          classify,
+          label,
+          url,
+          description,
+          imageArr,
+        } = res.data
+        let media = {
+          name: name,
+          materialPath: materialPath,
+          coverImg: coverImg,
+          classify: classify,
+          label: label,
+          url: url,
+          description: description,
+          imageArr: imageArr,
+          isEdit: true,
+          id: id
+        }
+        this.upResource()
+        this.media = media
       })
     },
   },

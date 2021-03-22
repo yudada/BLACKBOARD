@@ -2,13 +2,15 @@
   <div>
     <!-- 上传资源弹框 -->
     <el-dialog
-      title="上传图片"
-      :visible.sync="dialogVisible"
-      width="50%"
       top="7vh"
+      width="50%"
+      custom-class="picture-dialog"
+      :title="dialogTitle"
+      :visible.sync="dialogVisible"
       :before-close="handleClose"
       :append-to-body="true"
-      custom-class="picture-dialog"
+      :close-on-click-modal="false"
+      @open="getMediData"
     >
       <el-form
         ref="ruleForm"
@@ -25,7 +27,7 @@
           />
         </el-form-item>
         <!-- 上传图片 -->
-        <el-form-item prop="imageArr" label="上传图片">
+        <el-form-item :prop="media.isEdit ? '' : 'imageArr' " label="上传图片">
           <el-upload
             class="upload-demo"
             list-type="picture-card"
@@ -36,6 +38,7 @@
             :on-remove="handleRemove"
             :before-upload="beforeImgUpload"
             :on-success="handleSuccessMulitple"
+            :file-list="fileList"
             multiple
           >
             <el-button type="text">添加素材</el-button>
@@ -47,8 +50,8 @@
         <!-- 分类标签 -->
         <el-form-item label="分类标签">
           <el-tag
-            :key="tag"
-            v-for="tag in dynamicTags"
+            :key="tag + i"
+            v-for="(tag,i) in dynamicTags"
             closable
             :disable-transitions="false"
             @close="handleCloseTag(tag)"
@@ -98,7 +101,7 @@
         <el-form-item class="el-form-last">
           <el-button size="medium" @click="handleClose"> 取 消 </el-button>
           <el-button size="medium" type="primary" @click="upResource">
-            确 认 上 传
+            {{ submitText }}
           </el-button>
         </el-form-item>
       </el-form>
@@ -117,13 +120,14 @@
 </template>
 
 <script>
-import { resourceOfAdd } from '@/api/classRoom'
+import { resourceOfAdd, resourceOfEdit } from '@/api/classRoom'
 import { deleteResource } from '@/api/index'
 export default {
-  props: ['visible'],
+  props: ['visible', 'media'],
   data() {
     return {
       dialogVisible: false,
+      fileList: [],
       imageUp: {
         type: 1,
         name: '',
@@ -156,6 +160,8 @@ export default {
       dynamicTags: [],
       inputVisible: false,
       inputValue: '',
+      dialogTitle: '上传图片',
+      submitText: '确 认 上 传',
     }
   },
   watch: {
@@ -174,6 +180,36 @@ export default {
     },
   },
   methods: {
+    getMediData() {
+      if (this.media.isEdit) {
+        this.imageUp.name = this.media.name
+        this.imageUp.url = this.media.url
+        this.imageUp.description = this.media.description
+        this.imageUp.label = this.media.label
+        this.imageUp.id = this.media.id
+        this.dialogTitle = '编辑图片信息'
+        this.submitText = '确 认 修 改'
+        const fileList = []
+        if(this.media.label) this.dynamicTags = this.media.label.split(' ')
+        this.media.imageArr.map((v, i) => {
+          fileList.push({ name: i, url: v })
+        })
+        this.fileList = fileList
+        console.log(this.fileList)
+      } else {
+        this.imageUp = {
+          type: 1,
+          name: '',
+          url: '',
+          description: '',
+          label: '',
+          imageArr: [],
+        }
+        this.submitText = '确 认 上 传'
+        this.fileList = []
+        this.dynamicTags = []
+      }
+    },
     handleClose() {
       this.dialogVisible = false
     },
@@ -182,11 +218,17 @@ export default {
       this.previewDialogVisible = true
     },
     handleRemove(file) {
+      console.log(file);
       if (file.status === 'ready') return
       this.imageUp.imageArr.splice(this.imageUp.imageArr.indexOf(file.url), 1)
-      const { path } = file.response.data
-      deleteResource({url: path}).then(res=>{
-        console.log(res);
+      let path = ''
+      if(file.response) {
+        path = file.response.data.path
+      } else {
+        path = file.url
+      }
+      deleteResource({ url: path }).then((res) => {
+        console.log(res)
       })
     },
     handleSuccessMulitple(response) {
@@ -208,7 +250,7 @@ export default {
     handleCloseTag(tag) {
       this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1)
       this.$nextTick(() => {
-        this.imageUp.label = ''
+        this.imageUp.label = ' '
         this.dynamicTags.map((v) => {
           this.imageUp.label += v + ' '
         })
@@ -231,24 +273,27 @@ export default {
     },
     upResource() {
       console.log(this.imageUp)
-      this.$refs.ruleForm.validate(async (valid) => {
+      this.$refs.ruleForm.validate((valid) => {
         if (!valid) return
-        await resourceOfAdd(this.imageUp).then((res) => {
-          console.log(res)
-          this.$message.success(res.msg)
-          this.dialogVisible = false
-          this.$nextTick(() => {
-            this.$emit('handleChange')
-            this.imageUp = {
-              type: 1,
-              name: '',
-              url: '',
-              description: '',
-              label: '',
-              imageArr: [],
-            }
+        if (this.media.isEdit) {
+          resourceOfEdit(this.imageUp).then(res=>{
+            console.log(res)
+            this.$message.success(res.msg)
+            this.dialogVisible = false
+            this.$nextTick(() => {
+              this.$emit('handleChange')
+            })
           })
-        })
+        } else {
+          resourceOfAdd(this.imageUp).then((res) => {
+            console.log(res)
+            this.$message.success(res.msg)
+            this.dialogVisible = false
+            this.$nextTick(() => {
+              this.$emit('handleChange')
+            })
+          })
+        }
       })
     },
   },

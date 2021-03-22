@@ -1,13 +1,16 @@
 <template>
-  <div v-if="visible === 'video'">
+  <div>
     <!-- 上传资源弹框 -->
     <el-dialog
-      title="上传视频"
-      :visible.sync="dialogVisible"
       width="50%"
       top="7vh"
+      custom-class="video-dialog"
+      :title="dialogTitle"
+      :visible.sync="dialogVisible"
       :before-close="handleClose"
       :append-to-body="true"
+      :close-on-click-modal="false"
+      @open="getMediData"
     >
       <el-form
         ref="ruleForm"
@@ -34,6 +37,7 @@
             :on-remove="handleRemove"
             :on-success="handleSuccess"
             :before-upload="beforeVideoUpload"
+            :file-list="fileListVideo"
             :limit="1"
           >
             <el-button size="small" type="primary">上传视频</el-button>
@@ -59,6 +63,7 @@
             :on-remove="handleRemovePictrue"
             :on-success="handleSuccessPictrue"
             :before-upload="beforeImgUploadPictrue"
+            :file-list="fileListImage"
             :limit="1"
           >
             <el-button type="text">上传图片</el-button>
@@ -111,7 +116,7 @@
         <el-form-item class="el-form-last">
           <el-button size="medium" @click="handleClose">取 消</el-button>
           <el-button size="medium" type="primary" @click="upResource">
-            确 定
+            {{ submitText }}
           </el-button>
         </el-form-item>
       </el-form>
@@ -145,10 +150,10 @@
 </template>
 
 <script>
-import { resourceOfAdd } from '@/api/classRoom'
+import { resourceOfAdd, resourceOfEdit } from '@/api/classRoom'
 import { deleteResource } from '@/api/index'
 export default {
-  props: ['visible'],
+  props: ['visible','media'],
   data() {
     return {
       dialogVisible: false,
@@ -162,7 +167,6 @@ export default {
         name: '',
         coverImg: '',
         materialPath: '',
-        classify: '',
         description: '',
         label: '',
       },
@@ -189,6 +193,10 @@ export default {
       dynamicTags: [],
       inputVisible: false,
       inputValue: '',
+      fileListVideo: [],
+      fileListImage: [],
+      dialogTitle: '上传视频',
+      submitText: '确 认 上 传',
     }
   },
   computed: {
@@ -213,6 +221,36 @@ export default {
     },
   },
   methods: {
+    getMediData() {
+      console.log(this.media);
+      if (this.media.isEdit) {
+        this.videoUp.name = this.media.name
+        this.videoUp.coverImg = this.media.coverImg
+        this.videoUp.description = this.media.description
+        this.videoUp.label = this.media.label
+        this.videoUp.materialPath = this.media.materialPath
+        if(this.media.label) this.dynamicTags = this.media.label.split(' ')
+        this.videoUp.id = this.media.id
+        this.dialogTitle = '编辑视频信息'
+        this.submitText = '确 认 修 改'
+        this.fileListVideo = [{name: this.media.name, url: this.media.materialPath}]
+        this.fileListImage = [{name: this.media.name, url: this.media.coverImg}]
+        console.log(this.fileList)
+      } else {
+        this.videoUp = {
+        type: 4,
+        name: '',
+        coverImg: '',
+        materialPath: '',
+        description: '',
+        label: '',
+      }
+        this.submitText = '确 认 上 传'
+        this.fileListVideo = []
+        this.fileListImage = []
+        this.dynamicTags = []
+      }
+    },
     // 分类标签
     handleCloseTag(tag) {
       this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1)
@@ -248,7 +286,12 @@ export default {
       if (file.status === 'ready') return
       this.videoUp.materialPath = ''
       this.previewVisible = false
-      const { path } = file.response.data
+      let path = ''
+      if(file.response) {
+        path = file.response.data.path
+      } else {
+        path = file.url
+      }
       deleteResource({url: path}).then(res=>{
         console.log(res);
       })
@@ -283,6 +326,15 @@ export default {
       console.log(file)
       if (file.status === 'ready') return
       this.videoUp.coverImg = ''
+      let path = ''
+      if(file.response) {
+        path = file.response.data.path
+      } else {
+        path = file.url
+      }
+      deleteResource({url: path}).then(res=>{
+        console.log(res);
+      })
     },
     handleSuccessPictrue(response) {
       this.videoUp.coverImg = response.data.path
@@ -305,23 +357,25 @@ export default {
       console.log(this.videoUp)
       this.$refs.ruleForm.validate(async (valid) => {
         if (!valid) return
-        await resourceOfAdd(this.videoUp).then((res) => {
-          console.log(res)
-          this.$message.success(res.msg)
-          this.dialogVisible = false
-          this.$nextTick(() => {
-            this.$emit('handleChange')
-            this.videoUp = {
-              type: 4,
-              name: '',
-              coverImg: '',
-              materialPath: '',
-              classify: '',
-              description: '',
-              label: '',
-            }
+        if (this.media.isEdit) {
+          resourceOfEdit(this.videoUp).then(res=>{
+            console.log(res)
+            this.$message.success(res.msg)
+            this.dialogVisible = false
+            this.$nextTick(() => {
+              this.$emit('handleChange')
+            })
           })
-        })
+        } else {
+          resourceOfAdd(this.videoUp).then((res) => {
+            console.log(res)
+            this.$message.success(res.msg)
+            this.dialogVisible = false
+            this.$nextTick(() => {
+              this.$emit('handleChange')
+            })
+          })
+        }
       })
     },
   },

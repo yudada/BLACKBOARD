@@ -67,13 +67,6 @@
           <template slot-scope="scope">
             <div style="display: flex; align-items: center">
               <el-button
-                type="text"
-                @click="removeById(scope.row.id)"
-                class="delete_btn"
-              >
-                删除
-              </el-button>
-              <el-button
                 style="font-size: x-large; padding: 0"
                 v-show="activeName === 'audio'"
                 type="text"
@@ -87,6 +80,16 @@
                   "
                   :title="scope.row.isPlayAudio ? '停止' : '播放'"
                 />
+              </el-button>
+              <el-button type="text" @click="editById(scope.row.id)">
+                编辑
+              </el-button>
+              <el-button
+                type="text"
+                @click="removeById(scope.row.id)"
+                class="delete_btn"
+              >
+                删除
               </el-button>
             </div>
           </template>
@@ -178,6 +181,9 @@ export default {
         this.$emit('refreshData')
       })
     },
+    editById(id) {
+      this.$emit('editById', id)
+    },
     handlePlay(id) {
       const tableData = _.cloneDeep(this.tableData)
       tableData.map((v, i) => {
@@ -190,7 +196,7 @@ export default {
       this.tableData = tableData
     },
     rowClick(row, column, event) {
-      console.log(row, column, event)
+      // console.log(row, column, event)
     },
   },
 }

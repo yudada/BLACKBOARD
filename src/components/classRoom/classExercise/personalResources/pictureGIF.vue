@@ -2,13 +2,15 @@
   <div>
     <!-- 上传资源弹框 -->
     <el-dialog
-      title="上传GIF动图"
-      :visible.sync="dialogVisible"
       width="50%"
       top="7vh"
+      custom-class="picture-gif-dialog"
+      :title="dialogTitle"
+      :visible.sync="dialogVisible"
       :before-close="handleClose"
       :append-to-body="true"
-      custom-class="picture-gif-dialog"
+      :close-on-click-modal="false"
+      @open="getMediData"
     >
       <!-- 名称 -->
       <el-form ref="ruleForm" :model="gifUp" :rules="rules" label-width="120px">
@@ -23,14 +25,15 @@
         <el-form-item prop="materialPath" label="上传GIF图片">
           <el-upload
             class="upload-demo"
+            list-type="picture-card"
             :class="{ disUoloadSty: gifUp.materialPath }"
             :action="actionGif"
             :accept="acceptImg"
             :headers="headers"
             :on-remove="handleRemove"
             :on-success="handleSuccess"
-            list-type="picture-card"
             :before-upload="beforeImgUpload"
+            :file-list="fileList"
           >
             <el-button type="text">上传图片</el-button>
             <div v-show="!gifUp.materialPath" slot="tip" class="el-upload__tip">
@@ -93,7 +96,7 @@
         <el-form-item class="el-form-last">
           <el-button size="medium" @click="handleClose"> 取 消 </el-button>
           <el-button size="medium" type="primary" @click="upResource">
-            确 定
+            {{ submitText }}
           </el-button>
         </el-form-item>
       </el-form>
@@ -102,10 +105,10 @@
 </template>
 
 <script>
-import { resourceOfAdd } from '@/api/classRoom'
+import { resourceOfAdd, resourceOfEdit } from '@/api/classRoom'
 import { deleteResource } from '@/api/index'
 export default {
-  props: ['visible'],
+  props: ['visible', 'media'],
   data() {
     return {
       dialogVisible: false,
@@ -140,6 +143,9 @@ export default {
       dynamicTags: [],
       inputVisible: false,
       inputValue: '',
+      fileList: [],
+      dialogTitle: '上传图片',
+      submitText: '确 认 上 传',
     }
   },
   computed: {
@@ -158,13 +164,39 @@ export default {
     },
   },
   methods: {
+    getMediData() {
+      if (this.media.isEdit) {
+        this.gifUp.name = this.media.name
+        this.gifUp.url = this.media.url
+        this.gifUp.description = this.media.description
+        this.gifUp.label = this.media.label
+        this.gifUp.materialPath = this.media.materialPath
+        if (this.media.label) this.dynamicTags = this.media.label.split(' ')
+        this.gifUp.id = this.media.id
+        this.dialogTitle = '编辑图片信息'
+        this.submitText = '确 认 修 改'
+        this.fileList = [{name: this.media.name, url: this.media.materialPath}]
+      } else {
+        this.gifUp = {
+          type: 2,
+          name: '',
+          materialPath: '',
+          url: '',
+          description: '',
+          label: '',
+        }
+        this.submitText = '确 认 上 传'
+        this.fileList = []
+        this.dynamicTags = []
+      }
+    },
     // 分类标签
     handleCloseTag(tag) {
       this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1)
       this.$nextTick(() => {
-        this.imageUp.label = ''
+        this.gifUp.label = ''
         this.dynamicTags.map((v) => {
-          this.imageUp.label += v + ' '
+          this.gifUp.label += v + ' '
         })
       })
     },
@@ -188,12 +220,17 @@ export default {
       this.dialogVisible = false
     },
     handleRemove(file) {
-      console.log(file);
+      console.log(file)
       if (file.status === 'ready') return
       this.gifUp.materialPath = ''
-      const { path } = file.response.data
-      deleteResource({url: path}).then(res=>{
-        console.log(res);
+      let path = ''
+      if (file.response) {
+        path = file.response.data.path
+      } else {
+        path = file.url
+      }
+      deleteResource({ url: path }).then((res) => {
+        console.log(res)
       })
     },
     beforeImgUpload(file) {
@@ -216,22 +253,25 @@ export default {
       console.log(this.gifUp)
       this.$refs.ruleForm.validate(async (valid) => {
         if (!valid) return
-        await resourceOfAdd(this.gifUp).then((res) => {
-          console.log(res)
-          this.$message.success(res.msg)
-          this.dialogVisible = false
-          this.$nextTick(() => {
-            this.$emit('handleChange')
-            this.gifUp = {
-              type: 2,
-              name: '',
-              materialPath: '',
-              url: '',
-              description: '',
-              label: '',
-            }
+        if (this.media.isEdit) {
+          resourceOfEdit(this.gifUp).then((res) => {
+            console.log(res)
+            this.$message.success(res.msg)
+            this.dialogVisible = false
+            this.$nextTick(() => {
+              this.$emit('handleChange')
+            })
           })
-        })
+        } else {
+          resourceOfAdd(this.gifUp).then((res) => {
+            console.log(res)
+            this.$message.success(res.msg)
+            this.dialogVisible = false
+            this.$nextTick(() => {
+              this.$emit('handleChange')
+            })
+          })
+        }
       })
     },
   },

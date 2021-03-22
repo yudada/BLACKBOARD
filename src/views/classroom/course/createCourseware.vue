@@ -23,8 +23,8 @@
         </el-form-item>
         <el-form-item label="课件内容">
           <br />
-          <!-- 富文本编辑器组件 -->
           <quill-editor :options="editorOption" v-model="addCoursewareForm.content" />
+          <!-- <vue-ueditor-wrap v-model="addCoursewareForm.content" :config="myConfig" /> -->
         </el-form-item>
         <el-form-item label="添加附件">
           <br />
@@ -49,7 +49,6 @@
             </div>
             <div class="el-upload__tip" slot="tip">只能上传{{accept2}}文件</div>
           </el-upload>
-          <!-- <el-button size="small" type="success" @click="handleSubmit">上传附件</el-button> -->
         </el-form-item>
         <el-form-item label="状态" prop="is_share">
           <el-radio-group v-model="addCoursewareForm.is_share">
@@ -69,6 +68,7 @@
         </div>
       </el-form>
     </el-card>
+
   </div>
 </template>
 
@@ -122,6 +122,11 @@ export default {
       },
       accept: '.pdf,.PDF,.xlsx,.doc,.DOC,.xls,.ppt,.PPT,.rar,.RAR,.zip,.ZIP,pptx,.PPTX,docx,.DOCX',
       accept2: 'pdf/xlsx/doc/docx/xls/ppt/rar/zip',
+      myConfig: {
+        initialFrameHeight: 240,
+        serverUrl: 'https://api.vrbook.vip/api/interactive/uploadAttach',
+        initialContent: '在此输入'
+      }
     }
   },
   computed: {
@@ -242,3 +247,9 @@ export default {
   },
 }
 </script>
+
+<style lang="scss">
+  .edui-toolbar {
+    line-height: 1rem;
+  }
+</style>

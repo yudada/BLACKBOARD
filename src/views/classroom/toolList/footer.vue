@@ -39,14 +39,12 @@
       <el-dropdown placement="top">
         <el-button> <i class="el-icon-arrow-up" /> 教学资源 </el-button>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item @click.native="goPage('personal-resources')">
-            我的资源
-          </el-dropdown-item>
-          <el-dropdown-item @click.native="goPage('book-resource')">
-            资源列表
-          </el-dropdown-item>
-          <el-dropdown-item @click.native="goPage('exercise')">
-            课堂练习
+          <el-dropdown-item
+            v-for="item in resourceArr"
+            :key="item.id"
+            @click.native="goPage(item.path)"
+          >
+            {{ item.name }}
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -104,6 +102,11 @@ export default {
       ],
       selectGroupNumvisible: false,
       groupValue: 0,
+      resourceArr: [
+        { id: 0, name: '我的资源', path: 'personal-resources' },
+        { id: 1, name: '资源列表', path: 'book-resource' },
+        { id: 2, name: '课堂练习', path: 'exercise' }
+      ],
     }
   },
   watch: {

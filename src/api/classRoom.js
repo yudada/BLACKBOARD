@@ -172,3 +172,21 @@ export function resourceOfAdd(data) {
     params: data
   })
 }
+
+// 个人资源详情 
+export function resourceOfDetail(id) {
+  return request({
+    url: `api/resource/detail/${id}`,
+    method: 'post'
+  })
+}
+
+// 编辑资源详情 
+export function resourceOfEdit(data) {
+  return request({
+    url: `api/resource/edit/${data.id}`,
+    method: 'post',
+    params: data
+  })
+}
+

@@ -2,13 +2,15 @@
   <div>
     <!-- 上传资源弹框 -->
     <el-dialog
-      title="上传音频"
-      :visible.sync="dialogVisible"
-      width="50%"
       top="7vh"
+      width="50%"
+      custom-class="audio-dialog"
+      :title="dialogTitle"
+      :visible.sync="dialogVisible"
       :before-close="handleClose"
       :append-to-body="true"
-      custom-class="audio-dialog"
+      :close-on-click-modal="false"
+      @open="getMediData"
     >
       <el-form
         ref="ruleForm"
@@ -35,6 +37,7 @@
             :on-remove="handleRemove"
             :on-success="handleSuccess"
             :before-upload="beforeAudioUpload"
+            :file-list="fileList"
             :limit="1"
           >
             <el-button size="small" type="primary">上传音频</el-button>
@@ -80,7 +83,7 @@
         <el-form-item class="el-form-last">
           <el-button size="medium" @click="handleClose">取 消</el-button>
           <el-button size="medium" type="primary" @click="upResource">
-            确 定
+           {{ submitText }}
           </el-button>
         </el-form-item>
       </el-form>
@@ -89,21 +92,21 @@
 </template>
 
 <script>
-import { resourceOfClassify, resourceOfAdd } from '@/api/classRoom'
+import { resourceOfClassify, resourceOfAdd, resourceOfEdit } from '@/api/classRoom'
 import { deleteResource } from '@/api/index'
 export default {
-  props: ['visible'],
+  props: ['visible','media'],
   data() {
     return {
       dialogVisible: false,
       previewVisible: false,
+      fileList: [],
       headers: {
         Authorization: window.sessionStorage.getItem('token'),
       },
       audioUp: {
         type: 3,
         name: '',
-        coverImg: '',
         materialPath: '',
         classify: '',
         description: '',
@@ -113,8 +116,8 @@ export default {
           { required: true, message: '请输入名称！', trigger: 'blur' },
           {
             min: 1,
-            max: 25,
-            message: '长度在 1 到 25 个字符',
+            max: 50,
+            message: '长度在 1 到 20 个字符',
             trigger: 'blur',
           },
         ],
@@ -124,6 +127,8 @@ export default {
       },
       acceptAudio: '.mp3,.MP3,flac,.FLAC',
       options: [],
+      dialogTitle: '上传音频',
+      submitText: '确 认 上 传',
     }
   },
   computed: {
@@ -145,6 +150,31 @@ export default {
     this.getResourceClassifyList()
   },
   methods: {
+    getMediData() {
+      if (this.media.isEdit) {
+        this.audioUp.name = this.media.name
+        this.audioUp.description = this.media.description
+        this.audioUp.label = this.media.label
+        this.audioUp.materialPath = this.media.materialPath
+        this.audioUp.classify = this.media.classify
+        this.audioUp.id = this.media.id
+        this.dialogTitle = '编辑音频信息'
+        this.submitText = '确 认 修 改'
+        this.fileList = [{name: this.media.name, url: this.media.materialPath}]
+        console.log(this.fileList)
+      } else {
+        this.audioUp = {
+        type: 3,
+        name: '',
+        materialPath: '',
+        classify: '',
+        description: '',
+      }
+        this.submitText = '确 认 上 传'
+        this.fileList = []
+        this.dynamicTags = []
+      }
+    },
     getResourceClassifyList() {
       resourceOfClassify().then((res) => {
         const { classify } = res.data
@@ -158,7 +188,12 @@ export default {
       if (file.status === 'ready') return
       this.audioUp.materialPath = ''
       this.previewVisible = false
-      const { path } = file.response.data
+      let path = ''
+      if(file.response) {
+        path = file.response.data.path
+      } else {
+        path = file.url
+      }
       deleteResource({url: path}).then(res=>{
         console.log(res);
       })
@@ -187,22 +222,25 @@ export default {
       console.log(this.audioUp)
       this.$refs.ruleForm.validate(async (valid) => {
         if (!valid) return
-        await resourceOfAdd(this.audioUp).then((res) => {
-          console.log(res)
-          this.$message.success(res.msg)
-          this.dialogVisible = false
-          this.$nextTick(() => {
-            this.$emit('handleChange')
-            this.audioUp = {
-              type: 3,
-              name: '',
-              coverImg: '',
-              materialPath: '',
-              classify: '',
-              description: '',
-            }
+        if (this.media.isEdit) {
+          resourceOfEdit(this.audioUp).then(res=>{
+            console.log(res)
+            this.$message.success(res.msg)
+            this.dialogVisible = false
+            this.$nextTick(() => {
+              this.$emit('handleChange')
+            })
           })
-        })
+        } else {
+          resourceOfAdd(this.audioUp).then((res) => {
+            console.log(res)
+            this.$message.success(res.msg)
+            this.dialogVisible = false
+            this.$nextTick(() => {
+              this.$emit('handleChange')
+            })
+          })
+        }
       })
     },
   },
