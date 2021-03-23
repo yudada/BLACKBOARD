@@ -108,7 +108,7 @@
     </template>
     <!-- 缩列图显示 -->
     <template v-else>
-      <Thumbnail-list :tableData="tableData" :activeName="activeName" />
+      <Thumbnail-list :tableData="tableData" :query="query" :activeName="activeName" />
     </template>
   </div>
 </template>

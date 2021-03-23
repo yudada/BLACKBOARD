@@ -1,9 +1,16 @@
 <template>
   <div class="add-course">
-    <Breadcrumb v-if="this.$route.path === '/ware-list/create-courseware'" :navData="navData" />
+    <Breadcrumb
+      v-if="this.$route.path === '/ware-list/create-courseware'"
+      :navData="navData"
+    />
 
     <el-card class="box-card" v-if="addCoursewareForm">
-      <div slot="header" class="clearfix" v-if="this.$route.path === '/create-courseware'">
+      <div
+        slot="header"
+        class="clearfix"
+        v-if="this.$route.path === '/create-courseware'"
+      >
         <span>{{ btnText }}</span>
         <el-button
           style="float: right; padding: 3px 0"
@@ -23,8 +30,10 @@
         </el-form-item>
         <el-form-item label="课件内容">
           <br />
-          <quill-editor :options="editorOption" v-model="addCoursewareForm.content" />
-          <!-- <vue-ueditor-wrap v-model="addCoursewareForm.content" :config="myConfig" /> -->
+          <vue-ueditor-wrap
+            v-model="addCoursewareForm.content"
+            :config="myConfig"
+          />
         </el-form-item>
         <el-form-item label="添加附件">
           <br />
@@ -47,7 +56,9 @@
             <div class="el-upload__text">
               将文件拖到此处，或<em>点击选取文件</em>
             </div>
-            <div class="el-upload__tip" slot="tip">只能上传{{accept2}}文件</div>
+            <div class="el-upload__tip" slot="tip">
+              只能上传{{ accept2 }}文件
+            </div>
           </el-upload>
         </el-form-item>
         <el-form-item label="状态" prop="is_share">
@@ -68,19 +79,13 @@
         </div>
       </el-form>
     </el-card>
-
   </div>
 </template>
 
 <script>
-import 'quill/dist/quill.core.css'
-import 'quill/dist/quill.snow.css'
-import 'quill/dist/quill.bubble.css'
 import '@/assets/css/editor.scss'
-import { quillEditor } from 'vue-quill-editor'
 import Breadcrumb from '@/components/breadcrumb.vue'
 import VueUeditorWrap from 'vue-ueditor-wrap'
-import { mapState } from 'vuex'
 import {
   addCourseWareStore,
   courseWareEdit,
@@ -91,13 +96,9 @@ export default {
   components: {
     VueUeditorWrap,
     Breadcrumb,
-    quillEditor
   },
   data() {
     return {
-      editorOption: {
-        placeholder: '在此输入...'
-      },
       addCoursewareForm: {
         title: '',
         content: '',
@@ -118,15 +119,16 @@ export default {
       ],
       fileList: [],
       headers: {
-        Authorization: window.sessionStorage.getItem('token')
+        Authorization: window.sessionStorage.getItem('token'),
       },
-      accept: '.pdf,.PDF,.xlsx,.doc,.DOC,.xls,.ppt,.PPT,.rar,.RAR,.zip,.ZIP,pptx,.PPTX,docx,.DOCX',
+      accept:
+        '.pdf,.PDF,.xlsx,.doc,.DOC,.xls,.ppt,.PPT,.rar,.RAR,.zip,.ZIP,pptx,.PPTX,docx,.DOCX',
       accept2: 'pdf/xlsx/doc/docx/xls/ppt/rar/zip',
       myConfig: {
         initialFrameHeight: 240,
-        serverUrl: 'https://api.vrbook.vip/api/interactive/uploadAttach',
-        initialContent: '在此输入'
-      }
+        serverUrl: 'https://api.vrbook.vip/api/editor/upload',
+        initialContent: '在此输入',
+      },
     }
   },
   computed: {
@@ -145,12 +147,17 @@ export default {
         ? 'api/api/interactive/uploadAttach'
         : 'https://api.vrbook.vip/api/interactive/uploadAttach'
     },
-    navData: function() {
+    navData: function () {
       let navData = {
         childTitle: this.btnText,
-        goTo: '返回列表'
+        goTo: '返回列表',
       }
       return navData
+    },
+  },
+  watch: {
+    courseId:function(n,o) {
+      this.getCourseWareDetail()
     }
   },
   mounted() {
@@ -170,12 +177,12 @@ export default {
         this.addCoursewareForm.is_share = is_share
         this.addCoursewareForm.path = path
         this.fileName = fileName
-        path.map((item,index)=>{
+        path.map((item, index) => {
           let obj = {
-          name: fileName[index],
-          url: path,
-        }
-        this.fileList.push(obj)
+            name: fileName[index],
+            url: path,
+          }
+          this.fileList.push(obj)
         })
       })
     },
@@ -209,13 +216,15 @@ export default {
             this.$refs.addCoursewareFormRef.resetFields()
             this.addCoursewareForm.content = ''
             this.getClassInfo()
-            this.goBack()
+            this.$router.push('course-wareList')
           })
         } else {
           courseWareEdit(this.courseId, this.addCoursewareForm).then((res) => {
             this.$message.success(res.msg)
-            console.log(res);
-            this.goBack()
+            this.$refs.addCoursewareFormRef.resetFields()
+            this.addCoursewareForm.content = ''
+            this.getClassInfo()
+            this.$router.push('course-wareList')
           })
         }
       })
@@ -224,18 +233,18 @@ export default {
       this.$router.go(-1)
     },
     handleRemove(file, fileList) {
-      this.fileName.map((item,index)=>{
-        if(item === file.name)  {
-          this.fileName.splice(index,1)
-          this.addCoursewareForm.path.splice(index,1)
+      this.fileName.map((item, index) => {
+        if (item === file.name) {
+          this.fileName.splice(index, 1)
+          this.addCoursewareForm.path.splice(index, 1)
         }
       })
-      console.log(this.addCoursewareForm.path,this.fileName);
+      console.log(this.addCoursewareForm.path, this.fileName)
     },
     handleSuccess(file, fileList) {
       const { data } = file
       this.addCoursewareForm.path.push(data.path)
-      console.log(this.addCoursewareForm.path);
+      console.log(this.addCoursewareForm.path)
     },
     handleExceed(files, fileList) {
       this.$message.warning(
@@ -249,7 +258,7 @@ export default {
 </script>
 
 <style lang="scss">
-  .edui-toolbar {
-    line-height: 1rem;
-  }
+.edui-toolbar {
+  line-height: 1rem;
+}
 </style>

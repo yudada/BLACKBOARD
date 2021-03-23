@@ -58,6 +58,11 @@ export default {
       return this.$route.query.id
     },
   },
+  watch: {
+    id: function(n,o) {
+      this.getCourseWareDetail()
+    }
+  },
   created() {
     this.getCourseWareDetail()
   },

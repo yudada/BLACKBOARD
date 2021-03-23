@@ -92,7 +92,7 @@
 
 <script>
 export default {
-  props: ['tableData', 'activeName'],
+  props: ['tableData', 'activeName','query'],
   data() {
     return {
       previewDialogVisible: false,

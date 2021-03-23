@@ -706,6 +706,7 @@
                         var params = utils.serializeParam(editor.queryCommandValue('serverparam')) || '',
                             url = utils.formatUrl(actionUrl + (actionUrl.indexOf('?') == -1 ? '?':'&') + 'encode=utf-8&' + params);
                         uploader.option('server', url);
+                        console.log(uploader.option())
                         setState('uploading', files);
                         break;
                     case 'stopUpload':
@@ -740,8 +741,9 @@
                     var responseText = (ret._raw || ret),
                         json = utils.str2json(responseText);
                     if (json.state == 'SUCCESS') {
+                        
                         uploadVideoList.push({
-                            'url': json.url,
+                            'url': 'https://api.vrbook.vip' +  json.url,
                             'type': json.type,
                             'original':json.original
                         });
@@ -765,6 +767,7 @@
             });
 
             $upload.on('click', function () {
+                console.log( uploader.upload)
                 if ($(this).hasClass('disabled')) {
                     return false;
                 }
