@@ -39,9 +39,9 @@
                 </el-tree>
               </el-form-item>
               <el-form-item>
-                <el-button @click="onSubmit" class="cn_btn"
-                  >{{btnText}}</el-button
-                >
+                <el-button @click="onSubmit" class="cn_btn">{{
+                  btnText
+                }}</el-button>
               </el-form-item>
             </el-form>
           </el-card>
@@ -72,26 +72,26 @@ export default {
         ],
       },
       props: {
-        label: 'moduleName',
+        label: 'moduleName' || 'titleName',
         children: 'child',
       },
       rightslist: [],
       allNode: [],
       checked: false,
       allIndeterminate: false,
-      defKeys: []
+      defKeys: [],
     }
   },
   created() {
     this.getRightsList()
-    if(this.$route.query.id) {
+    if (this.$route.query.id) {
       this.navData.childTitle = '编辑角色'
       this.getRolrInfo()
     }
   },
   computed: {
     roleId: function () {
-      return this.$route.query.id;
+      return this.$route.query.id
     },
     btnText: function () {
       return this.$route.query.id ? '保存编辑' : '立即添加'
@@ -99,16 +99,17 @@ export default {
   },
   methods: {
     getRolrInfo() {
-      roleInfo(this.roleId).then(res => {
-        const { name,module_id=[] } = res.data;
-        this.roleForm.roleName = name;
-        this.defKeys = module_id;
+      roleInfo(this.roleId).then((res) => {
+        const { name, module_id = [] } = res.data
+        this.roleForm.roleName = name
+        this.defKeys = module_id
       })
     },
     // 获取系统模块列表
     getRightsList() {
       rightsList().then((res) => {
         this.rightslist = res.data
+        console.log(res)
 
         // 获取所有节点
         const allNode = []
@@ -138,21 +139,35 @@ export default {
         ...this.$refs.treeRef.getCheckedKeys(),
         ...this.$refs.treeRef.getHalfCheckedKeys(),
       ]
-      this.roleForm.module_ids = keys
+      this.roleForm.module_ids = []
+      const childKeys = []
+      this.rightslist.forEach((v) => {
+        v.child.forEach((m) => {
+          m.child.forEach((n) => {
+            childKeys.push(n.id)
+          })
+        })
+      })
+      keys.forEach((v) => {
+        childKeys.forEach((m) => {
+          if (v === m) this.roleForm.module_ids.push(v)
+        })
+      })
       this.$refs.roleFormRef.validate(async (valid) => {
         if (!valid) return
-        if(!this.roleId) {
-          addRole(this.roleForm).then((res) => {
-          this.$message.success(res.msg)
-          this.$refs.treeRef.setCheckedKeys([])
-          this.$refs.roleFormRef.resetFields()
-        })
+        if (!this.roleId) {
+          await addRole(this.roleForm).then((res) => {
+            this.$message.success(res.msg)
+            this.$refs.treeRef.setCheckedKeys([])
+            this.$refs.roleFormRef.resetFields()
+            this.$router.push('/role')
+          })
         } else {
-          editRole(this.roleId, this.roleForm).then((res) => {
-          this.$message.success(res.msg)
-        })
+          await editRole(this.roleId, this.roleForm).then((res) => {
+            this.$message.success(res.msg)
+            this.$router.push('/role')
+          })
         }
-        
       })
     },
     checkNode(data, keysData) {
@@ -177,8 +192,8 @@ export default {
 </style>
 
 <style lang="scss">
-  .el-tree-node.is-expanded>.el-tree-node__children {
-    display: flex;
-    flex-wrap: wrap;
-  }
+.el-tree-node.is-expanded > .el-tree-node__children {
+  display: flex;
+  flex-wrap: wrap;
+}
 </style>
