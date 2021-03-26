@@ -137,7 +137,8 @@ export default {
       this.$refs.schoolRuleFormRef.validate(async (valid) => {
         if (!valid) return
         editSchoolDetail(this.schoolRuleForm).then((res) => {
-          console.log(res)
+          this.$message.success(res.msg)
+          this.getSchoolDetail()
         })
       })
     },
