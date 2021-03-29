@@ -11,6 +11,11 @@
           >
             保存分组
           </el-button>
+          <el-tooltip content="切换教学模式" placement="left">
+            <el-button @click='changeMode'>
+              <i class='el-icon-s-tools'></i>
+            </el-button>
+          </el-tooltip>
         </div>
       </div>
       <el-row>
@@ -126,6 +131,10 @@ export default {
         this.$store.commit('setCollapse', true)
       }
     },
+    changeMode () {
+      this.$store.commit('changeMode', false)
+      this.$router.push('/black-board')
+    }
   },
 }
 </script>

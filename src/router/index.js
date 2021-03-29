@@ -11,6 +11,15 @@ const routes = [
   { path: '/', redirect: '/login' },
   { path: '/login', component: Login },
   { path: '/404', component: ErrorPage },
+  //黑板
+  {
+    path: '/black-board',
+    component: () => import('../views/blackBoard/blackBoard.vue'),
+    meta: {
+      title: '魔法黑板',
+      keepAlive: false
+    }
+  },
   {
     path: '/home',
     component: Home,
@@ -184,7 +193,7 @@ const routes = [
               title: '课堂练习完成情况',
               keepAlive: false
             }
-          },
+          }
         ]
       },
       // 超级作业

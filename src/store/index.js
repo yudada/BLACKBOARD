@@ -24,7 +24,10 @@ export default new Vuex.Store({
     groupNumChange: false,
     groupArr: [],
     pageCache: [],
-    upImgURL: ''
+    upImgURL: '',
+    manageMode: true,
+    canvas: undefined,
+    ctx: undefined
   },
   mutations: {
     setTeacherInfo: function (state, data) {
@@ -105,5 +108,8 @@ export default new Vuex.Store({
       }
 
     },
+    changeMode(state, payload) {
+        state.manageMode  = payload
+    }
   }
 })
