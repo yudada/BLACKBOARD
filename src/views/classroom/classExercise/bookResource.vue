@@ -3,7 +3,22 @@
     <el-card style="min-height: calc(100vh - 160px)">
       <el-tabs v-model="activeName" type="card" :stretch="true">
         <el-tab-pane label="模型资源" name="one">
-          <el-row class="model_search">
+          <el-row :gutter="20" class="model_search">
+            <el-col :span="4" v-if="options.length">
+              <el-select
+                v-model="modType"
+                @change="getModels"
+                placeholder="请选择"
+              >
+                <el-option label="全部" :value="0" />
+                <el-option
+                  v-for="item in options"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-col>
             <el-col :span="6">
               <el-input placeholder="模型搜索" v-model="modName">
                 <el-button
@@ -50,7 +65,7 @@
 import Experiment from '@/components/resourceList/experiment'
 import Exercise from '@/components/resourceList/exercise'
 import Read from '@/components/resourceList/read.vue'
-import { wisdomBookList } from '@/api/wisdomBook'
+import { wisdomBookList, categoryListBook } from '@/api/wisdomBook'
 import { resourceModelsList } from '@/api/classRoom'
 import ModelList from '@/components/classRoom/classExercise/modelList.vue'
 export default {
@@ -73,12 +88,15 @@ export default {
       activeName: 'one',
       hidenBtn: true,
       modName: '',
+      modType: 0,
       bookId: '',
       bookList: [],
+      options: [],
     }
   },
   created() {
     this.getModels()
+    this.getCategoryListBook()
     this.getWisdomBookList()
   },
   methods: {
@@ -90,15 +108,20 @@ export default {
       this.currentPage = currentPage
       this.getModels()
     },
+    getCategoryListBook() {
+      categoryListBook().then((res) => {
+        const { data } = res
+        this.options = data
+      })
+    },
     // 模型
     async getModels() {
-      const params = {
+      resourceModelsList({
         limit: this.pageSize,
         page: this.currentPage,
         modName: this.modName,
-      }
-      resourceModelsList(params).then((res) => {
-        console.log(res)
+        category_id: this.modType,
+      }).then((res) => {
         const { data, total, per_page, current_page } = res.data
         this.modelsList = data
         this.total = total
