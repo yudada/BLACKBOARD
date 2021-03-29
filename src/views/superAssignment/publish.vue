@@ -130,7 +130,11 @@
         :close-on-click-modal="false"
         custom-class="content-diolog"
       >
-        <el-radio-group v-model="publishForm.exeType" @change="restContent" style="padding: 20px 0 0 20px">
+        <el-radio-group
+          v-model="publishForm.exeType"
+          @change="restContent"
+          style="padding: 20px 0 0 20px"
+        >
           <el-radio
             v-for="item in taskTypeList"
             :key="item.value"
@@ -142,7 +146,11 @@
           <Models @func="getContentId" :contentId="publishForm.contentId" />
         </div>
         <div v-else-if="publishForm.exeType == 2">
-          <Read @func="getContentId" :contentId="publishForm.contentId" :bookId="bookId" />
+          <Read
+            @func="getContentId"
+            :contentId="publishForm.contentId"
+            :bookId="bookId"
+          />
         </div>
         <div v-else-if="publishForm.exeType == 3">
           <Exercise @func="getContentId" :contentId="publishForm.contentId" />
@@ -197,10 +205,10 @@ export default {
       classList: [],
       bookList: [],
       taskTypeList: [
-        { value: 1, label: 'VR模型控索' },
-        { value: 2, label: '智慧课本阅读' },
-        { value: 3, label: '精选题库练习' },
-        { value: 4, label: '仿真实验' },
+        { value: 1, label: 'VR模型控索', path: '/prepareTask' },
+        { value: 2, label: '智慧课本阅读', path: '/readTask' },
+        { value: 3, label: '精选题库练习', path: '/courseware' },
+        { value: 4, label: '仿真实验', path: '/exercitation' },
       ],
       // 创建作业验证规则
       publishFormRules: {
@@ -251,7 +259,7 @@ export default {
     this.$nextTick(() => {
       this.navData = {
         childTitle: '编辑作业',
-        goTo: '返回列表'
+        goTo: '返回列表',
       }
       this.getExercisesDetail()
     })
@@ -297,14 +305,14 @@ export default {
     },
     // 获取班级列表
     async getClassInfo() {
-      classroomList().then((res)=>{
+      classroomList().then((res) => {
         const { data } = res
         this.classList = data
       })
     },
     // 获取课本列表
     async getBookInfo() {
-      wisdomBookList().then((res)=>{
+      wisdomBookList().then((res) => {
         const { data } = res
         this.bookList = data
       })
@@ -319,14 +327,21 @@ export default {
         this.publishForm.exeEndTime = this.publishForm.exeEndTime.toString()
         console.log(this.publishForm)
         if (!this.exeId) {
-          addExercises(this.publishForm).then((res) => {
+          await addExercises(this.publishForm).then((res) => {
             console.log(res)
             this.$message.success(res.msg)
-            this.canceSubmitl()
+            this.taskTypeList.forEach((v) => {
+              if (v.value === this.publishForm.exeType) this.$router.push(v.path)
+              this.canceSubmitl()
+            })
           })
         } else {
-          editExercises(this.exeId, this.publishForm).then((res) => {
+          await editExercises(this.exeId, this.publishForm).then((res) => {
             this.$message.success(res.msg)
+            this.taskTypeList.forEach((v) => {
+              if (v.value === this.publishForm.exeType)
+                this.$router.push(v.path)
+            })
           })
         }
       })
@@ -366,7 +381,7 @@ export default {
       const m = (dt.getMonth() + 1 + '').padStart(2, '0')
       const d = (dt.getDate() + '').padStart(2, '0')
       return (this.publishForm.exeEndTime = `${y}-${m}-${d} 23:59:59`)
-    }
+    },
   },
 }
 </script>
