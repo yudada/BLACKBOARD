@@ -127,11 +127,12 @@ export default {
       })
     },
     // 数据处理
-    setList(data, checked = false) {
+    setList(data, checked = false, boardChecked = false) {
       const result = data.map((item) => {
         return {
           ...item,
           isChecked: checked,
+          isPulishChecked: boardChecked
         }
       })
       return result
