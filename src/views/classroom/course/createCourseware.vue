@@ -216,7 +216,7 @@ export default {
             this.$refs.addCoursewareFormRef.resetFields()
             this.addCoursewareForm.content = ''
             this.getClassInfo()
-            this.$router.push('course-wareList')
+            this.$router.push('/course-wareList')
           })
         } else {
           courseWareEdit(this.courseId, this.addCoursewareForm).then((res) => {
@@ -224,7 +224,7 @@ export default {
             this.$refs.addCoursewareFormRef.resetFields()
             this.addCoursewareForm.content = ''
             this.getClassInfo()
-            this.$router.push('course-wareList')
+            this.$router.push('/course-wareList')
           })
         }
       })
