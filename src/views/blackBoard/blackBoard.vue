@@ -70,7 +70,7 @@
             <img src='../../assets/images/board/mode.png' />
           </el-tooltip>
         </div>
-        <div class='side-item'>
+        <div class='side-item' @click='showSearchPanel'>
           <el-tooltip content="搜索" placement="left" effect="light">
             <img src='../../assets/images/board/search.png' />
           </el-tooltip>
@@ -81,7 +81,7 @@
           </el-tooltip>
         </div>
       </div>
-      <div class='model-container' v-for='(m,index) in modelArr' :key='index' :style='{top:m.t, left: m.l, width: m.w, height: m.h}'>
+      <div class='model-container' v-for='(m,index) in modelArr' :key='index' :style='{top:m.t, left: m.l, width: m.w, height: m.h}' :mid='m.mid'>
         <div class='close-btn' @click='closeModel' :data-index='index'>
           <img src='../../assets/images/board/close.png'>
         </div>
@@ -148,6 +148,13 @@
           <div class='close-btn' @click='closeStudentList'>
             <img src='../../assets/images/board/close.png'>
           </div>
+          <el-switch
+            class='all-select'
+            v-model="setSwitchValue"
+            active-text="取消全选"
+            inactive-text="全选"
+            @change='allSelect'>
+          </el-switch>
           <div class='list-container'>
             <div
               v-for="(student, index) in studentList"
@@ -175,10 +182,38 @@
                     class="student_check"
                     v-model="student.isPulishChecked"
                     @change="toggleSelection(student)"
-                    @dblclick='handleDbClick'
                   />
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <template v-if='searchPanel'>
+        <div class='course-container'>
+          <div class='close-btn' @click='closeSearchPanel'>
+            <img src='../../assets/images/board/close.png'>
+          </div>
+          <div class='list-container'>
+            <el-input placeholder="请输入内容" v-model="searchWord" class="input-with-select">
+              <el-button slot="append" icon="el-icon-search" @click='searchSources'></el-button>
+            </el-input>
+            <el-table v-if='searchData.length' :data="searchData" style="width: 100%" stripe border>
+              <el-table-column prop="title" label="标题" />
+              <el-table-column label="操作" width="150px">
+                <template slot-scope="scope">
+                  <el-button type="text" @click="openDetail(scope.row.id)">
+                    查看
+                  </el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <div v-else class='tip-panel'>
+              <div style='width: 50px;height: 50px;margin-right: 15px'>
+                <img style='width: 100%;height:auto' src='../../assets/images/board/enter.png'/>
+              </div>
+              请输入文字以搜索资源~
             </div>
           </div>
         </div>
@@ -188,7 +223,7 @@
 </template>
 
 <script>
-import { courseWareDetail, courseWareList } from '@/api/classRoom.js'
+import { courseWareDetail, courseWareList, classExerciseAdd } from '@/api/classRoom.js'
 export default {
   name: 'blackBoard',
   data() {
@@ -227,6 +262,7 @@ export default {
       temp: {},
       isTrash: false,
       courseData: [],
+      searchData: [],
       courseDetailData: [],
       isCourseShow: false,
       isCourseDetailShow: false,
@@ -234,13 +270,23 @@ export default {
       defaultPic: 'this.src="' + require('@/assets/def_avater.jpg') + '"',
       checkedBox: true,
       selectArr: [],
-      showTip: false
+      showTip: false,
+      value1: true,
+      searchPanel: false,
+      searchWord: ''
     }
   },
   computed: {
     studentList () {
       return this.$store.state.studentList
-    }
+    },
+    setSwitchValue () {
+        if(this.studentList.every(v => v.isPulishChecked)) {
+          return false
+        } else {
+          return true
+        }
+      }
   },
   mounted() {
     this.$store.state.isCollapse = true
@@ -248,23 +294,18 @@ export default {
   },
   methods: {
     toggleSelection(student) {
-      console.log(student)
+      console.log(student.isPulishChecked)
       if (student.isPulishChecked) {
         if (this.selectArr.indexOf(student.sid) === -1) {
           this.selectArr.push(student.sid)
-          console.log(this.selectArr)
         }
       } else {
         let index = this.selectArr.indexOf(student.sid)
         this.selectArr.splice(index, 1)
-        console.log(this.selectArr)
       }
     },
-    handleDbClick() {
-      this.studentList.map(v => {
-        console.log(v)
-       v.isPulishChecked = true
-      })
+    showSearchPanel () {
+      this.searchPanel = true
     },
     drawBg() {
       this.$nextTick(() => {
@@ -381,7 +422,7 @@ export default {
       this.saveData(this.firstDot)
       this.painting = true
       let x = (e.touches[0].clientX) / this.ratioX
-      let y = (e.touches[0].clientX) / this.ratioY
+      let y = (e.touches[0].clientY) / this.ratioY
       if (this.isMagicPenActive) {
         if (this.tempMaxX === undefined) this.tempMaxX = x
         if (this.tempMinX === undefined) this.tempMinX = x
@@ -397,7 +438,7 @@ export default {
     handleTouchMove(e) {
       if (this.painting) {
         let x = (e.touches[0].clientX) / this.ratioX
-        let y = (e.touches[0].clientX) / this.ratioY
+        let y = (e.touches[0].clientY) / this.ratioY
         let newPoint = { "x": x, "y": y }
         this.drawLine(this.lastPoint.x, this.lastPoint.y, newPoint.x, newPoint.y)
         if (this.isMagicPenActive) {
@@ -522,7 +563,8 @@ export default {
             w: Math.abs(vm.tempMaxX - vm.tempMinX) + 'px',
             h: Math.abs(vm.tempMaxY - vm.tempMinY) + 50 + 'px',
             t: vm.tempMinY + 'px',
-            l: vm.tempMinY + 'px'
+            l: vm.tempMinY + 'px',
+            mid: json.data.vrbookPid
           })
           vm.$store.state.ctx.clearRect(vm.tempMinX - 20, vm.tempMinY - 20, Math.abs(vm.tempMaxX - vm.tempMinX) + 50, Math.abs(vm.tempMaxY - vm.tempMinY) + 50)
           vm.tempMaxX = undefined
@@ -543,11 +585,43 @@ export default {
     closeCourseList () {
       this.isCourseShow = false
     },
+    closeSearchPanel () {
+      this.searchPanel = false
+    },
+    searchSources () {
+      console.log(this.searchWord)
+      this.searchWord = ''
+    },
     closeCourseDetail () {
       this.isCourseDetailShow = false
     },
     closeStudentList () {
       this.isStudentShow = false
+    },
+    allSelect (val) {
+      if (!val) {
+        this.studentList.map(v => {
+          v.isPulishChecked = true
+        })
+      } else {
+        this.studentList.map(v => {
+          v.isPulishChecked = false
+        })
+      }
+      this.updateSelect()
+      console.log(this.selectArr)
+    },
+    updateSelect() {
+      this.studentList.map(v => {
+       if (v.isPulishChecked && this.selectArr.indexOf(v.sid) === -1) {
+         this.selectArr.push(v.sid)
+       } else if(!v.isPulishChecked) {
+         let idx = this.selectArr.indexOf(v.sid)
+         if (idx !== -1) {
+           this.selectArr.splice(idx, 1)
+         }
+       }
+      })
     },
     openDetail(id) {
         courseWareDetail(id).then((res) => {
@@ -594,13 +668,13 @@ export default {
         this.elScrollTop = e.target.scrollTop
         this.elIdx = e.target.firstElementChild.dataset.index
         e.target.style.userSelect = 'none'
-        if (e.clientX > e.target.offsetLeft + e.target.clientWidth - 10) {
+        if (e.touches[0].clientX > e.target.offsetLeft + e.target.clientWidth - 10) {
           e.target.style.cursor = 'w-resize'
           this.couldDragModel = true
-        } else if (e.target.scrollTop + e.clientY > e.target.offsetTop + e.target.clientHeight - 10) {
+        } else if (e.target.scrollTop + e.touches[0].clientY > e.target.offsetTop + e.target.clientHeight - 10) {
           e.target.style.cursor = 's-resize'
           this.couldDragModel = true
-        } else if (e.target.scrollTop + e.clientY < e.target.offsetTop + e.target.clientHeight - 10 || e.target.offsetLeft + 10 > e.clientX) {
+        } else if (e.target.scrollTop + e.touches[0].clientY < e.target.offsetTop + e.target.clientHeight - 10 || e.target.offsetLeft + 10 > e.touches[0].clientX) {
           this.couldMoveModel = true
           this.temp = {
             t: this.modelArr[this.elIdx].t,
@@ -660,14 +734,16 @@ export default {
         this.modelArr[this.elIdx].t = parseInt(this.temp.t.slice(0, this.temp.t.length - 2)) + diffY + 'px'
         this.modelArr[this.elIdx].l = parseInt(this.temp.l.slice(0, this.temp.l.length - 2)) + diffX + 'px'
         this.isHit(e.target, this.$refs.trash)
-        if (this.impact(e.target, this.$refs.studentContainer)) {
-          if (this.selectArr.length !== 0) {
+        if (this.isStudentShow) {
+          if (this.impact(e.target, this.$refs.studentContainer)) {
+            if (this.selectArr.length !== 0) {
               this.showTip = true
+            } else {
+              this.showTip = false
+            }
           } else {
             this.showTip = false
           }
-        }else {
-          this.showTip = false
         }
       }
     },
@@ -681,15 +757,15 @@ export default {
 
           //往左拖拽
 
-          if (this.clientX > e.clientX) {
-            this.modelArr[this.elIdx].w = this.elW - (this.clientX - e.clientX) + 'px'
+          if (this.clientX > e.touches[0].clientX) {
+            this.modelArr[this.elIdx].w = this.elW - (this.clientX - e.touches[0].clientX) + 'px'
           }
 
           //往右拖拽
 
-          if (this.clientX < e.clientX) {
+          if (this.clientX < e.touches[0].clientX) {
 
-            this.modelArr[this.elIdx].w = this.elW + (e.clientX - this.clientX) + 'px'
+            this.modelArr[this.elIdx].w = this.elW + (e.touches[0].clientX - this.clientX) + 'px'
 
           }
 
@@ -701,15 +777,15 @@ export default {
 
           //往上拖拽
 
-          if (this.clientY > e.clientY) {
-            this.modelArr[this.elIdx].h = this.elH - (this.clientY - e.clientY) + 'px'
+          if (this.clientY > e.touches[0].clientY) {
+            this.modelArr[this.elIdx].h = this.elH - (this.clientY - e.touches[0].clientY) + 'px'
           }
 
           //往下拖拽
 
-          if (this.clientY < e.clientY) {
+          if (this.clientY < e.touches[0].clientY) {
 
-            this.modelArr[this.elIdx].h = this.elH + (e.clientY - this.clientY) + 'px'
+            this.modelArr[this.elIdx].h = this.elH + (e.touches[0].clientY - this.clientY) + 'px'
 
           }
 
@@ -722,9 +798,16 @@ export default {
         this.modelArr[this.elIdx].t = parseInt(this.temp.t.slice(0, this.temp.t.length - 2)) + diffY + 'px'
         this.modelArr[this.elIdx].l = parseInt(this.temp.l.slice(0, this.temp.l.length - 2)) + diffX + 'px'
         this.isHit(e.target, this.$refs.trash)
-
-        if (this.isHit(e.target, this.$refs.studentContainer)) {
-
+        if (this.isStudentShow) {
+          if (this.impact(e.target, this.$refs.studentContainer)) {
+            if (this.selectArr.length !== 0) {
+              this.showTip = true
+            } else {
+              this.showTip = false
+            }
+          }else {
+            this.showTip = false
+          }
         }
       }
     },
@@ -735,6 +818,25 @@ export default {
           this.modelArr.splice(this.elIdx,1)
           this.isTrash = false
           this.$refs.trash.style.backgroundColor = '#fff'
+        }
+
+        if (this.showTip) {
+          let mid = e.target.closest('.model-container').getAttribute('mid')
+          let data = {
+            exeType: 1,
+            model_ids: [mid],
+            sid_arr: this.selectArr
+          }
+          classExerciseAdd(data).then(res => {
+           this.$message.success('发布成功')
+            while(this.selectArr.length) {
+             this.selectArr.pop()
+            }
+            this.studentList.map(v => {
+              v.isPulishChecked = false
+            })
+            this.showTip = false
+          })
         }
       }
       this.clientX = undefined
@@ -757,6 +859,26 @@ export default {
           this.isTrash = false
           this.$refs.trash.style.backgroundColor = '#fff'
         }
+
+        if (this.showTip) {
+          let mid = e.target.closest('.model-container').getAttribute('mid')
+          let data = {
+            exeType: 1,
+            model_ids: [mid],
+            sid_arr: this.selectArr
+          }
+          classExerciseAdd(data).then(res => {
+            this.$message.success('发布成功')
+            while(this.selectArr.length) {
+              this.selectArr.pop()
+            }
+            this.studentList.map(v => {
+              v.isPulishChecked = false
+            })
+            this.showTip = false
+          })
+        }
+
       }
       this.clientX = undefined
       this.clientY = undefined
@@ -954,6 +1076,10 @@ export default {
     cursor: pointer
     width: 60vw
     height: 60vh
+    .all-select
+      position: absolute
+      top: 1%
+      right: 6%
     .list-container
       width: 90%
       height: 90%
@@ -963,6 +1089,14 @@ export default {
       justify-content: space-between
       align-content: space-between
       flex-wrap: wrap
+      .tip-panel
+        width: 100%
+        height: 100%
+        display: flex
+        justify-content: center
+        align-items: center
+        color: #fff
+        font-size: 25px
       .student_card
         width: calc(15% - 20px)
         margin: 10px 0.5rem
