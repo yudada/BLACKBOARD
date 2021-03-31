@@ -56,7 +56,8 @@ import {
   Radio,
   Loading,
   Rate,
-  Popover
+  Popover,
+  Image
 } from 'element-ui'
 
 // Vue.use(Element)
@@ -113,6 +114,7 @@ Vue.use(RadioGroup)
 Vue.use(Radio)
 Vue.use(Loading)
 Vue.use(Rate)
+Vue.use(Image)
 
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm

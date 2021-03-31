@@ -63,7 +63,9 @@
       </div>
       <div class='sidebar'>
         <div class='side-item'>
-          <img class='auto' src='../../assets/images/board/avatar1.png' />
+          <el-tooltip :content="this.userInfo.realName" placement="left" effect="light">
+            <img class='auto' style='border-radius: 50%' :src='this.userInfo.photo' />
+          </el-tooltip>
         </div>
         <div class='side-item' @click='toManageMode'>
           <el-tooltip content="切换管理模式" placement="left" effect="light">
@@ -77,7 +79,7 @@
         </div>
         <div class='side-item' v-if='isMagicPenActive' @click='getModel'>
           <el-tooltip content="检索模型" placement="left" effect="light">
-            <img src='../../assets/images/board/search.png' />
+            <img src='../../assets/images/board/searchmodel.png' />
           </el-tooltip>
         </div>
       </div>
@@ -197,18 +199,16 @@
           </div>
           <div class='list-container'>
             <el-input placeholder="请输入内容" v-model="searchWord" class="input-with-select">
-              <el-button slot="append" icon="el-icon-search" @click='searchSources'></el-button>
+              <el-button slot="append" icon="el-icon-search" @click='startSearchSources'></el-button>
             </el-input>
-            <el-table v-if='searchData.length' :data="searchData" style="width: 100%" stripe border>
-              <el-table-column prop="title" label="标题" />
-              <el-table-column label="操作" width="150px">
-                <template slot-scope="scope">
-                  <el-button type="text" @click="openDetail(scope.row.id)">
-                    查看
-                  </el-button>
-                </template>
-              </el-table-column>
-            </el-table>
+            <div v-if='searchData.length' class='sources-contaniner'>
+              <swiper class='swiper' :options="swiperOptions">
+                <swiper-slide v-for='source in searchData' :key='source.id'>
+                  <preview :source='source'></preview>
+                </swiper-slide>
+                <div class="swiper-pagination" slot="pagination"></div>
+              </swiper>
+            </div>
             <div v-else class='tip-panel'>
               <div style='width: 50px;height: 50px;margin-right: 15px'>
                 <img style='width: 100%;height:auto' src='../../assets/images/board/enter.png'/>
@@ -223,9 +223,23 @@
 </template>
 
 <script>
-import { courseWareDetail, courseWareList, classExerciseAdd } from '@/api/classRoom.js'
+import Vue from 'vue'
+import { courseWareDetail, courseWareList, classExerciseAdd, searchSources, searchModel } from '@/api/classRoom.js'
+import { classInfo } from '@/api'
+import { Swiper as SwiperClass, Pagination, Mousewheel, Autoplay } from 'swiper/swiper.esm'
+import getAwesomeSwiper from 'vue-awesome-swiper/dist/exporter'
+SwiperClass.use([Pagination, Mousewheel, Autoplay])
+Vue.use(getAwesomeSwiper(SwiperClass))
+const { Swiper, SwiperSlide } = getAwesomeSwiper(SwiperClass)
+import 'swiper/swiper-bundle.css'
+import Preview from './components/preview'
 export default {
   name: 'blackBoard',
+  components: {
+    Swiper,
+    SwiperSlide,
+    Preview
+  },
   data() {
     return {
       historyDeta: [],
@@ -273,7 +287,14 @@ export default {
       showTip: false,
       value1: true,
       searchPanel: false,
-      searchWord: ''
+      searchWord: '',
+      swiperOptions: {
+        pagination: {
+          el: '.swiper-pagination',
+          dynamicBullets: true
+        }
+      },
+      userInfo: undefined
     }
   },
   computed: {
@@ -291,8 +312,18 @@ export default {
   mounted() {
     this.$store.state.isCollapse = true
     this.drawBg()
+    this.$nextTick(
+      this.getUserInfo()
+    )
   },
   methods: {
+    getUserInfo () {
+      classInfo().then(res => {
+        const { userInfo } = res.data
+        this.userInfo = userInfo
+        console.log(this.userInfo)
+      })
+    },
     toggleSelection(student) {
       console.log(student.isPulishChecked)
       if (student.isPulishChecked) {
@@ -542,41 +573,24 @@ export default {
       this.sendImgToBackend(img, 'http://192.168.8.123/api/images/search', this)
     },
     sendImgToBackend(img, url, vm) {
-      fetch(url, {
-        body: JSON.stringify({ imgBase64: img }),
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-          'content-type': 'application/json'
-        },
-        method: 'POST',
-        mode: 'cors',
-        redirect: 'follow',
-        referrer: 'no-referrer',
+      let data = { imgBase64: img }
+      searchModel(data).then(res => {
+        vm.modelArr.push({
+          url: res.data.purl,
+          w: Math.abs(vm.tempMaxX - vm.tempMinX) + 'px',
+          h: Math.abs(vm.tempMaxY - vm.tempMinY) + 50 + 'px',
+          t: vm.tempMinY + 'px',
+          l: vm.tempMinY + 'px',
+          mid: res.data.vrbookPid
+        })
+        vm.$store.state.ctx.clearRect(vm.tempMinX - 20, vm.tempMinY - 20, Math.abs(vm.tempMaxX - vm.tempMinX) + 50, Math.abs(vm.tempMaxY - vm.tempMinY) + 50)
+        vm.tempMaxX = undefined
+        vm.tempMaxY = undefined
+        vm.tempMinX = undefined
+        vm.tempMinY = undefined
+        vm.originX = undefined
+        vm.originY = undefined
       })
-        .then(function(response) {
-          return response.json()
-        })
-        .then(function(json) {
-          vm.modelArr.push({
-            url: json.data.purl,
-            w: Math.abs(vm.tempMaxX - vm.tempMinX) + 'px',
-            h: Math.abs(vm.tempMaxY - vm.tempMinY) + 50 + 'px',
-            t: vm.tempMinY + 'px',
-            l: vm.tempMinY + 'px',
-            mid: json.data.vrbookPid
-          })
-          vm.$store.state.ctx.clearRect(vm.tempMinX - 20, vm.tempMinY - 20, Math.abs(vm.tempMaxX - vm.tempMinX) + 50, Math.abs(vm.tempMaxY - vm.tempMinY) + 50)
-          vm.tempMaxX = undefined
-          vm.tempMaxY = undefined
-          vm.tempMinX = undefined
-          vm.tempMinY = undefined
-          vm.originX = undefined
-          vm.originY = undefined
-        })
-        .catch(err => {
-          console.log(err)
-        })
     },
     closeModel(e) {
       let idx = e.target.closest('.close-btn').dataset.index
@@ -588,9 +602,75 @@ export default {
     closeSearchPanel () {
       this.searchPanel = false
     },
-    searchSources () {
-      console.log(this.searchWord)
-      this.searchWord = ''
+    startSearchSources () {
+      searchSources({title: this.searchWord}).then(res => {
+        while(this.searchData.length > 0) {
+          this.searchData.pop()
+        }
+        if (res.data.length > 0) {
+          console.log(res.data)
+          res.data.map(v => {
+            let data = {}
+            switch(v.type) {
+              case 1:
+                //图片
+                v.imageArr.map((val, index) => {
+                  data = {}
+                  data.name = v.name
+                  data.modelId = v.model_id
+                  data.coverImg = v.coverImg
+                  data.type = 1
+                  data.id = v.id + '-' + index
+                  data.uri = val
+                  this.searchData.push(data)
+                })
+
+                break
+              case 2:
+                //动图
+                data.id = v.id
+                data.name = v.name
+                data.uri = v.materialPath
+                data.modelId = v.model_id
+                data.coverImg = v.coverImg
+                data.type = 1
+                this.searchData.push(data)
+                break
+              case 3:
+                //音频
+                data.id = v.id
+                data.name = v.name
+                data.uri = v.materialPath
+                data.modelId = v.model_id
+                data.coverImg = v.coverImg
+                data.type = 2
+                this.searchData.push(data)
+                break
+              case 4:
+                //视频
+                data.id = v.id
+                data.name = v.name
+                data.uri = v.materialPath
+                data.modelId = v.model_id
+                data.coverImg = v.coverImg
+                data.type = 3
+                this.searchData.push(data)
+                break
+              case 5:
+                //模型
+                data.id = v.id
+                data.name = v.name
+                data.uri = v.materialPath
+                data.modelId = v.model_id
+                data.coverImg = ''
+                data.type = 4
+                this.searchData.push(data)
+                break
+            }
+          })
+        }
+        this.searchWord = ''
+      })
     },
     closeCourseDetail () {
       this.isCourseDetailShow = false
@@ -1089,6 +1169,16 @@ export default {
       justify-content: space-between
       align-content: space-between
       flex-wrap: wrap
+      .sources-contaniner
+        width: 100%
+        height: 90%
+        display: flex
+        flex-wrap: wrap
+        justify-content: space-between
+        align-content: space-between
+        .swiper
+          width: 100%
+          height: 100%
       .tip-panel
         width: 100%
         height: 100%

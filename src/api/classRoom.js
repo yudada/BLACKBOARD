@@ -190,3 +190,21 @@ export function resourceOfEdit(data) {
   })
 }
 
+//资源搜索
+export function searchSources(data) {
+  return request({
+    url: `api/resource/search`,
+    method: 'post',
+    params: data
+  })
+}
+
+//模型搜索
+export function searchModel(data) {
+  return request({
+    url: `api/images/search`,
+    method: 'post',
+    params: data
+  })
+}
+
