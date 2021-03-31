@@ -125,7 +125,7 @@ export default {
             if(teaPositionId === 1 || teaIsAdmin === 1 ) {
               this.$router.push('/home')
             } else {
-              this.$router.push('/classroom')
+              this.$router.push('/black-board')
             }
           })
         })

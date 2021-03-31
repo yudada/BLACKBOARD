@@ -85,6 +85,9 @@
             <img src='../../assets/images/board/searchmodel.png' />
           </el-tooltip>
         </div>
+        <div class='side-item' v-else style='visibility: hidden'>
+            <img src='../../assets/images/board/searchmodel.png' />
+        </div>
       </div>
       <div class='model-container' v-for='(m,index) in modelArr' :key='index' :style='{top:m.t, left: m.l, width: m.w, height: m.h}' :mid='m.mid'>
         <div class='close-btn' @click='closeModel' :data-index='index'>
@@ -158,6 +161,8 @@
             v-model="setSwitchValue"
             active-text="取消全选"
             inactive-text="全选"
+            active-color='gray'
+            inactive-color='#AD5DF3'
             @change='allSelect'>
           </el-switch>
           <div class='list-container'>
@@ -398,7 +403,7 @@ export default {
       this.$store.state.ctx.lineCap = "round"
       this.$store.state.ctx.lineJoin = "round"
       if (this.clear) {
-        this.$store.state.ctx.lineWidth = 20
+        this.$store.state.ctx.lineWidth = 40
         this.$store.state.ctx.save()
         this.$store.state.ctx.globalCompositeOperation = "destination-out"
         this.$store.state.ctx.moveTo(x1, y1)
