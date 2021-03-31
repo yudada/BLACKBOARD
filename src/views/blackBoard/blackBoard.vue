@@ -62,7 +62,10 @@
         </el-tooltip>
       </div>
       <div class='sidebar'>
-        <div class='side-item'>
+        <div v-if="!this.hasUser" class='side-item'>
+          <img class='auto' src='../../assets/images/board/avatar.png'>
+        </div>
+        <div class='side-item' v-else>
           <el-tooltip :content="this.userInfo.realName" placement="left" effect="light">
             <img class='auto' style='border-radius: 50%' :src='this.userInfo.photo' />
           </el-tooltip>
@@ -294,7 +297,8 @@ export default {
           dynamicBullets: true
         }
       },
-      userInfo: undefined
+      userInfo: undefined,
+      hasUser: false
     }
   },
   computed: {
@@ -312,6 +316,9 @@ export default {
   mounted() {
     this.$store.state.isCollapse = true
     this.drawBg()
+  },
+  created() {
+    console.log(this.userInfo)
     this.$nextTick(
       this.getUserInfo()
     )
@@ -321,7 +328,7 @@ export default {
       classInfo().then(res => {
         const { userInfo } = res.data
         this.userInfo = userInfo
-        console.log(this.userInfo)
+        this.hasUser = true
       })
     },
     toggleSelection(student) {
