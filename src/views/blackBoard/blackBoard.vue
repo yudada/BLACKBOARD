@@ -1107,8 +1107,8 @@ export default {
     z-index: 9999
   .sidebar
     position: absolute
-    top: 85px
-    right: 48px
+    top: 25px
+    right: 25px
     width: 45px
     height: 240px
     display: flex
