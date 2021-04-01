@@ -307,7 +307,7 @@
         <img src='../../assets/images/board/hbc.png' />
       </div>
 
-      <div v-if='clear' class='mobile-hbc' :style='{top: top, left: left}'>
+      <div v-if='clear && isMobile' class='mobile-hbc' :style='{top: top, left: left}'>
         <img src='../../assets/images/board/heibancha.png' />
       </div>
     </div>
@@ -406,6 +406,7 @@ export default {
       hasUser: false,
       studentList: [],
       toolbarShow: false,
+      isMobile: false
     }
   },
   computed: {
@@ -421,6 +422,7 @@ export default {
   mounted() {
     this.$store.state.isCollapse = true
     this.drawBg()
+    this.isMobile = !this.isPc()
   },
   created() {
     this.$nextTick(
@@ -434,6 +436,15 @@ export default {
     },
   },
   methods: {
+    isPc() {
+      var userAgentInfo = navigator.userAgent;
+      var Agents = new Array("Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod");
+      var flag = true;
+      for (var v = 0; v < Agents.length; v++) {
+        if (userAgentInfo.indexOf(Agents[v]) > 0) { flag = false; break; }
+      }
+      return flag;
+    },
     changePenColor (e) {
       console.log(e.target)
       this.$store.state.ctx.fillStyle = e.target.closest('.pen').dataset.color
