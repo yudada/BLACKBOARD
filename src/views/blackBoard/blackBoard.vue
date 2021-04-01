@@ -42,7 +42,7 @@
             <img v-else src='../../assets/images/board/ppt-active.png' />
           </el-tooltip>
         </div>
-        <div class='btn' :class='{active: isSitActive}' data-type='5' @click='getStudent'>
+        <div class='btn' :class='{active: isSitActive}' data-type='5' @click='getStudent' @touchstart='getStudent'>
           <el-tooltip content="学生座位" placement="top" effect="light">
             <img v-if='!isSitActive' src='../../assets/images/board/sit.png' />
             <img v-else src='../../assets/images/board/sit-active.png' />
@@ -53,6 +53,22 @@
             <img v-if='!isRestActive' src='../../assets/images/board/reset.png' />
             <img v-else src='../../assets/images/board/reset-active.png' />
           </el-tooltip>
+        </div>
+      </div>
+      <div class='color-and-size' v-show='toolbarShow'>
+          <div class="color_panel" @click='changeColor'>
+            <div>选择粉笔颜色：</div>
+            <div id="white" class="color-item active" style="background-color: white;"></div>
+            <div id="black" class="color-item" style="background-color: black;"></div>
+            <div id="red" class="color-item" style="background-color: #FF3333;"></div>
+            <div id="blue" class="color-item" style="background-color: #0066FF;"></div>
+            <div id="yellow" class="color-item" style="background-color: #FFFF33;"></div>
+            <div id="green" class="color-item" style="background-color: #33CC66;"></div>
+            <div id="gray" class="color-item" style="background-color: gray;"></div>
+          </div>
+        <div id="range-wrap">
+          <div>设置粉笔粗细：</div>
+          <input @change='changeWidth' type="range" id="range" min="1" max="30" value="5" title="调整笔刷粗细">
         </div>
       </div>
       <div class='trash' ref='trash'>
@@ -91,15 +107,21 @@
       </div>
       <div class='model-container' v-for='(m,index) in modelArr' :key='index' :style='{top:m.t, left: m.l, width: m.w, height: m.h}' :mid='m.mid'>
         <div class='close-btn' @click='closeModel' :data-index='index'>
-          <img src='../../assets/images/board/close.png'>
+          <img src='../../assets/images/board/close@2x.png'>
         </div>
         <embed :src='m.url' />
       </div>
 
       <template v-if='isCourseShow'>
-        <div class='course-container'>
+        <div class='course-container' :class='{fullscreen: isFull}'>
           <div class='close-btn' @click='closeCourseList'>
             <img src='../../assets/images/board/close.png'>
+          </div>
+          <div class='maximum-btn' @click='setToFullScreen'>
+            <img src='../../assets/images/board/maximum.png'>
+          </div>
+          <div class='minimum-btn' @click='exitFullScreen'>
+            <img src='../../assets/images/board/minimum.png'>
           </div>
           <div class='list-container'>
             <el-table :data="courseData" style="width: 100%" stripe border>
@@ -117,9 +139,15 @@
       </template>
 
       <template v-if='isCourseDetailShow'>
-        <div class='course-detail-container'>
+        <div class='course-detail-container' :class='{fulldetailscreen: isDetailFull}'>
           <div class='close-btn' @click='closeCourseDetail'>
             <img src='../../assets/images/board/close.png'>
+          </div>
+          <div class='maximum-btn' @click='setToFullScreen2'>
+            <img src='../../assets/images/board/maximum.png'>
+          </div>
+          <div class='minimum-btn' @click='exitFullScreen2'>
+            <img src='../../assets/images/board/minimum.png'>
           </div>
           <div class='detail-container'>
             <el-card>
@@ -201,38 +229,97 @@
       </template>
 
       <template v-if='searchPanel'>
-        <div class='course-container'>
+        <div class='course-container' :class='{searchFullScreen: isSearchFull}'>
           <div class='close-btn' @click='closeSearchPanel'>
             <img src='../../assets/images/board/close.png'>
           </div>
-          <div class='list-container'>
+          <div class='maximum-btn' @click='setToFullScreen3'>
+            <img src='../../assets/images/board/maximum.png'>
+          </div>
+          <div class='minimum-btn' @click='exitFullScreen3'>
+            <img src='../../assets/images/board/minimum.png'>
+          </div>
+          <div class='list-container search-container'>
             <el-input placeholder="请输入内容" v-model="searchWord" class="input-with-select">
               <el-button slot="append" icon="el-icon-search" @click='startSearchSources'></el-button>
             </el-input>
             <div v-if='searchData.length' class='sources-contaniner'>
-              <swiper class='swiper' :options="swiperOptions">
-                <swiper-slide v-for='source in searchData' :key='source.id'>
-                  <preview :source='source'></preview>
-                </swiper-slide>
-                <div class="swiper-pagination" slot="pagination"></div>
-              </swiper>
+<!--              <swiper class='swiper' :options="swiperOptions">-->
+<!--                <swiper-slide v-for='source in searchData' :key='source.id'>-->
+<!--                  <preview :source='source'></preview>-->
+<!--                </swiper-slide>-->
+<!--                <div class="swiper-pagination" slot="pagination"></div>-->
+<!--              </swiper>-->
+              <el-table :data="searchData" style="width: 100%" stripe border>
+                <el-table-column prop="name" label="标题" />
+                <el-table-column label='类型' width='150px'>
+                  <template slot-scope='scope'>
+                    <div v-if='scope.row.type === 1'>图片</div>
+                    <div v-if='scope.row.type === 2'>音频</div>
+                    <div v-if='scope.row.type === 3'>视频</div>
+                    <div v-if='scope.row.type === 4'>模型</div>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="created_at" label="上传时间" />
+                <el-table-column label="操作" width="150px">
+                  <template slot-scope="scope">
+                    <el-button type="text" @click="examineSource(scope.row)">
+                      查看
+                    </el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
             </div>
             <div v-else class='tip-panel'>
               <div style='width: 50px;height: 50px;margin-right: 15px'>
                 <img style='width: 100%;height:auto' src='../../assets/images/board/enter.png'/>
               </div>
-              请输入文字以搜索资源~
+              <div v-if='!isSearch'>请输入文字以搜索资源~</div>
+              <div v-else>
+                您还没有收藏资源 ，<router-link to='/personal-resources'>（请先添加资源）</router-link>
+              </div>
             </div>
           </div>
         </div>
       </template>
+
+      <template v-if='showSource'>
+        <preview @closeDetail='closeSourceShow' :source='whichSource'></preview>
+      </template>
+
+      <div class='pen' @click='changePenColor' data-color='#fff'>
+        <img src='../../assets/images/board/pen1.png' />
+      </div>
+
+      <div class='pen pen2' @click='changePenColor' data-color='#FFC125'>
+        <img src='../../assets/images/board/pen2.png' />
+      </div>
+
+      <div class='pen pen3' @click='changePenColor' data-color='#ff0000'>
+        <img src='../../assets/images/board/pen3.png' />
+      </div>
+
+      <div class='pen pen4' @click='changePenColor' data-color='#33CCFF'>
+        <img src='../../assets/images/board/pen4.png' />
+      </div>
+
+      <div class='hbc' @click='setClear'>
+        <img src='../../assets/images/board/hbc.png' />
+      </div>
 
     </div>
 </template>
 
 <script>
 import Vue from 'vue'
-import { courseWareDetail, courseWareList, classExerciseAdd, searchSources, searchModel } from '@/api/classRoom.js'
+import {
+  courseWareDetail,
+  courseWareList,
+  classExerciseAdd,
+  searchSources,
+  searchModel,
+  studentName
+} from '@/api/classRoom.js'
 import { classInfo } from '@/api'
 import { Swiper as SwiperClass, Pagination, Mousewheel, Autoplay } from 'swiper/swiper.esm'
 import getAwesomeSwiper from 'vue-awesome-swiper/dist/exporter'
@@ -241,6 +328,7 @@ Vue.use(getAwesomeSwiper(SwiperClass))
 const { Swiper, SwiperSlide } = getAwesomeSwiper(SwiperClass)
 import 'swiper/swiper-bundle.css'
 import Preview from './components/preview'
+import { mapState } from 'vuex'
 export default {
   name: 'blackBoard',
   components: {
@@ -250,6 +338,12 @@ export default {
   },
   data() {
     return {
+      showSource: false,
+      whichSource: undefined,
+      isSearch: false,
+      isFull: false,
+      isDetailFull: false,
+      isSearchFull: false,
       historyDeta: [],
       tempMaxX: undefined,
       tempMaxY: undefined,
@@ -303,13 +397,13 @@ export default {
         }
       },
       userInfo: undefined,
-      hasUser: false
+      hasUser: false,
+      studentList: [],
+      toolbarShow: false,
     }
   },
   computed: {
-    studentList () {
-      return this.$store.state.studentList
-    },
+    ...mapState(['classInfo']),
     setSwitchValue () {
         if(this.studentList.every(v => v.isPulishChecked)) {
           return false
@@ -323,12 +417,53 @@ export default {
     this.drawBg()
   },
   created() {
-    console.log(this.userInfo)
     this.$nextTick(
       this.getUserInfo()
     )
+    this.getStudentList()
+  },
+  watch: {
+    reload: function () {
+      this.getStudentList()
+    },
   },
   methods: {
+    changePenColor (e) {
+      console.log(e.target)
+      this.$store.state.ctx.fillStyle = e.target.closest('.pen').dataset.color
+      this.$store.state.ctx.strokeStyle = e.target.closest('.pen').dataset.color
+    },
+    setClear () {
+      this.isEraserActive = true
+      this.isCommonPenActive = false
+      this.isMagicPenActive = false
+      this.isBookListActive = false
+      this.isSitActive = false
+      this.isRestActive = false
+      this.clear = true
+      this.panting = true
+      this.toolbarShow = false
+    },
+    closeSourceShow () {
+      this.showSource = false
+    },
+    changeWidth (e) {
+      this.lWidth = e.target.value
+      console.log(this.lWidth)
+    },
+    changeColor(e){
+      if (e.target.closest('.color-item')) {
+        this.$store.state.ctx.fillStyle = e.target.style.backgroundColor
+        this.$store.state.ctx.strokeStyle = e.target.style.backgroundColor
+        this.removeActive(e.target.parentElement)
+        e.target.classList.add('active')
+      }
+    },
+    removeActive (el) {
+      for (let v of el.children) {
+        v.classList.remove('active')
+      }
+    },
     getUserInfo () {
       classInfo().then(res => {
         const { userInfo } = res.data
@@ -421,6 +556,7 @@ export default {
       }
     },
     handleMouseDown(e) {
+      this.toolbarShow = false
       this.firstDot = this.$store.state.ctx.getImageData(0, 0, this.$store.state.canvas.width, this.$store.state.canvas.height)
       this.saveData(this.firstDot)
       this.painting = true
@@ -461,6 +597,7 @@ export default {
       this.painting = false
     },
     handleTouchStart(e) {
+      this.toolbarShow = false
       this.firstDot = this.$store.state.ctx.getImageData(0, 0, this.$store.state.canvas.width, this.$store.state.canvas.height)
       this.saveData(this.firstDot)
       this.painting = true
@@ -509,6 +646,7 @@ export default {
           this.isRestActive = false
           this.clear = false
           this.panting = true
+          this.toolbarShow = true
           break
         case '2':
           //需要上传图片获取模型
@@ -520,6 +658,7 @@ export default {
           this.isRestActive = false
           this.clear = false
           this.panting = true
+          this.toolbarShow = true
           break
         case '3':
           this.isEraserActive = true
@@ -530,6 +669,7 @@ export default {
           this.isRestActive = false
           this.clear = true
           this.panting = true
+          this.toolbarShow = false
           break
         case '4':
           this.isBookListActive = true
@@ -540,6 +680,7 @@ export default {
           this.isRestActive = false
           this.clear = false
           this.panting = false
+          this.toolbarShow = false
           break
         case '5':
           this.isSitActive = true
@@ -550,6 +691,7 @@ export default {
           this.isRestActive = false
           this.clear = false
           this.panting = false
+          this.toolbarShow = false
           break
         case '6':
           this.isRestActive = true
@@ -561,6 +703,7 @@ export default {
           this.clear = false
           this.panting = false
           this.$store.state.ctx.clearRect(0, 0, this.$store.state.canvas.width, this.$store.state.canvas.height)
+          this.toolbarShow = false
           break
       }
     },
@@ -587,14 +730,18 @@ export default {
     sendImgToBackend(img, url, vm) {
       let data = { imgBase64: img }
       searchModel(data).then(res => {
-        vm.modelArr.push({
-          url: res.data.purl,
-          w: Math.abs(vm.tempMaxX - vm.tempMinX) + 'px',
-          h: Math.abs(vm.tempMaxY - vm.tempMinY) + 50 + 'px',
-          t: vm.tempMinY + 'px',
-          l: vm.tempMinY + 'px',
-          mid: res.data.vrbookPid
-        })
+        if (Object.keys(res.data).length !== 0) {
+          vm.modelArr.push({
+            url: res.data.purl,
+            w: Math.abs(vm.tempMaxX - vm.tempMinX) + 'px',
+            h: Math.abs(vm.tempMaxY - vm.tempMinY) + 50 + 'px',
+            t: vm.tempMinY + 'px',
+            l: vm.tempMinY + 'px',
+            mid: res.data.vrbookPid
+          })
+        } else {
+          vm.$message.info('神物走丢了，请反馈管理员找回')
+        }
         vm.$store.state.ctx.clearRect(vm.tempMinX - 20, vm.tempMinY - 20, Math.abs(vm.tempMaxX - vm.tempMinX) + 50, Math.abs(vm.tempMaxY - vm.tempMinY) + 50)
         vm.tempMaxX = undefined
         vm.tempMaxY = undefined
@@ -610,6 +757,27 @@ export default {
     },
     closeCourseList () {
       this.isCourseShow = false
+    },
+    setToFullScreen (e) {
+      //e.target.closest('.course-container').requestFullscreen()
+      this.isFull = true
+    },
+    setToFullScreen2 (e) {
+      this.isDetailFull = true
+    },
+    exitFullScreen (e) {
+      //document.exitFullscreen()
+      this.isFull = false
+    },
+    exitFullScreen2 (e) {
+      //document.exitFullscreen()
+      this.isDetailFull = false
+    },
+    setToFullScreen3 (e) {
+      this.isSearchFull = true
+    },
+    exitFullScreen3 (e) {
+      this.isSearchFull = false
     },
     closeSearchPanel () {
       this.searchPanel = false
@@ -634,6 +802,7 @@ export default {
                   data.type = 1
                   data.id = v.id + '-' + index
                   data.uri = val
+                  data.created_at = v.created_at
                   this.searchData.push(data)
                 })
 
@@ -646,6 +815,7 @@ export default {
                 data.modelId = v.model_id
                 data.coverImg = v.coverImg
                 data.type = 1
+                data.created_at = v.created_at
                 this.searchData.push(data)
                 break
               case 3:
@@ -656,6 +826,7 @@ export default {
                 data.modelId = v.model_id
                 data.coverImg = v.coverImg
                 data.type = 2
+                data.created_at = v.created_at
                 this.searchData.push(data)
                 break
               case 4:
@@ -666,6 +837,7 @@ export default {
                 data.modelId = v.model_id
                 data.coverImg = v.coverImg
                 data.type = 3
+                data.created_at = v.created_at
                 this.searchData.push(data)
                 break
               case 5:
@@ -676,10 +848,13 @@ export default {
                 data.modelId = v.model_id
                 data.coverImg = ''
                 data.type = 4
+                data.created_at = v.created_at
                 this.searchData.push(data)
                 break
             }
           })
+        } else {
+            this.isSearch = true
         }
         this.searchWord = ''
       })
@@ -722,6 +897,10 @@ export default {
           console.log(this.courseDetailData)
           this.isCourseDetailShow = true
         })
+    },
+    examineSource(source) {
+      this.whichSource = source
+      this.showSource = true
     },
     handleModelMouseDown(e) {
       if (e.target.classList.contains('model-container')) {
@@ -776,8 +955,8 @@ export default {
       }
     },
     handleModelMouseMove(e) {
-      e.preventDefault()
-      e.stopPropagation()
+      // e.preventDefault()
+      // e.stopPropagation()
       if (this.couldDragModel) {
         //右侧鼠标拖拽位置
 
@@ -840,8 +1019,8 @@ export default {
       }
     },
     handleModelTouchMove (e) {
-      e.preventDefault()
-      e.stopPropagation()
+      // e.preventDefault()
+      // e.stopPropagation()
       if (this.couldDragModel) {
         //右侧鼠标拖拽位置
 
@@ -1042,7 +1221,30 @@ export default {
     },
     getStudent () {
       this.isStudentShow = true
-    }
+      console.log(this.$store.state.studentList)
+    },
+    // 获取学生列表
+    async getStudentList() {
+      let info = {
+        classId: this.classInfo.class_id,
+        classType: 1,
+      }
+      await studentName(info).then((res) => {
+        const { student } = res.data
+        this.studentList = this.setList(student)
+      })
+    },
+    // 数据处理
+    setList(data, checked = false, boardChecked = false) {
+      const result = data.map((item) => {
+        return {
+          ...item,
+          isChecked: checked,
+          isPulishChecked: boardChecked
+        }
+      })
+      return result
+    },
   }
 }
 </script>
@@ -1092,6 +1294,39 @@ export default {
       cursor: pointer
     .active
       background: linear-gradient(0deg, #07A4F3 0%, #38FCC4 100%)
+  .color-and-size
+    position: absolute
+    bottom: 105px
+    left: 50%
+    transform: translate(-50%, 0)
+    height: 45px
+    width: 800px
+    display: flex
+    justify-content: space-between
+    align-items: center
+    color: #fff
+    .color_panel
+      flex: 1
+      display: flex
+      justify-content: space-around
+      align-items: center
+      height: 100%
+      .color-item
+        width: 30px
+        height: 30px
+        border-radius: 50%
+        box-sizing: border-box
+        border: 3px solid white
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.2)
+        cursor: pointer
+        transition: 0.3s
+      .active
+        box-shadow: 0 0 15px #00CCFF
+    #range-wrap
+      flex: 1
+      display: flex
+      justify-content: center
+      align-items: center
   .trash
     width: 45px
     height: 45px
@@ -1128,7 +1363,7 @@ export default {
         width: 100%
         height: auto
   .model-container
-    background:  radial-gradient(circle at top right, transparent 20px, #cdd7d2 0) top right
+    background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)
     background-size: cover
     background-repeat: no-repeat
     border-radius: 10px
@@ -1154,7 +1389,7 @@ export default {
         width: 100%
         height: auto
   .course-container
-    background:  radial-gradient(circle at top right, transparent 20px, #cdd7d2 0) top right
+    background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)
     background-size: cover
     background-repeat: no-repeat
     border-radius: 10px
@@ -1173,8 +1408,9 @@ export default {
       top: 1%
       right: 6%
     .list-container
-      width: 90%
+      width: 100%
       height: 90%
+      margin-top: 20px
       border-radius: 10px
       overflow: scroll
       display: flex
@@ -1188,16 +1424,14 @@ export default {
         flex-wrap: wrap
         justify-content: space-between
         align-content: space-between
-        .swiper
-          width: 100%
-          height: 100%
+        overflow-y: scroll
       .tip-panel
         width: 100%
         height: 100%
         display: flex
         justify-content: center
         align-items: center
-        color: #fff
+        color: #796bb2
         font-size: 25px
       .student_card
         width: calc(15% - 20px)
@@ -1241,11 +1475,32 @@ export default {
             top: 50%
             transform: translate(-50%, -50%)
             background: rgb(0, 0, 0, 0.1)
+    .search-container
+      width: 95%
     .close-btn
       position: absolute
-      right: 0
+      right: 10px
       top: 0
-      transform: translate(50%,-50%)
+      width: 30px
+      height: 30px
+      cursor: pointer
+      img
+        width: 100%
+        height: auto
+    .maximum-btn
+      position: absolute
+      right: 45px
+      top: 0
+      width: 30px
+      height: 30px
+      cursor: pointer
+      img
+        width: 100%
+        height: auto
+    .minimum-btn
+      position: absolute
+      right: 85px
+      top: 0
       width: 30px
       height: 30px
       cursor: pointer
@@ -1255,7 +1510,7 @@ export default {
   .send
     background-image: radial-gradient(circle at top right, transparent 20px, #fbc2eb 0 ,#a6c1ee 100%)
   .course-detail-container
-    background:  radial-gradient(circle at top right, transparent 20px, #cdd7d2 0) top right
+    background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)
     background-size: cover
     background-repeat: no-repeat
     border-radius: 10px
@@ -1270,19 +1525,79 @@ export default {
     width: 60vw
     height: 60vh
     .detail-container
-      width: 90%
+      width: 100%
       height: 90%
+      margin-top: 20px
       border-radius: 10px
       overflow-y: scroll
     .close-btn
       position: absolute
-      right: 0
+      right: 10px
       top: 0
-      transform: translate(50%,-50%)
       width: 30px
       height: 30px
       cursor: pointer
       img
         width: 100%
         height: auto
+    .maximum-btn
+      position: absolute
+      right: 45px
+      top: 0
+      width: 30px
+      height: 30px
+      cursor: pointer
+      img
+        width: 100%
+        height: auto
+    .minimum-btn
+      position: absolute
+      right: 85px
+      top: 0
+      width: 30px
+      height: 30px
+      cursor: pointer
+      img
+        width: 100%
+        height: auto
+  .fullscreen
+    width: 100%
+    height: 100%
+    z-index: 10000
+  .fulldetailscreen
+    width: 100%
+    height: 100%
+    z-index: 10000
+  .searchFullScreen
+    width: 100%
+    height: 100%
+    z-index: 10000
+  .pen
+    width: 10%
+    position: absolute
+    left: 6%
+    bottom: 0.5%
+    cursor: pointer
+    img
+      width: 100%
+      height: auto
+  .pen2
+    left: 20%
+    width: 7%
+  .pen3
+    left: 28%
+    width: 6%
+    bottom: .5%
+  .pen4
+    left: 80%
+    width: 6%
+  .hbc
+    width: 10%
+    position: absolute
+    right: 3%
+    bottom: 0.5%
+    cursor: pointer
+    img
+      width: 100%
+      height: auto
 </style>

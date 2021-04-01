@@ -64,7 +64,7 @@ export default {
       bookId: '',
       bookList: [],
       addExercise: {
-        exeType: '',
+        exeType: 1,
         textbook_id: '',
         model_ids: '',
       },
