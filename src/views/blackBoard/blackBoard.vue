@@ -307,6 +307,9 @@
         <img src='../../assets/images/board/hbc.png' />
       </div>
 
+      <div v-if='clear' class='mobile-hbc' :style='{top: top, left: left}'>
+        <img src='../../assets/images/board/heibancha.png' />
+      </div>
     </div>
 </template>
 
@@ -338,6 +341,8 @@ export default {
   },
   data() {
     return {
+      top: '95%',
+      left: '95%',
       showSource: false,
       whichSource: undefined,
       isSearch: false,
@@ -538,7 +543,7 @@ export default {
       this.$store.state.ctx.lineCap = "round"
       this.$store.state.ctx.lineJoin = "round"
       if (this.clear) {
-        this.$store.state.ctx.lineWidth = 40
+        this.$store.state.ctx.lineWidth = 60
         this.$store.state.ctx.save()
         this.$store.state.ctx.globalCompositeOperation = "destination-out"
         this.$store.state.ctx.moveTo(x1, y1)
@@ -603,6 +608,10 @@ export default {
       this.painting = true
       let x = (e.touches[0].clientX) / this.ratioX
       let y = (e.touches[0].clientY) / this.ratioY
+      if (this.clear) {
+        this.left = e.touches[0].clientX + 'px'
+        this.top = e.touches[0].clientY + 'px'
+      }
       if (this.isMagicPenActive) {
         if (this.tempMaxX === undefined) this.tempMaxX = x
         if (this.tempMinX === undefined) this.tempMinX = x
@@ -616,6 +625,10 @@ export default {
       this.drawCircle(x, y, 0)
     },
     handleTouchMove(e) {
+      if (this.clear) {
+        this.left = e.touches[0].clientX + 'px'
+        this.top = e.touches[0].clientY + 'px'
+      }
       if (this.painting) {
         let x = (e.touches[0].clientX) / this.ratioX
         let y = (e.touches[0].clientY) / this.ratioY
@@ -632,6 +645,10 @@ export default {
     },
     handleTouchEnd(e) {
       this.painting = false
+      if (this.clear) {
+        this.left = '95%'
+        this.top = '95%'
+      }
     },
     switchTool(e) {
       let type = e.target.closest('.btn').dataset.type
@@ -1597,6 +1614,14 @@ export default {
     right: 3%
     bottom: 0.5%
     cursor: pointer
+    img
+      width: 100%
+      height: auto
+  .mobile-hbc
+    position: absolute
+    width: 86px
+    height: 60px
+    transform: translate(-50%,-50%)
     img
       width: 100%
       height: auto
