@@ -57,7 +57,6 @@
       </div>
       <div class='color-and-size' v-show='toolbarShow'>
           <div class="color_panel" @click='changeColor'>
-            <div>选择粉笔颜色：</div>
             <div id="white" class="color-item active" style="background-color: white;"></div>
             <div id="black" class="color-item" style="background-color: black;"></div>
             <div id="red" class="color-item" style="background-color: #FF3333;"></div>
@@ -67,7 +66,7 @@
             <div id="gray" class="color-item" style="background-color: gray;"></div>
           </div>
         <div id="range-wrap">
-          <div>设置粉笔粗细：</div>
+          <div>粗细：</div>
           <input @change='changeWidth' type="range" id="range" min="1" max="30" value="5" title="调整笔刷粗细">
         </div>
       </div>
@@ -105,9 +104,15 @@
             <img src='../../assets/images/board/searchmodel.png' />
         </div>
       </div>
-      <div class='model-container' v-for='(m,index) in modelArr' :key='index' :style='{top:m.t, left: m.l, width: m.w, height: m.h}' :mid='m.mid'>
+      <div class='model-container' :class='{fullscreen: isModelFull}' v-for='(m,index) in modelArr' :key='index' :style='{top:m.t, left: m.l, width: m.w, height: m.h}' :mid='m.mid'>
         <div class='close-btn' @click='closeModel' :data-index='index'>
-          <img src='../../assets/images/board/close@2x.png'>
+          <i class="el-icon-close"></i>
+        </div>
+        <div class='maximum-btn' @click='setToFullScreenModel' :data-idx='index'>
+          <i class="el-icon-full-screen"></i>
+        </div>
+        <div class='minimum-btn' @click='exitFullScreenModel' :data-idx='index'>
+          <i class="el-icon-minus"></i>
         </div>
         <embed :src='m.url' />
       </div>
@@ -115,13 +120,13 @@
       <template v-if='isCourseShow'>
         <div class='course-container' :class='{fullscreen: isFull}'>
           <div class='close-btn' @click='closeCourseList'>
-            <img src='../../assets/images/board/close.png'>
+            <i class="el-icon-close"></i>
           </div>
           <div class='maximum-btn' @click='setToFullScreen'>
-            <img src='../../assets/images/board/maximum.png'>
+            <i class="el-icon-full-screen"></i>
           </div>
           <div class='minimum-btn' @click='exitFullScreen'>
-            <img src='../../assets/images/board/minimum.png'>
+            <i class="el-icon-minus"></i>
           </div>
           <div class='list-container'>
             <el-table :data="courseData" style="width: 100%" stripe border>
@@ -141,13 +146,13 @@
       <template v-if='isCourseDetailShow'>
         <div class='course-detail-container' :class='{fulldetailscreen: isDetailFull}'>
           <div class='close-btn' @click='closeCourseDetail'>
-            <img src='../../assets/images/board/close.png'>
+            <i class="el-icon-close"></i>
           </div>
           <div class='maximum-btn' @click='setToFullScreen2'>
-            <img src='../../assets/images/board/maximum.png'>
+            <i class="el-icon-full-screen"></i>
           </div>
           <div class='minimum-btn' @click='exitFullScreen2'>
-            <img src='../../assets/images/board/minimum.png'>
+            <i class="el-icon-minus"></i>
           </div>
           <div class='detail-container'>
             <el-card>
@@ -182,18 +187,18 @@
       <template v-if='isStudentShow'>
         <div class='course-container' ref='studentContainer' :class='{send: showTip}'>
           <div class='close-btn' @click='closeStudentList'>
-            <img src='../../assets/images/board/close.png'>
+            <i class="el-icon-close"></i>
           </div>
           <el-switch
             class='all-select'
             v-model="setSwitchValue"
-            active-text="取消全选"
+            active-text=""
             inactive-text="全选"
             active-color='gray'
             inactive-color='#AD5DF3'
             @change='allSelect'>
           </el-switch>
-          <div class='list-container'>
+          <div class='list-container student-container'>
             <div
               v-for="(student, index) in studentList"
               :key="index"
@@ -231,13 +236,13 @@
       <template v-if='searchPanel'>
         <div class='course-container' :class='{searchFullScreen: isSearchFull}'>
           <div class='close-btn' @click='closeSearchPanel'>
-            <img src='../../assets/images/board/close.png'>
+            <i class="el-icon-close"></i>
           </div>
           <div class='maximum-btn' @click='setToFullScreen3'>
-            <img src='../../assets/images/board/maximum.png'>
+            <i class="el-icon-full-screen"></i>
           </div>
           <div class='minimum-btn' @click='exitFullScreen3'>
-            <img src='../../assets/images/board/minimum.png'>
+            <i class="el-icon-minus"></i>
           </div>
           <div class='list-container search-container'>
             <el-input placeholder="请输入内容" v-model="searchWord" class="input-with-select">
@@ -406,7 +411,8 @@ export default {
       hasUser: false,
       studentList: [],
       toolbarShow: false,
-      isMobile: false
+      isMobile: false,
+      isModelFull: false
     }
   },
   computed: {
@@ -751,7 +757,7 @@ export default {
     sendImgToBackend(img, url, vm) {
       let data = { imgBase64: img }
       axios.post('https://api.vrbook.vip/api/images/search',data).then(res => {
-        if (Object.keys(res.data.data).length !== 0) {
+        if (res.data.data) {
           vm.modelArr.push({
             url: res.data.data.purl,
             w: Math.abs(vm.tempMaxX - vm.tempMinX) + 'px',
@@ -780,8 +786,17 @@ export default {
       this.isCourseShow = false
     },
     setToFullScreen (e) {
-      //e.target.closest('.course-container').requestFullscreen()
       this.isFull = true
+    },
+    setToFullScreenModel (e) {
+      this.isModelFull = true
+      this.modelArr[e.target.closest('.maximum-btn').dataset.idx].w = '90%'
+      this.modelArr[e.target.closest('.maximum-btn').dataset.idx].h = '90%'
+    },
+    exitFullScreenModel (e) {
+      this.isModelFull = false
+      this.modelArr[e.target.closest('.minimum-btn').dataset.idx].w = '50%'
+      this.modelArr[e.target.closest('.minimum-btn').dataset.idx].h = '50%'
     },
     setToFullScreen2 (e) {
       this.isDetailFull = true
@@ -1400,9 +1415,28 @@ export default {
       border: 0
     .close-btn
       position: absolute
-      right: 0
+      right: 10px
       top: 0
-      transform: translate(50%,-50%)
+      width: 30px
+      height: 30px
+      cursor: pointer
+      img
+        width: 100%
+        height: auto
+    .maximum-btn
+      position: absolute
+      right: 45px
+      top: 0
+      width: 30px
+      height: 30px
+      cursor: pointer
+      img
+        width: 100%
+        height: auto
+    .minimum-btn
+      position: absolute
+      right: 85px
+      top: 0
       width: 30px
       height: 30px
       cursor: pointer
@@ -1455,7 +1489,7 @@ export default {
         color: #796bb2
         font-size: 25px
       .student_card
-        width: calc(15% - 20px)
+        width: calc(10% - 20px)
         margin: 10px 0.5rem
         border: 1px solid #ebeef5
         .student_content
@@ -1496,6 +1530,9 @@ export default {
             top: 50%
             transform: translate(-50%, -50%)
             background: rgb(0, 0, 0, 0.1)
+    .student-container
+      justify-content: flex-start
+      align-content: flex-start
     .search-container
       width: 95%
     .close-btn
