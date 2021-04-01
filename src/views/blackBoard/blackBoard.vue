@@ -422,7 +422,6 @@ export default {
   mounted() {
     this.$store.state.isCollapse = true
     this.drawBg()
-    this.isMobile = !this.isPc()
   },
   created() {
     this.$nextTick(
@@ -436,15 +435,6 @@ export default {
     },
   },
   methods: {
-    isPc() {
-      var userAgentInfo = navigator.userAgent;
-      var Agents = new Array("Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod");
-      var flag = true;
-      for (var v = 0; v < Agents.length; v++) {
-        if (userAgentInfo.indexOf(Agents[v]) > 0) { flag = false; break; }
-      }
-      return flag;
-    },
     changePenColor (e) {
       console.log(e.target)
       this.$store.state.ctx.fillStyle = e.target.closest('.pen').dataset.color
@@ -614,6 +604,7 @@ export default {
       this.painting = false
     },
     handleTouchStart(e) {
+      this.isMobile = true
       this.toolbarShow = false
       this.firstDot = this.$store.state.ctx.getImageData(0, 0, this.$store.state.canvas.width, this.$store.state.canvas.height)
       this.saveData(this.firstDot)
@@ -661,6 +652,7 @@ export default {
         this.left = '95%'
         this.top = '95%'
       }
+      this.isMobile = false
     },
     switchTool(e) {
       let type = e.target.closest('.btn').dataset.type
