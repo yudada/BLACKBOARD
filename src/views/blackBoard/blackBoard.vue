@@ -332,6 +332,7 @@ const { Swiper, SwiperSlide } = getAwesomeSwiper(SwiperClass)
 import 'swiper/swiper-bundle.css'
 import Preview from './components/preview'
 import { mapState } from 'vuex'
+import axios from 'axios'
 export default {
   name: 'blackBoard',
   components: {
@@ -746,15 +747,15 @@ export default {
     },
     sendImgToBackend(img, url, vm) {
       let data = { imgBase64: img }
-      searchModel(data).then(res => {
-        if (Object.keys(res.data).length !== 0) {
+      axios.post('https://api.vrbook.vip/api/images/search',data).then(res => {
+        if (Object.keys(res.data.data).length !== 0) {
           vm.modelArr.push({
-            url: res.data.purl,
+            url: res.data.data.purl,
             w: Math.abs(vm.tempMaxX - vm.tempMinX) + 'px',
             h: Math.abs(vm.tempMaxY - vm.tempMinY) + 50 + 'px',
             t: vm.tempMinY + 'px',
             l: vm.tempMinY + 'px',
-            mid: res.data.vrbookPid
+            mid: res.data.data.vrbookPid
           })
         } else {
           vm.$message.info('神物走丢了，请反馈管理员找回')
